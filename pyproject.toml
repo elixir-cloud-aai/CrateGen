@@ -1,0 +1,34 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "wrroc-ga4gh-cloud-converter"
+version = "0.1.0"
+description = "A tool for converting TES and WES to WRROC"
+authors = ["Elixir Cloud AAI <cloud-service@elixir-europe.org>"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/elixir-cloud-aai/wrroc-ga4gh-cloud-converter"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^1.8.2"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.2"
+mypy = "^0.910"
+pytest = "^6.2.4"
+sphinx = "^3.5.4"
+pre-commit = "^2.13.0"
+
+
+
