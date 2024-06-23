@@ -3,10 +3,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "wrroc-ga4gh-cloud-converter"
+name = "CrateGen"
 version = "0.1.0"
 description = "A tool for converting TES and WES to WRROC"
-authors = ["Elixir Cloud AAI <cloud-service@elixir-europe.org>"]
+authors = ["Karanjot Singh <karanjots801@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/elixir-cloud-aai/wrroc-ga4gh-cloud-converter"
@@ -30,5 +30,49 @@ pytest = "^6.2.4"
 sphinx = "^3.5.4"
 pre-commit = "^2.13.0"
 
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.4.4"
+typos = "^1.21.0"
 
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.3.7"
+sphinx-autodoc-typehints = "^2.1.0"
+furo = "^2024.5.6"
 
+[tool.poetry.group.security.dependencies]
+bandit = "^1.7.8"
+safety = "^3.2.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^6.2.4"
+pytest-cov = "^5.0.0"
+pytest-mock = "^3.6.1"
+
+[tool.poetry.group.types.dependencies]
+mypy = "^1.10.0"
+
+[tool.bandit]
+skips = [
+  "B321", # FTP-related functions are being called.
+  "B402", # A FTP-related module is being imported.
+]
+
+[tool.ruff]
+select = ["B", "D", "E", "F", "I", "PL", "SIM", "UP"]
+
+ignore = [
+  "D203", # conflicts with D202 as formatter removes black line before class docstring
+  "D206", # conflicts with E101, `format.indent-style="tab"`
+  "D213", # conflicts with D212, would have been ignored regardless
+]
+
+per-file-ignores = {
+  "src/wrroc_converter/**/*.py" = ["D"],
+  "tests/**/*.py" = ["D"]
+}
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.typos.default.extend-words]
+mke = 'mke'

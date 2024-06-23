@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry install
+
+    - name: Lint with flake8
+      run: |
+        poetry run flake8 src/ tests/
+
+    - name: Type check with mypy
+      run: |
+        poetry run mypy src/
+
+    - name: Run tests
+      run: |
+        poetry run pytest --cov=src
+
+    - name: Generate documentation
+      run: |
+        poetry run sphinx-build -b html docs/ docs/_build/html
