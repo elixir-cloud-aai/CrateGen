@@ -16,20 +16,28 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.11'
 
     - name: Install Poetry
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
         poetry install
 
-    - name: Lint with flake8
+    - name: Lint with Ruff
       run: |
-        poetry run flake8 src/ tests/
+        poetry run ruff check src/ tests/
 
-    - name: Type check with mypy
+    - name: Type check with Mypy
       run: |
         poetry run mypy src/
+
+    - name: Run security checks with Bandit
+      run: |
+        poetry run bandit -r src/
+
+    - name: Install test dependencies
+      run: |
+        poetry add pytest pytest-cov pytest-mock
 
     - name: Run tests
       run: |
