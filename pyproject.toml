@@ -9,7 +9,7 @@ description = "A tool for converting TES and WES to WRROC"
 authors = ["Karanjot Singh <karanjots801@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/elixir-cloud-aai/wrroc-ga4gh-cloud-converter"
+repository = "https://github.com/elixir-cloud-aai/CrateGen"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -66,10 +66,7 @@ ignore = [
   "D213", # conflicts with D212, would have been ignored regardless
 ]
 
-per-file-ignores = {
-  "src/wrroc_converter/**/*.py" = ["D"],
-  "tests/**/*.py" = ["D"]
-}
+
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
