@@ -1,4 +1,4 @@
-# WRROC <> GA4GH API Conversion Tool
+# CrateGen
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-311/)
 
@@ -6,7 +6,7 @@
 This project aims to create a library that translates between GA4GH Cloud API schemas and RO-Crate profiles to facilitate reproducibility in scientific research. The tool will enable the packaging and sharing of task/tool and workflow runs, allowing other researchers to reproduce them or use parts of them.
 
 ## Description
-The WRROC <> GA4GH API Conversion Tool is designed to compile RO-Crates from tool and workflow executions in GA4GH Cloud API-powered cloud infrastructures. This will allow easy re-execution of these computational analyses, thus improving the reporting and reproducibility of computational research.
+The CrateGen Tool is designed to compile RO-Crates from tool and workflow executions in GA4GH Cloud API-powered cloud infrastructures. This will allow easy re-execution of these computational analyses, thus improving the reporting and reproducibility of computational research.
 
 ## Installation
 To install the necessary dependencies, run the following command:
