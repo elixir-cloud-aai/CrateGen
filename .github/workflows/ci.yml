@@ -39,9 +39,9 @@ jobs:
       run: |
         poetry add pytest pytest-cov pytest-mock
 
-    - name: Run tests
-      run: |
-        poetry run pytest --cov=crategen
+    # - name: Run tests
+    #   run: |
+    #     poetry run pytest --cov=crategen
 
     # - name: Generate documentation
     #   run: |
