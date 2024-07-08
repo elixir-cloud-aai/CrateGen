@@ -58,15 +58,24 @@ skips = [
 ]
 
 [tool.ruff]
-select = ["B", "D", "E", "F", "I", "PL", "SIM", "UP"]
-
+format = "google"
 ignore = [
   "D203", # conflicts with D202 as formatter removes black line before class docstring
   "D206", # conflicts with E101, `format.indent-style="tab"`
   "D213", # conflicts with D212, would have been ignored regardless
 ]
+select = [
+  "B", # flake8-bugbear
+  "D", # pydocstyle
+  "E", # pycodestyle
+  "F", # Pyflakes
+  "I", # isort
+  "PL", # pylint
+  "SIM", # flake8-simplify
+  "UP", # pyupgrade
+]
 
-
+per-file-ignores = { "tests/**/*.py" = ["D"] }
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
