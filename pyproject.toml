@@ -58,7 +58,6 @@ skips = [
 ]
 
 [tool.ruff]
-format = "google"
 ignore = [
   "D203", # conflicts with D202 as formatter removes black line before class docstring
   "D206", # conflicts with E101, `format.indent-style="tab"`
