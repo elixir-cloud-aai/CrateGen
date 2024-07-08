@@ -56,7 +56,7 @@ skips = [
   "B321", # FTP-related functions are being called.
   "B402", # A FTP-related module is being imported.
 ]
-crategen
+
 [tool.ruff]
 exclude = [
   "tests/integration/*.py",
