@@ -60,7 +60,7 @@ skips = [
 [tool.ruff]
 exclude = [
   "tests/integration/*.py",
-  "tests/unit/*.py"
+  "tests/unit/*.py",
   "crategen/*"
 ]
 indent-width = 4
