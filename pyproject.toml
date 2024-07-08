@@ -73,8 +73,9 @@ select = [
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
-
-per-file-ignores = { "tests/**/*.py" = ["D"] }
+per-file-ignores = [ "tests/integration/*.py",
+  "tests/unit/*.py"
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
