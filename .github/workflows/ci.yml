@@ -39,10 +39,6 @@ jobs:
       run: |
         poetry add pytest pytest-cov pytest-mock
 
-    # - name: Run tests
-    #   run: |
-    #     poetry run pytest --cov=crategen
-
-    # - name: Generate documentation
-    #   run: |
-    #     poetry run sphinx-build -b html docs/ docs/_build/html
+    - name: Run tests
+      run: |
+        poetry run pytest --cov=crategen

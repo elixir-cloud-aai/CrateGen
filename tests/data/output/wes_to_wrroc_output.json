@@ -1,0 +1,13 @@
+{
+  "@id": "wes-12345",
+  "name": "example-workflow",
+  "status": "COMPLETE",
+  "startTime": "2023-07-01T12:00:00Z",
+  "endTime": "2023-07-01T12:30:00Z",
+  "result": [
+    {
+      "@id": "s3://example-bucket/output-file.txt",
+      "name": "output-file"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "task-12345",
+  "state": "COMPLETE",
+  "name": "example-task",
+  "description": "This is an example task for testing.",
+  "inputs": [
+    {
+      "name": "input-file",
+      "description": "An input file for the task.",
+      "url": "s3://example-bucket/input-file.txt",
+      "path": "/data/input-file.txt",
+      "type": "FILE"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "output-file",
+      "description": "An output file from the task.",
+      "url": "s3://example-bucket/output-file.txt",
+      "path": "/data/output-file.txt",
+      "type": "FILE"
+    }
+  ],
+  "resources": {
+    "cpu_cores": 4,
+    "preemptible": false,
+    "ram_gb": 16,
+    "disk_gb": 50,
+    "zones": ["us-central1-a"]
+  },
+  "executors": [
+    {
+      "image": "example/image:latest",
+      "command": ["python", "script.py"],
+      "workdir": "/workspace",
+      "stdin": "/workspace/input-file.txt",
+      "stdout": "/workspace/output-file.txt",
+      "stderr": "/workspace/error.log",
+      "env": {
+        "EXAMPLE_ENV": "example_value"
+      }
+    }
+  ],
+  "tags": {
+    "project": "example-project",
+    "purpose": "testing"
+  },
+  "volumes": [
+    {
+      "name": "example-volume",
+      "mount_path": "/workspace",
+      "read_only": false
+    }
+  ],
+  "logs": [
+    {
+      "start_time": "2023-07-01T12:00:00Z",
+      "end_time": "2023-07-01T12:30:00Z",
+      "stdout": "Execution completed successfully.",
+      "stderr": "",
+      "exit_code": 0
+    }
+  ],
+  "creation_time": "2023-07-01T11:00:00Z"
+}

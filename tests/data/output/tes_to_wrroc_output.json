@@ -1,0 +1,20 @@
+{
+  "@id": "karanjot-task",
+  "name": "example-task",
+  "description": "This is an example task for testing.",
+  "instrument": "example/image:latest",
+  "object": [
+    {
+      "@id": "s3://example-bucket/input-file.txt",
+      "name": "/data/input-file.txt"
+    }
+  ],
+  "result": [
+    {
+      "@id": "s3://example-bucket/output-file.txt",
+      "name": "/data/output-file.txt"
+    }
+  ],
+  "startTime": "2023-07-01T11:00:00Z",
+  "endTime": null
+}
