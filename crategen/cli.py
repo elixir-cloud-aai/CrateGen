@@ -1,24 +1,30 @@
-import json
 import click
+import json
 from crategen.converter_manager import ConverterManager
 
 @click.command()
-@click.option('--input', 'input_file', type=click.Path(exists=True), required=True, help='Path to the input file.')
-@click.option('--output', 'output_file', type=click.Path(), required=True, help='Path to the output file.')
-@click.option('--conversion-type', 'conversion_type', type=click.Choice(['tes_to_wrroc', 'wes_to_wrroc']), required=True, help='Type of conversion.')
-def cli(input_file, output_file, conversion_type):
-    with open(input_file, 'r') as f:
-        data = json.load(f)
-
+@click.option('--input', prompt='Input file', help='Path to the input JSON file.')
+@click.option('--output', prompt='Output file', help='Path to the output JSON file.')
+@click.option('--conversion-type', prompt='Conversion type', type=click.Choice(['tes-to-wrroc', 'wes-to-wrroc']), help='Type of conversion to perform.')
+def cli(input, output, conversion_type):
+    """
+    Command Line Interface for converting TES/WES to WRROC.
+    """
     manager = ConverterManager()
 
-    if conversion_type == 'tes_to_wrroc':
-        result = manager.convert_tes_to_wrroc(data)
-    elif conversion_type == 'wes_to_wrroc':
-        result = manager.convert_wes_to_wrroc(data)
+    # Load input data from JSON file
+    with open(input, 'r') as input_file:
+        data = json.load(input_file)
 
-    with open(output_file, 'w') as f:
-        json.dump(result, f, indent=2)
+    # Perform the conversion based on the specified type
+    if conversion_type == 'tes-to-wrroc':
+        result = manager.convert_tes_to_wrroc(data)
+    elif conversion_type == 'wes-to-wrroc':
+        result = manager.convert_wes_to_wrroc(data)
+    
+    # Save the result to the output JSON file
+    with open(output, 'w') as output_file:
+        json.dump(result, output_file, indent=4)
 
 if __name__ == '__main__':
     cli()

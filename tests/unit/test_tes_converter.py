@@ -8,65 +8,55 @@ class TestTESConverter(unittest.TestCase):
 
     def test_convert_to_wrroc(self):
         tes_data = {
-            "id": "tes-12345",
-            "name": "example-task",
-            "description": "This is a sample TES task.",
-            "executors": [
-                {
-                    "image": "python:3.8",
-                    "command": ["python", "script.py"],
-                    "workdir": "/workspace",
-                    "stdout": "/workspace/output.log",
-                    "stderr": "/workspace/error.log"
-                }
-            ],
-            "inputs": [
-                {
-                    "url": "s3://example-bucket/input-file.txt",
-                    "path": "/workspace/input-file.txt",
-                    "type": "FILE"
-                }
-            ],
-            "outputs": [
-                {
-                    "url": "s3://example-bucket/output-file.txt",
-                    "path": "/workspace/output-file.txt",
-                    "type": "FILE"
-                }
-            ],
-            "creation_time": "2023-07-01T12:00:00Z",
-            "end_time": "2023-07-01T12:30:00Z"
+            "id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "executors": [{"image": "executor-image"}],
+            "inputs": [{"url": "input-url", "path": "input-path"}],
+            "outputs": [{"url": "output-url", "path": "output-path"}],
+            "creation_time": "2023-07-10T14:30:00Z",
+            "end_time": "2023-07-10T15:30:00Z"
         }
+    
+        expected_wrroc_data = {
+            "@id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "instrument": "executor-image",
+            "object": [{"@id": "input-url", "name": "input-path"}],
+            "result": [{"@id": "output-url", "name": "output-path"}],
+            "startTime": "2023-07-10T14:30:00Z",
+            "endTime": "2023-07-10T15:30:00Z"
+        }
+    
         result = self.converter.convert_to_wrroc(tes_data)
-        self.assertEqual(result["@id"], "tes-12345")
-        self.assertEqual(result["name"], "example-task")
-        self.assertEqual(result["description"], "This is a sample TES task.")
+        self.assertEqual(result, expected_wrroc_data)
 
     def test_convert_from_wrroc(self):
         wrroc_data = {
-            "@id": "tes-12345",
-            "name": "example-task",
-            "description": "This is a sample TES task.",
-            "instrument": "python:3.8",
-            "object": [
-                {
-                    "@id": "s3://example-bucket/input-file.txt",
-                    "name": "/workspace/input-file.txt"
-                }
-            ],
-            "result": [
-                {
-                    "@id": "s3://example-bucket/output-file.txt",
-                    "name": "/workspace/output-file.txt"
-                }
-            ],
-            "startTime": "2023-07-01T12:00:00Z",
-            "endTime": "2023-07-01T12:30:00Z"
+            "@id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "instrument": "executor-image",
+            "object": [{"@id": "input-url", "name": "input-path"}],
+            "result": [{"@id": "output-url", "name": "output-path"}],
+            "startTime": "2023-07-10T14:30:00Z",
+            "endTime": "2023-07-10T15:30:00Z"
         }
+
+        expected_tes_data = {
+            "id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "executors": [{"image": "executor-image"}],
+            "inputs": [{"url": "input-url", "path": "input-path"}],
+            "outputs": [{"url": "output-url", "path": "output-path"}],
+            "creation_time": "2023-07-10T14:30:00Z",
+            "end_time": "2023-07-10T15:30:00Z"
+        }
+
         result = self.converter.convert_from_wrroc(wrroc_data)
-        self.assertEqual(result["id"], "tes-12345")
-        self.assertEqual(result["name"], "example-task")
-        self.assertEqual(result["description"], "This is a sample TES task.")
+        self.assertEqual(result, expected_tes_data)
 
 if __name__ == '__main__':
     unittest.main()

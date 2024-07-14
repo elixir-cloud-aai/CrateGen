@@ -1,51 +1,10 @@
 {
-  "run_id": "wes-12345",
-  "request": {
-    "workflow_params": {
-      "input_file": "s3://example-bucket/input-file.txt",
-      "output_file": "s3://example-bucket/output-file.txt"
-    },
-    "workflow_type": "CWL",
-    "workflow_type_version": "v1.0",
-    "workflow_url": "https://example.com/workflow.cwl",
-    "tags": {
-      "project": "example-project",
-      "purpose": "testing"
-    }
-  },
-  "state": "COMPLETE",
+  "run_id": "run-id",
   "run_log": {
-    "name": "example-workflow",
-    "start_time": "2023-07-01T12:00:00Z",
-    "end_time": "2023-07-01T12:30:00Z",
-    "stdout": "Execution completed successfully.",
-    "stderr": "",
-    "exit_code": 0
+      "name": "test-run",
+      "start_time": "2023-07-10T14:30:00Z",
+      "end_time": "2023-07-10T15:30:00Z"
   },
-  "task_logs": [
-    {
-      "name": "task1",
-      "cmd": ["python", "script.py"],
-      "start_time": "2023-07-01T12:00:00Z",
-      "end_time": "2023-07-01T12:10:00Z",
-      "stdout": "Task 1 completed.",
-      "stderr": "",
-      "exit_code": 0
-    },
-    {
-      "name": "task2",
-      "cmd": ["python", "script2.py"],
-      "start_time": "2023-07-01T12:10:00Z",
-      "end_time": "2023-07-01T12:20:00Z",
-      "stdout": "Task 2 completed.",
-      "stderr": "",
-      "exit_code": 0
-    }
-  ],
-  "outputs": [
-    {
-      "location": "s3://example-bucket/output-file.txt",
-      "name": "output-file"
-    }
-  ]
+  "state": "COMPLETED",
+  "outputs": [{"location": "output-location", "name": "output-name"}]
 }

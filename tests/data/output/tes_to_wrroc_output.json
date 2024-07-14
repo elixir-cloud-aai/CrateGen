@@ -1,20 +1,20 @@
 {
-  "@id": "karanjot-task",
-  "name": "example-task",
-  "description": "This is an example task for testing.",
-  "instrument": "example/image:latest",
-  "object": [
-    {
-      "@id": "s3://example-bucket/input-file.txt",
-      "name": "/data/input-file.txt"
-    }
-  ],
-  "result": [
-    {
-      "@id": "s3://example-bucket/output-file.txt",
-      "name": "/data/output-file.txt"
-    }
-  ],
-  "startTime": "2023-07-01T11:00:00Z",
-  "endTime": null
+    "@id": "task-id",
+    "name": "test-task",
+    "description": "test-description",
+    "instrument": "executor-image",
+    "object": [
+        {
+            "@id": "input-url",
+            "name": "input-path"
+        }
+    ],
+    "result": [
+        {
+            "@id": "output-url",
+            "name": "output-path"
+        }
+    ],
+    "startTime": "2023-07-10T14:30:00Z",
+    "endTime": "2023-07-10T15:30:00Z"
 }

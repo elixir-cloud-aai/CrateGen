@@ -1,41 +1,52 @@
 from .abstract_converter import AbstractConverter
-import datetime
+from ..utils.formatting import convert_to_iso8601
 
 class TESConverter(AbstractConverter):
 
     def convert_to_wrroc(self, tes_data):
-        # Implement the conversion logic from TES to WRROC
+        # Validate and extract data with defaults
+        id = tes_data.get("id", "")
+        name = tes_data.get("name", "")
+        description = tes_data.get("description", "")
+        executors = tes_data.get("executors", [{}])
+        inputs = tes_data.get("inputs", [])
+        outputs = tes_data.get("outputs", [])
+        creation_time = tes_data.get("creation_time", "")
+        end_time = tes_data.get("end_time", "")
+        
+        # Convert to WRROC
         wrroc_data = {
-            "@id": tes_data["id"],
-            "name": tes_data.get("name", ""),
-            "description": tes_data.get("description", ""),
-            "instrument": tes_data["executors"][0]["image"] if tes_data.get("executors") else None,
-            "object": [{"@id": input.get("url"), "name": input.get("path")} for input in tes_data.get("inputs", [])],
-            "result": [{"@id": output.get("url"), "name": output.get("path")} for output in tes_data.get("outputs", [])],
-            "startTime": self.convert_to_iso8601(tes_data.get("creation_time")),
-            "endTime": self.convert_to_iso8601(tes_data.get("end_time")),
+            "@id": id,
+            "name": name,
+            "description": description,
+            "instrument": executors[0].get("image", None) if executors else None,
+            "object": [{"@id": input.get("url", ""), "name": input.get("path", "")} for input in inputs],
+            "result": [{"@id": output.get("url", ""), "name": output.get("path", "")} for output in outputs],
+            "startTime": convert_to_iso8601(creation_time),
+            "endTime": convert_to_iso8601(end_time),
         }
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
-        # Implement the conversion logic from WRROC to TES
+        # Validate and extract data with defaults
+        id = wrroc_data.get("@id", "")
+        name = wrroc_data.get("name", "")
+        description = wrroc_data.get("description", "")
+        instrument = wrroc_data.get("instrument", "")
+        object_data = wrroc_data.get("object", [])
+        result_data = wrroc_data.get("result", [])
+        start_time = wrroc_data.get("startTime", "")
+        end_time = wrroc_data.get("endTime", "")
+        
+        # Convert from WRROC to TES
         tes_data = {
-            "id": wrroc_data["@id"],
-            "name": wrroc_data.get("name", ""),
-            "description": wrroc_data.get("description", ""),
-            "executors": [{"image": wrroc_data.get("instrument")}],
-            "inputs": [{"url": obj["@id"], "path": obj["name"]} for obj in wrroc_data.get("object", [])],
-            "outputs": [{"url": res["@id"], "path": res["name"]} for res in wrroc_data.get("result", [])],
-            "creation_time": wrroc_data.get("startTime"),
-            "end_time": wrroc_data.get("endTime"),
+            "id": id,
+            "name": name,
+            "description": description,
+            "executors": [{"image": instrument}],
+            "inputs": [{"url": obj.get("@id", ""), "path": obj.get("name", "")} for obj in object_data],
+            "outputs": [{"url": res.get("@id", ""), "path": res.get("name", "")} for res in result_data],
+            "creation_time": start_time,
+            "end_time": end_time,
         }
         return tes_data
-
-    def convert_to_iso8601(self, timestamp):
-        if timestamp:
-            try:
-                return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").isoformat() + "Z"
-            except ValueError:
-                # Handle incorrect format or other issues
-                return None
-        return None
