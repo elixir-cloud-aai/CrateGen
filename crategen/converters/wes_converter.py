@@ -1,39 +1,46 @@
 from .abstract_converter import AbstractConverter
-import datetime
+from ..utils.formatting import convert_to_iso8601
 
 class WESConverter(AbstractConverter):
 
     def convert_to_wrroc(self, wes_data):
-        # Implement the conversion logic from WES to WRROC
+        # Validate and extract data with defaults
+        run_id = wes_data.get("run_id", "")
+        name = wes_data.get("run_log", {}).get("name", "")
+        state = wes_data.get("state", "")
+        start_time = wes_data.get("run_log", {}).get("start_time", "")
+        end_time = wes_data.get("run_log", {}).get("end_time", "")
+        outputs = wes_data.get("outputs", {})
+
+        # Convert to WRROC
         wrroc_data = {
-            "@id": wes_data.get("run_id", ""),
-            "name": wes_data.get("run_log", {}).get("name", ""),
-            "status": wes_data.get("state", ""),
-            "startTime": self.convert_to_iso8601(wes_data.get("run_log", {}).get("start_time")),
-            "endTime": self.convert_to_iso8601(wes_data.get("run_log", {}).get("end_time")),
-            "result": [{"@id": output.get("location", ""), "name": output.get("name", "")} for output in wes_data.get("outputs", [])],
+            "@id": run_id,
+            "name": name,
+            "status": state,
+            "startTime": convert_to_iso8601(start_time),
+            "endTime": convert_to_iso8601(end_time),
+            "result": [{"@id": output.get("location", ""), "name": output.get("name", "")} for output in outputs],
         }
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
-        # Implement the conversion logic from WRROC to WES
+        # Validate and extract data with defaults
+        run_id = wrroc_data.get("@id", "")
+        name = wrroc_data.get("name", "")
+        start_time = wrroc_data.get("startTime", "")
+        end_time = wrroc_data.get("endTime", "")
+        state = wrroc_data.get("status", "")
+        result_data = wrroc_data.get("result", [])
+        
+        # Convert from WRROC to WES
         wes_data = {
-            "run_id": wrroc_data.get("@id", ""),
+            "run_id": run_id,
             "run_log": {
-                "name": wrroc_data.get("name", ""),
-                "start_time": wrroc_data.get("startTime", ""),
-                "end_time": wrroc_data.get("endTime", ""),
+                "name": name,
+                "start_time": start_time,
+                "end_time": end_time,
             },
-            "state": wrroc_data.get("status", ""),
-            "outputs": [{"location": res.get("@id", ""), "name": res.get("name", "")} for res in wrroc_data.get("result", [])],
+            "state": state,
+            "outputs": [{"location": res.get("@id", ""), "name": res.get("name", "")} for res in result_data],
         }
         return wes_data
-
-    def convert_to_iso8601(self, timestamp):
-        if timestamp:
-            try:
-                return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").isoformat() + "Z"
-            except ValueError:
-                # Handle incorrect format or other issues
-                return None
-        return None
