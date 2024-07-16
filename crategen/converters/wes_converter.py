@@ -1,5 +1,5 @@
 from .abstract_converter import AbstractConverter
-from ..utils.formatting import convert_to_iso8601
+from .utils import convert_to_iso8601
 
 class WESConverter(AbstractConverter):
 

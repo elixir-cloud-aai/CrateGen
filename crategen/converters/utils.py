@@ -21,12 +21,7 @@ def convert_to_iso8601(timestamp):
         ]
         for fmt in formats:
             try:
-                dt = datetime.datetime.strptime(timestamp, fmt)
-                iso_format = dt.isoformat()
-                # Strip fractional seconds if not needed
-                if '.' in iso_format:
-                    iso_format = iso_format.split('.')[0]
-                return iso_format + 'Z'
+                return datetime.datetime.strptime(timestamp, fmt).isoformat() + "Z"
             except ValueError:
                 continue
         # Handle incorrect format or other issues
