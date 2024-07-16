@@ -25,7 +25,7 @@ jobs:
 
     - name: Lint with Ruff
       run: |
-        poetry run ruff check crategen/
+        poetry run ruff check crategen/ tests/
 
     - name: Type check with Mypy
       run: |

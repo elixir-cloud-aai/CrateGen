@@ -15,7 +15,7 @@ class TestTESConverter(unittest.TestCase):
             "inputs": [{"url": "input-url", "path": "input-path"}],
             "outputs": [{"url": "output-url", "path": "output-path"}],
             "creation_time": "2023-07-10T14:30:00Z",
-            "end_time": "2023-07-10T15:30:00Z"
+            "logs": [{"end_time": "2023-07-10T15:30:00Z"}]
         }
     
         expected_wrroc_data = {
@@ -43,7 +43,7 @@ class TestTESConverter(unittest.TestCase):
             "startTime": "2023-07-10T14:30:00Z",
             "endTime": "2023-07-10T15:30:00Z"
         }
-
+    
         expected_tes_data = {
             "id": "task-id",
             "name": "test-task",
@@ -52,11 +52,11 @@ class TestTESConverter(unittest.TestCase):
             "inputs": [{"url": "input-url", "path": "input-path"}],
             "outputs": [{"url": "output-url", "path": "output-path"}],
             "creation_time": "2023-07-10T14:30:00Z",
-            "end_time": "2023-07-10T15:30:00Z"
+            "logs": [{"end_time": "2023-07-10T15:30:00Z"}]
         }
-
+    
         result = self.converter.convert_from_wrroc(wrroc_data)
         self.assertEqual(result, expected_tes_data)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
