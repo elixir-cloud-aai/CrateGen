@@ -1,0 +1,20 @@
+{
+    "@id": "task-id",
+    "name": "test-task",
+    "description": "test-description",
+    "instrument": "executor-image",
+    "object": [
+        {
+            "@id": "input-url",
+            "name": "input-path"
+        }
+    ],
+    "result": [
+        {
+            "@id": "output-url",
+            "name": "output-path"
+        }
+    ],
+    "startTime": "2023-07-10T14:30:00Z",
+    "endTime": "2023-07-10T15:30:00Z"
+}

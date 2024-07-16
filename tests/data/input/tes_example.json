@@ -1,0 +1,10 @@
+{
+  "id": "task-id",
+  "name": "test-task",
+  "description": "test-description",
+  "executors": [{"image": "executor-image"}],
+  "inputs": [{"url": "input-url", "path": "input-path"}],
+  "outputs": [{"url": "output-url", "path": "output-path"}],
+  "creation_time": "2023-07-10T14:30:00Z",
+  "end_time": "2023-07-10T15:30:00Z"
+}
