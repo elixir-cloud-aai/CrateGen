@@ -6,7 +6,7 @@
 This project aims to create a library that translates between GA4GH Cloud API schemas and RO-Crate profiles to facilitate reproducibility in scientific research. The tool will enable the packaging and sharing of task/tool and workflow runs, allowing other researchers to reproduce them or use parts of them.
 
 ## Description
-The CrateGen Tool is designed to compile RO-Crates from tool and workflow executions in GA4GH Cloud API-powered cloud infrastructures. This will allow easy re-execution of these computational analyses, thus improving the reporting and reproducibility of computational research.
+The CrateGen Tool is designed to compile RO-Crates from tool and workflow executions in GA4GH Cloud API-powered cloud infrastructures. This will allow easy re-execution of these computational analyses, thus improving the reporting and reproducibility of computational research. Additionally, it will allow the creation of WES/TES calls from existing WRROCs, enabling a dual functionality.
 
 ## Installation
 To install the necessary dependencies, run the following command:

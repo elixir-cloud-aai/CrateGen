@@ -22,15 +22,11 @@ classifiers = [
 python = "^3.11"
 pydantic = "^1.8.2"
 requests = "^2.25.1"
-pytest = "^8.2.2"
+pytest = "^8.3.1"
 pytest-cov = "^5.0.0"
 pytest-mock = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.9.2"
-mypy = "^1.10.1"
-pytest = "^8.2.2"
-sphinx = "^7.3.7"
 pre-commit = "^2.13.0"
 
 [tool.poetry.group.lint.dependencies]
@@ -49,10 +45,13 @@ safety = "^3.2.0"
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
-pytest-mock = "^3.6.1"
+pytest-mock = "^3.14.0"
 
 [tool.poetry.group.types.dependencies]
 mypy = "^1.10.1"
+
+[tool.poetry.scripts]
+crategen = "crategen.cli:cli"
 
 [tool.bandit]
 skips = [
