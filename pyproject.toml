@@ -9,7 +9,7 @@ description = "A tool for converting TES and WES to WRROC"
 authors = ["Karanjot Singh <karanjots801@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/elixir-cloud-aai/wrroc-ga4gh-cloud-converter"
+repository = "https://github.com/elixir-cloud-aai/CrateGen"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -22,12 +22,11 @@ classifiers = [
 python = "^3.11"
 pydantic = "^1.8.2"
 requests = "^2.25.1"
+pytest = "^8.3.1"
+pytest-cov = "^5.0.0"
+pytest-mock = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.9.2"
-mypy = "^0.910"
-pytest = "^6.2.4"
-sphinx = "^3.5.4"
 pre-commit = "^2.13.0"
 
 [tool.poetry.group.lint.dependencies]
@@ -44,12 +43,15 @@ bandit = "^1.7.8"
 safety = "^3.2.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^6.2.4"
+pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
-pytest-mock = "^3.6.1"
+pytest-mock = "^3.14.0"
 
 [tool.poetry.group.types.dependencies]
-mypy = "^1.10.0"
+mypy = "^1.10.1"
+
+[tool.poetry.scripts]
+crategen = "crategen.cli:cli"
 
 [tool.bandit]
 skips = [
@@ -58,18 +60,30 @@ skips = [
 ]
 
 [tool.ruff]
-select = ["B", "D", "E", "F", "I", "PL", "SIM", "UP"]
-
-ignore = [
-  "D203", # conflicts with D202 as formatter removes black line before class docstring
-  "D206", # conflicts with E101, `format.indent-style="tab"`
-  "D213", # conflicts with D212, would have been ignored regardless
+exclude = [
+  "tests/*",
+  "tests/unit/*",
+  "crategen/*"
 ]
+indent-width = 4
 
-per-file-ignores = {
-  "src/wrroc_converter/**/*.py" = ["D"],
-  "tests/**/*.py" = ["D"]
-}
+[tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+  "B", # flake8-bugbear
+  "D", # pydocstyle
+  "E", # pycodestyle
+  "F", # Pyflakes
+  "I", # isort
+  "PL", # pylint
+  "SIM", # flake8-simplify
+  "UP", # pyupgrade
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

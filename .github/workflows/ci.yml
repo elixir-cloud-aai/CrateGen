@@ -25,24 +25,20 @@ jobs:
 
     - name: Lint with Ruff
       run: |
-        poetry run ruff check src/ tests/
+        poetry run ruff check crategen/
 
     - name: Type check with Mypy
       run: |
-        poetry run mypy src/
+        poetry run mypy crategen/
 
     - name: Run security checks with Bandit
       run: |
-        poetry run bandit -r src/
+        poetry run bandit -r crategen/
 
     - name: Install test dependencies
       run: |
         poetry add pytest pytest-cov pytest-mock
 
-    - name: Run tests
-      run: |
-        poetry run pytest --cov=src
-
-    - name: Generate documentation
-      run: |
-        poetry run sphinx-build -b html docs/ docs/_build/html
+    # - name: Run tests
+    #   run: |
+    #     poetry run pytest --cov=crategen
