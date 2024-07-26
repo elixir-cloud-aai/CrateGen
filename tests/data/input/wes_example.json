@@ -1,0 +1,12 @@
+{
+  "run_id": "run-id-1",
+  "run_log": {
+      "name": "example-run-1",
+      "start_time": "2023-07-10T14:30:00Z",
+      "end_time": "2023-07-10T15:30:00Z"
+  },
+  "state": "COMPLETED",
+  "outputs": [
+      {"location": "output-location-1", "name": "output-name-1"}
+  ]
+}

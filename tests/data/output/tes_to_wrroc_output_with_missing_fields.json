@@ -1,0 +1,10 @@
+{
+    "@id": "task-id-3",
+    "name": "example-task-3",
+    "description": "Example task description 3",
+    "instrument": "executor-image-3",
+    "object": [],
+    "result": [],
+    "startTime": "2023-07-12T12:00:00Z",
+    "endTime": "2023-07-12T12:30:00Z"
+}

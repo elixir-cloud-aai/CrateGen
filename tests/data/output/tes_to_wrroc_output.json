@@ -1,0 +1,24 @@
+{
+    "@id": "task-id-1",
+    "name": "example-task-1",
+    "description": "Example task description 1",
+    "instrument": "executor-image-1",
+    "object": [
+        {
+            "@id": "input-url-1",
+            "name": "input-path-1"
+        },
+        {
+            "@id": "input-url-2",
+            "name": "input-path-2"
+        }
+    ],
+    "result": [
+        {
+            "@id": "output-url-1",
+            "name": "output-path-1"
+        }
+    ],
+    "startTime": "2023-07-10T14:30:00Z",
+    "endTime": "2023-07-10T15:30:00Z"
+}
