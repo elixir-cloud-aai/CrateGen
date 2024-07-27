@@ -4,6 +4,11 @@ from .utils import convert_to_iso8601
 class TESConverter(AbstractConverter):
 
     def convert_to_wrroc(self, tes_data):
+        if not isinstance(tes_data.get("id"), str):
+            raise ValueError("Invalid id type")
+        if not isinstance(tes_data.get("name"), str):
+            raise ValueError("Invalid name type")
+        
         # Validate and extract data with defaults
         id = tes_data.get("id", "")
         name = tes_data.get("name", "")
@@ -12,7 +17,7 @@ class TESConverter(AbstractConverter):
         inputs = tes_data.get("inputs", [])
         outputs = tes_data.get("outputs", [])
         creation_time = tes_data.get("creation_time", "")
-        end_time = tes_data.get("logs", [{}])[0].get("end_time", "")  # Corrected to fetch from logs
+        end_time = tes_data.get("logs", [{}])[0].get("end_time", "")
 
         # Convert to WRROC
         wrroc_data = {
@@ -28,6 +33,11 @@ class TESConverter(AbstractConverter):
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
+        if not isinstance(wrroc_data.get("@id"), str):
+            raise ValueError("Invalid @id type")
+        if not isinstance(wrroc_data.get("name"), str):
+            raise ValueError("Invalid name type")
+
         # Validate and extract data with defaults
         id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")
@@ -37,7 +47,7 @@ class TESConverter(AbstractConverter):
         result_data = wrroc_data.get("result", [])
         start_time = wrroc_data.get("startTime", "")
         end_time = wrroc_data.get("endTime", "")
-
+        
         # Convert from WRROC to TES
         tes_data = {
             "id": id,
@@ -47,6 +57,6 @@ class TESConverter(AbstractConverter):
             "inputs": [{"url": obj.get("@id", ""), "path": obj.get("name", "")} for obj in object_data],
             "outputs": [{"url": res.get("@id", ""), "path": res.get("name", "")} for res in result_data],
             "creation_time": start_time,
-            "logs": [{"end_time": end_time}],  # Added to logs
+            "logs": [{"end_time": end_time}],
         }
         return tes_data

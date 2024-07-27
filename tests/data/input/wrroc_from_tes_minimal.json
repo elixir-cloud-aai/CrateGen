@@ -1,0 +1,30 @@
+{
+    "id": "task-id",
+    "name": "test-task",
+    "description": "test-description",
+    "executors": [
+      {
+        "image": "alpine:latest",
+        "command": ["sh", "-c", "echo 'Hello, World!' > /output/hello.txt"]
+      }
+    ],
+    "inputs": [
+      {
+        "url": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+        "path": "/input/README.md"
+      }
+    ],
+    "outputs": [
+      {
+        "url": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+        "path": "/output/LICENSE"
+      }
+    ],
+    "creation_time": "2024-07-10T14:30:00Z",
+    "logs": [
+      {
+        "end_time": "2024-07-10T15:30:00Z"
+      }
+    ]
+  }
+  

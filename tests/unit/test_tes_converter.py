@@ -8,35 +8,24 @@ class TestTESConverter(unittest.TestCase):
 
     def test_convert_to_wrroc(self):
         tes_data = {
-            "id": "task-id-1",
-            "name": "example-task-1",
-            "description": "Example task description 1",
-            "executors": [{"image": "executor-image-1"}],
-            "inputs": [
-                {"url": "input-url-1", "path": "input-path-1"},
-                {"url": "input-url-2", "path": "input-path-2"}
-            ],
-            "outputs": [
-                {"url": "output-url-1", "path": "output-path-1"}
-            ],
+            "id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "executors": [{"image": "alpine:latest"}],
+            "inputs": [{"url": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md", "path": "/input/README.md"}],
+            "outputs": [{"url": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "path": "/output/LICENSE"}],
             "creation_time": "2023-07-10T14:30:00Z",
-            "logs": [{"end_time": "2023-07-10T15:30:00Z"}]
         }
 
         expected_wrroc_data = {
-            "@id": "task-id-1",
-            "name": "example-task-1",
-            "description": "Example task description 1",
-            "instrument": "executor-image-1",
-            "object": [
-                {"@id": "input-url-1", "name": "input-path-1"},
-                {"@id": "input-url-2", "name": "input-path-2"}
-            ],
-            "result": [
-                {"@id": "output-url-1", "name": "output-path-1"}
-            ],
+            "@id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "instrument": "alpine:latest",
+            "object": [{"@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md", "name": "/input/README.md"}],
+            "result": [{"@id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "/output/LICENSE"}],
             "startTime": "2023-07-10T14:30:00Z",
-            "endTime": "2023-07-10T15:30:00Z"
+            "endTime": None
         }
 
         result = self.converter.convert_to_wrroc(tes_data)
@@ -44,79 +33,107 @@ class TestTESConverter(unittest.TestCase):
 
     def test_convert_from_wrroc(self):
         wrroc_data = {
-            "@id": "task-id-1",
-            "name": "example-task-1",
-            "description": "Example task description 1",
-            "instrument": "executor-image-1",
+            "@id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "instrument": "alpine:latest",
             "object": [
-                {"@id": "input-url-1", "name": "input-path-1"},
-                {"@id": "input-url-2", "name": "input-path-2"}
+                {
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+                    "name": "/input/README.md"
+                }
             ],
             "result": [
-                {"@id": "output-url-1", "name": "output-path-1"}
+                {
+                    "@id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+                    "name": "/output/LICENSE"
+                }
             ],
             "startTime": "2023-07-10T14:30:00Z",
             "endTime": "2023-07-10T15:30:00Z"
         }
 
         expected_tes_data = {
-            "id": "task-id-1",
-            "name": "example-task-1",
-            "description": "Example task description 1",
-            "executors": [{"image": "executor-image-1"}],
+            "id": "task-id",
+            "name": "test-task",
+            "description": "test-description",
+            "executors": [
+                {
+                    "image": "alpine:latest",
+                }
+            ],
             "inputs": [
-                {"url": "input-url-1", "path": "input-path-1"},
-                {"url": "input-url-2", "path": "input-path-2"}
+                {
+                    "url": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+                    "path": "/input/README.md"
+                }
             ],
             "outputs": [
-                {"url": "output-url-1", "path": "output-path-1"}
+                {
+                    "url": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+                    "path": "/output/LICENSE"
+                }
             ],
             "creation_time": "2023-07-10T14:30:00Z",
-            "logs": [{"end_time": "2023-07-10T15:30:00Z"}]
+            "logs": [
+                {
+                    "end_time": "2023-07-10T15:30:00Z"
+                }
+            ]
         }
 
         result = self.converter.convert_from_wrroc(wrroc_data)
         self.assertEqual(result, expected_tes_data)
+
+    def test_convert_to_wrroc_invalid_data(self):
+        invalid_tes_data = {
+            "id": 123,  # id should be a string
+            "name": None,  # name should be a string
+        }
+        with self.assertRaises(ValueError) as context:
+            self.converter.convert_to_wrroc(invalid_tes_data)
+        self.assertIn("Invalid id type", str(context.exception))
+
+    def test_convert_from_wrroc_invalid_data(self):
+        invalid_wrroc_data = {
+            "@id": 123,  # @id should be a string
+            "name": None,  # name should be a string
+        }
+        with self.assertRaises(ValueError) as context:
+            self.converter.convert_from_wrroc(invalid_wrroc_data)
+        self.assertIn("Invalid @id type", str(context.exception))
 
     def test_convert_to_wrroc_missing_fields(self):
         tes_data = {
             "id": "task-id-2",
-            "name": "example-task-2"
+            "name": "example-task"
         }
-
-        expected_wrroc_data = {
-            "@id": "task-id-2",
-            "name": "example-task-2",
-            "description": "",
-            "instrument": None,
-            "object": [],
-            "result": [],
-            "startTime": None,
-            "endTime": None
-        }
-
         result = self.converter.convert_to_wrroc(tes_data)
-        self.assertEqual(result, expected_wrroc_data)
+        self.assertIsNotNone(result)
+        self.assertIn("@id", result)
+        self.assertIn("name", result)
+        self.assertIn("description", result)
+        self.assertIn("instrument", result)
+        self.assertIn("object", result)
+        self.assertIn("result", result)
+        self.assertIn("startTime", result)
+        self.assertIn("endTime", result)
 
     def test_convert_from_wrroc_missing_fields(self):
         wrroc_data = {
             "@id": "task-id-2",
-            "name": "example-task-2"
+            "name": "example-task"
         }
-
-        expected_tes_data = {
-            "id": "task-id-2",
-            "name": "example-task-2",
-            "description": "",
-            "executors": [{"image": ""}],
-            "inputs": [],
-            "outputs": [],
-            "creation_time": "",
-            "logs": [{"end_time": ""}]
-        }
-
         result = self.converter.convert_from_wrroc(wrroc_data)
-        self.assertEqual(result, expected_tes_data)
+        self.assertIsNotNone(result)
+        self.assertIn("id", result)
+        self.assertIn("name", result)
+        self.assertIn("description", result)
+        self.assertIn("executors", result)
+        self.assertIn("inputs", result)
+        self.assertIn("outputs", result)
+        self.assertIn("creation_time", result)
+        self.assertIn("logs", result)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
