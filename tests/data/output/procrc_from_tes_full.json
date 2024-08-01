@@ -1,0 +1,20 @@
+{
+    "@id": "task-id-full",
+    "name": "test-task-full",
+    "description": "A full TES task example with all parameters",
+    "instrument": "ubuntu:20.04",
+    "object": [
+        {
+            "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+            "name": "/input/README.md"
+        }
+    ],
+    "result": [
+        {
+            "@id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+            "name": "/output/LICENSE"
+        }
+    ],
+    "startTime": "2024-07-10T14:00:00Z",
+    "endTime": "2024-07-10T15:30:00Z"
+}

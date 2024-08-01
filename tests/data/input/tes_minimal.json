@@ -1,0 +1,57 @@
+{
+    "id": "task-id",
+    "state": "COMPLETE",
+    "name": "test-task",
+    "description": "A minimal TES task example",
+    "inputs": [
+        {
+            "url": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+            "path": "/input/README.md"
+        }
+    ],
+    "outputs": [
+        {
+            "url": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+            "path": "/output/LICENSE",
+            "type": "FILE"
+        }
+    ],
+    "resources": {
+        "cpu_cores": 1,
+        "ram_gb": 2,
+        "disk_gb": 10
+    },
+    "executors": [
+        {
+            "image": "alpine:latest",
+            "command": [
+                "sh",
+                "-c",
+                "echo 'Hello, World!' > /output/hello.txt"
+            ],
+            "workdir": "/workspace",
+            "stdin": "/input/README.md",
+            "stdout": "/output/stdout.log",
+            "stderr": "/output/stderr.log",
+            "env": {
+                "MY_ENV_VAR": "value"
+            }
+        }
+    ],
+    "volumes": [
+        "/vol/A/"
+    ],
+    "tags": {
+        "WORKFLOW_ID": "workflow-12345"
+    },
+    "logs": [
+        {
+            "start_time": "2024-07-10T14:30:00Z",
+            "end_time": "2024-07-10T15:30:00Z",
+            "stdout": "/output/stdout.log",
+            "stderr": "/output/stderr.log",
+            "exit_code": 0
+        }
+    ],
+    "creation_time": "2024-07-10T14:00:00Z"
+}

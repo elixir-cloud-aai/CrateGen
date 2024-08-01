@@ -1,0 +1,15 @@
+{
+    "run_id": "run-id-1",
+    "state": "COMPLETED",
+    "run_log": {
+      "start_time": "2024-07-10T14:30:00Z",
+      "end_time": "2024-07-10T15:30:00Z"
+    },
+    "outputs": [
+      {
+        "location": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+        "name": "output-name"
+      }
+    ]
+  }
+  
