@@ -23,8 +23,15 @@ class WESConverter(AbstractConverter):
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
+        allowed_fields = set(WRROCDataWES.__fields__.keys())
+        unexpected_fields = set(wrroc_data.keys()) - allowed_fields
+
+        if unexpected_fields:
+            raise ValueError(f"Unexpected fields in WRROC data: {unexpected_fields}")
+
         try:
-            wrroc_model = WRROCDataWES(**wrroc_data)
+            wrroc_filtered_data = {key: wrroc_data.get(key) for key in WRROCDataWES.__fields__}
+            wrroc_model = WRROCDataWES(**wrroc_filtered_data)
         except ValidationError as e:
             raise ValueError(f"Invalid WRROC data: {e}")
 

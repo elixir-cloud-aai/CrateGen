@@ -25,7 +25,9 @@ class TESConverter(AbstractConverter):
 
     def convert_from_wrroc(self, wrroc_data):
         try:
-            validated_wrroc_data = WRROCData(**wrroc_data)
+            # Filter only the fields relevant to WRROCData
+            wrroc_filtered_data = {key: wrroc_data.get(key) for key in WRROCData.__fields__ if key in wrroc_data}
+            validated_wrroc_data = WRROCData(**wrroc_filtered_data)
         except ValidationError as e:
             raise ValueError(f"Invalid WRROC data: {e}")
 

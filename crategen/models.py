@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, validator,root_validator
-from typing import List, Optional, Dict, Any
+from pydantic import BaseModel, Field, validator, root_validator
+from typing import List, Optional, Dict
 
 class Executor(BaseModel):
     image: str
@@ -26,28 +26,38 @@ class TESData(BaseModel):
     creation_time: str
     logs: List[TESLogs]
 
+    class Config:
+        extra = "forbid"
+
 class WESRunLog(BaseModel):
     name: Optional[str] = None
     start_time: Optional[str] = None
     end_time: Optional[str] = None
+    cmd: Optional[List[str]] = None
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+    exit_code: Optional[int] = None
 
 class WESOutputs(BaseModel):
     location: str
     name: str
 
+class WESRequest(BaseModel):
+    workflow_params: Dict[str, str]
+    workflow_type: str
+    workflow_type_version: str
+    tags: Optional[Dict[str, str]] = None
+
 class WESData(BaseModel):
     run_id: str
-    run_log: WESRunLog
+    request: WESRequest
     state: str
+    run_log: WESRunLog
+    task_logs: Optional[List[WESRunLog]] = None
     outputs: List[WESOutputs]
 
-    @root_validator(pre=True)
-    def check_unexpected_fields(cls, values):
-        allowed_fields = {"run_id", "run_log", "state", "outputs"}
-        unexpected = set(values.keys()) - allowed_fields
-        if unexpected:
-            raise ValueError(f"Unexpected fields: {unexpected}")
-        return values
+    class Config:
+        extra = "forbid"
 
 class WRROCInputs(BaseModel):
     id: str
@@ -67,17 +77,8 @@ class WRROCData(BaseModel):
     startTime: Optional[str] = None
     endTime: Optional[str] = None
 
-    @validator('id')
-    def id_must_be_string(cls, value):
-        if not isinstance(value, str):
-            raise ValueError('Invalid id type')
-        return value
-
-    @validator('name')
-    def name_must_be_string(cls, value):
-        if not isinstance(value, str):
-            raise ValueError('Invalid name type')
-        return value
+    class Config:
+        extra = "forbid"
 
 class WRROCDataWES(BaseModel):
     id: str
@@ -87,10 +88,5 @@ class WRROCDataWES(BaseModel):
     startTime: Optional[str] = None
     endTime: Optional[str] = None
 
-    @root_validator(pre=True)
-    def check_unexpected_fields(cls, values):
-        allowed_fields = {"id", "name", "startTime", "endTime", "status", "result"}
-        unexpected = set(values.keys()) - allowed_fields
-        if unexpected:
-            raise ValueError(f"Unexpected fields: {unexpected}")
-        return values
+    class Config:
+        extra = "forbid"

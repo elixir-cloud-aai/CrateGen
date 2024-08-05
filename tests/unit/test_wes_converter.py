@@ -60,7 +60,7 @@ class TestWESConverter(unittest.TestCase):
         }
         with self.assertRaises(ValueError) as context:
             self.converter.convert_from_wrroc(wrroc_data)
-        self.assertIn("Invalid WRROC data", str(context.exception))
+        self.assertIn("Unexpected fields in WRROC data", str(context.exception))
 
     def test_convert_from_wrroc_missing_fields(self):
         wrroc_data = {

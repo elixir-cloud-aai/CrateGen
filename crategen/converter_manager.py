@@ -11,3 +11,9 @@ class ConverterManager:
 
     def convert_wes_to_wrroc(self, wes_data):
         return self.wes_converter.convert_to_wrroc(wes_data)
+
+    def convert_wrroc_to_tes(self, wrroc_data):
+        return self.tes_converter.convert_from_wrroc(wrroc_data)
+
+    def convert_wrroc_to_wes(self, wrroc_data):
+        return self.wes_converter.convert_from_wrroc(wrroc_data)

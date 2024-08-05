@@ -1,7 +1,7 @@
 {
     "@id": "run-id-1",
     "name": "example-run",
-    "status": "COMPLETED",
+    "status": "COMPLETE",
     "startTime": "2024-07-10T14:30:00Z",
     "endTime": "2024-07-10T15:30:00Z",
     "result": [
