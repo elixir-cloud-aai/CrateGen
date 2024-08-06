@@ -1,52 +1,43 @@
+from pydantic import ValidationError
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
+from ..models import TESData
+from ..validators import validate_wrroc_tes
 
 class TESConverter(AbstractConverter):
 
-    def convert_to_wrroc(self, tes_data):
-        # Validate and extract data with defaults
-        id = tes_data.get("id", "")
-        name = tes_data.get("name", "")
-        description = tes_data.get("description", "")
-        executors = tes_data.get("executors", [{}])
-        inputs = tes_data.get("inputs", [])
-        outputs = tes_data.get("outputs", [])
-        creation_time = tes_data.get("creation_time", "")
-        end_time = tes_data.get("logs", [{}])[0].get("end_time", "")  # Corrected to fetch from logs
+    def convert_to_wrroc(self, tes_data: dict) -> dict:
+        try:
+            validated_tes_data = TESData(**tes_data)
+        except ValidationError as e:
+            raise ValueError(f"Invalid TES data: {e}")
 
-        # Convert to WRROC
         wrroc_data = {
-            "@id": id,
-            "name": name,
-            "description": description,
-            "instrument": executors[0].get("image", None) if executors else None,
-            "object": [{"@id": input.get("url", ""), "name": input.get("path", "")} for input in inputs],
-            "result": [{"@id": output.get("url", ""), "name": output.get("path", "")} for output in outputs],
-            "startTime": convert_to_iso8601(creation_time),
-            "endTime": convert_to_iso8601(end_time),
+            "@id": validated_tes_data.id,
+            "name": validated_tes_data.name,
+            "description": validated_tes_data.description,
+            "instrument": validated_tes_data.executors[0].image if validated_tes_data.executors else None,
+            "object": [{"@id": input.url, "name": input.path} for input in validated_tes_data.inputs],
+            "result": [{"@id": output.url, "name": output.path} for output in validated_tes_data.outputs],
+            "startTime": convert_to_iso8601(validated_tes_data.creation_time),
+            "endTime": convert_to_iso8601(validated_tes_data.logs[0].end_time) if validated_tes_data.logs else None,
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data):
-        # Validate and extract data with defaults
-        id = wrroc_data.get("@id", "")
-        name = wrroc_data.get("name", "")
-        description = wrroc_data.get("description", "")
-        instrument = wrroc_data.get("instrument", "")
-        object_data = wrroc_data.get("object", [])
-        result_data = wrroc_data.get("result", [])
-        start_time = wrroc_data.get("startTime", "")
-        end_time = wrroc_data.get("endTime", "")
+    def convert_from_wrroc(self, data: dict) -> dict:
+        try:
+            data_validated = validate_wrroc_tes(data)
+        except ValidationError as e:
+            raise ValueError(f"Invalid WRROC data: {e}")
 
-        # Convert from WRROC to TES
         tes_data = {
-            "id": id,
-            "name": name,
-            "description": description,
-            "executors": [{"image": instrument}],
-            "inputs": [{"url": obj.get("@id", ""), "path": obj.get("name", "")} for obj in object_data],
-            "outputs": [{"url": res.get("@id", ""), "path": res.get("name", "")} for res in result_data],
-            "creation_time": start_time,
-            "logs": [{"end_time": end_time}],  # Added to logs
+            "id": data_validated.id,
+            "name": data_validated.name,
+            "description": data_validated.description,
+            "executors": [{"image": data_validated.instrument}],
+            "inputs": [{"url": obj.id, "path": obj.name} for obj in data_validated.object],
+            "outputs": [{"url": res.id, "path": res.name} for res in data_validated.result],
+            "creation_time": data_validated.startTime,
+            "logs": [{"end_time": data_validated.endTime}],
         }
         return tes_data

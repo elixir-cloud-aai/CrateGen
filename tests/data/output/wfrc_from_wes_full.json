@@ -1,0 +1,13 @@
+{
+    "@id": "run-id-1",
+    "name": "example-run",
+    "status": "COMPLETE",
+    "startTime": "2024-07-10T14:30:00Z",
+    "endTime": "2024-07-10T15:30:00Z",
+    "result": [
+        {
+            "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+            "name": "output-name"
+        }
+    ]
+}

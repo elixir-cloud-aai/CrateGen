@@ -1,0 +1,66 @@
+{
+    "id": "task-id-full",
+    "state": "COMPLETE",
+    "name": "test-task-full",
+    "description": "A full TES task example with all parameters",
+    "inputs": [
+        {
+            "url": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+            "path": "/input/README.md"
+        }
+    ],
+    "outputs": [
+        {
+            "url": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE",
+            "path": "/output/LICENSE",
+            "type": "FILE"
+        }
+    ],
+    "resources": {
+        "cpu_cores": 4,
+        "ram_gb": 8,
+        "disk_gb": 100,
+        "preemptible": "True",
+        "zones": ["us-west1", "us-central1"]
+    },
+    "executors": [
+        {
+            "image": "ubuntu:20.04",
+            "command": [
+                "bash",
+                "-c",
+                "cp /input/README.md /output/"
+            ],
+            "workdir": "/workspace",
+            "stdin": "/input/README.md",
+            "stdout": "/output/stdout.log",
+            "stderr": "/output/stderr.log",
+            "env": {
+                "MY_ENV_VAR": "value",
+                "ANOTHER_ENV_VAR": "another_value"
+            }
+        }
+    ],
+    "volumes": [
+        "/vol/A/",
+        "/vol/B/"
+    ],
+    "tags": {
+        "WORKFLOW_ID": "workflow-67890",
+        "PROJECT_ID": "project-12345"
+    },
+    "logs": [
+        {
+            "start_time": "2024-07-10T14:30:00Z",
+            "end_time": "2024-07-10T15:30:00Z",
+            "stdout": "/output/stdout.log",
+            "stderr": "/output/stderr.log",
+            "exit_code": 0,
+            "metadata": {
+                "host": "worker-001",
+                "task_id": "task-id-full-log"
+            }
+        }
+    ],
+    "creation_time": "2024-07-10T14:00:00Z"
+}

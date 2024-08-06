@@ -1,0 +1,30 @@
+{
+    "id": "example-wrroc-id",
+    "name": "example-wrroc",
+    "description": "This is an example WRROC full dataset",
+    "instrument": "example-instrument",
+    "object": [
+      {
+        "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+        "name": "input-name-1"
+      },
+      {
+        "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+        "name": "input-name-2"
+      }
+    ],
+    "result": [
+      {
+        "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+        "name": "output-name-1"
+      },
+      {
+        "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+        "name": "output-name-2"
+      }
+    ],
+    "startTime": "2024-07-10T14:30:00Z",
+    "endTime": "2024-07-10T15:30:00Z",
+    "status": "COMPLETED"
+  }
+  

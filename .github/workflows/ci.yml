@@ -25,7 +25,7 @@ jobs:
 
     - name: Lint with Ruff
       run: |
-        poetry run ruff check crategen/
+        poetry run ruff check crategen/ tests/
 
     - name: Type check with Mypy
       run: |
@@ -39,6 +39,6 @@ jobs:
       run: |
         poetry add pytest pytest-cov pytest-mock
 
-    # - name: Run tests
-    #   run: |
-    #     poetry run pytest --cov=crategen
+    - name: Run tests
+      run: |
+        poetry run pytest --cov=crategen
