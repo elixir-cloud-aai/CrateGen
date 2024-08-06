@@ -1,7 +1,6 @@
 import unittest
 from crategen.converters.wes_converter import WESConverter
 
-
 class TestWESConverter(unittest.TestCase):
     def setUp(self):
         self.converter = WESConverter()
@@ -60,7 +59,7 @@ class TestWESConverter(unittest.TestCase):
         }
         with self.assertRaises(ValueError) as context:
             self.converter.convert_from_wrroc(wrroc_data)
-        self.assertIn("Unexpected fields in WRROC data", str(context.exception))
+        self.assertIn("extra fields not permitted", str(context.exception))
 
     def test_convert_from_wrroc_missing_fields(self):
         wrroc_data = {
@@ -91,7 +90,6 @@ class TestWESConverter(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             self.converter.convert_to_wrroc(wes_data)
         self.assertIn("Invalid WES data", str(context.exception))
-
 
 if __name__ == "__main__":
     unittest.main()

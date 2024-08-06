@@ -1,11 +1,12 @@
 from pydantic import ValidationError
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
-from ..models import TESData, WRROCData
+from ..models import TESData, WRROCDataTES
+from ..validators import validate_wrroc_tes
 
 class TESConverter(AbstractConverter):
 
-    def convert_to_wrroc(self, tes_data):
+    def convert_to_wrroc(self, tes_data: dict) -> dict:
         try:
             validated_tes_data = TESData(**tes_data)
         except ValidationError as e:
@@ -23,22 +24,22 @@ class TESConverter(AbstractConverter):
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data):
+    def convert_from_wrroc(self, data: dict) -> dict:
         try:
-            # Filter only the fields relevant to WRROCData
-            wrroc_filtered_data = {key: wrroc_data.get(key) for key in WRROCData.__fields__ if key in wrroc_data}
-            validated_wrroc_data = WRROCData(**wrroc_filtered_data)
+            data_validated = validate_wrroc_tes(data)
+            data_filtered = {key: data.get(key) for key in WRROCDataTES.__fields__ if key in data}
+            data_validated = WRROCDataTES(**data_filtered)
         except ValidationError as e:
             raise ValueError(f"Invalid WRROC data: {e}")
 
         tes_data = {
-            "id": validated_wrroc_data.id,
-            "name": validated_wrroc_data.name,
-            "description": validated_wrroc_data.description,
-            "executors": [{"image": validated_wrroc_data.instrument}],
-            "inputs": [{"url": obj.id, "path": obj.name} for obj in validated_wrroc_data.object],
-            "outputs": [{"url": res.id, "path": res.name} for res in validated_wrroc_data.result],
-            "creation_time": validated_wrroc_data.startTime,
-            "logs": [{"end_time": validated_wrroc_data.endTime}],
+            "id": data_validated.id,
+            "name": data_validated.name,
+            "description": data_validated.description,
+            "executors": [{"image": data_validated.instrument}],
+            "inputs": [{"url": obj.id, "path": obj.name} for obj in data_validated.object],
+            "outputs": [{"url": res.id, "path": res.name} for res in data_validated.result],
+            "creation_time": data_validated.startTime,
+            "logs": [{"end_time": data_validated.endTime}],
         }
         return tes_data
