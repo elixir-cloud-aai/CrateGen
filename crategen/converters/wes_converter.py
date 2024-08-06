@@ -1,8 +1,8 @@
 from pydantic import ValidationError
 from .abstract_converter import AbstractConverter
-from ..models import WESData, WRROCDataWES
+from ..models import WESData
 from .utils import convert_to_iso8601
-from ..validators import validate_wrroc
+from ..validators import validate_wrroc_wes
 
 class WESConverter(AbstractConverter):
 
@@ -26,11 +26,7 @@ class WESConverter(AbstractConverter):
 
     def convert_from_wrroc(self, data: dict) -> dict:
         try:
-            data_validated = validate_wrroc(data, WRROCDataWES)
-            allowed_fields = set(WRROCDataWES.__fields__.keys())
-            unexpected_fields = set(data.keys()) - allowed_fields
-            if unexpected_fields:
-                raise ValueError(f"Unexpected fields in WRROC data: {unexpected_fields}")
+            data_validated = validate_wrroc_wes(data)
         except ValidationError as e:
             raise ValueError(f"Invalid WRROC data: {e}")
 

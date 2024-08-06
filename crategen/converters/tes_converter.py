@@ -1,7 +1,7 @@
 from pydantic import ValidationError
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
-from ..models import TESData, WRROCDataTES
+from ..models import TESData
 from ..validators import validate_wrroc_tes
 
 class TESConverter(AbstractConverter):
@@ -27,8 +27,6 @@ class TESConverter(AbstractConverter):
     def convert_from_wrroc(self, data: dict) -> dict:
         try:
             data_validated = validate_wrroc_tes(data)
-            data_filtered = {key: data.get(key) for key in WRROCDataTES.__fields__ if key in data}
-            data_validated = WRROCDataTES(**data_filtered)
         except ValidationError as e:
             raise ValueError(f"Invalid WRROC data: {e}")
 
