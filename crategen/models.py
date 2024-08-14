@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 
 
@@ -172,9 +172,9 @@ class WRROCOutputs(BaseModel):
     name: str
 
 
-class WRROCData(BaseModel):
+class WRROCDataBase(BaseModel):
     """
-    A model representing a WRROC entity.
+    A base model representing common fields for WRROC entities.
 
     Attributes:
         id (str): The unique identifier for the WRROC entity.
@@ -199,20 +199,27 @@ class WRROCData(BaseModel):
         extra = "forbid"
 
 
-class WRROCDataTES(WRROCData):
+class WRROCData(WRROCDataBase):
     """
-    A model representing WRROC data specifically for TES conversion.
-
-    This model inherits from WRROCData and includes all the necessary fields required for TES conversion.
+    A model representing a WRROC entity, inheriting from WRROCDataBase.
     """
     pass
 
 
-class WRROCDataWES(WRROCData):
+class WRROCDataTES(WRROCDataBase):
+    """
+    A model representing WRROC data specifically for TES conversion.
+    
+    This model inherits from WRROCDataBase and includes all the necessary fields required for TES conversion.
+    """
+    pass
+
+
+class WRROCDataWES(WRROCDataBase):
     """
     A model representing WRROC data specifically for WES conversion.
 
-    This model inherits from WRROCData and includes additional fields required for WES conversion.
+    This model inherits from WRROCDataBase and includes additional fields required for WES conversion.
     """
     status: str
 
@@ -237,7 +244,7 @@ class WRROCProcess(BaseModel):
     object: Optional[list[dict[str, str]]] = None
 
     class Config:
-        extra = "allow"
+        extra = "forbid"
 
 
 class WRROCWorkflow(WRROCProcess):
@@ -254,7 +261,7 @@ class WRROCWorkflow(WRROCProcess):
     result: Optional[list[dict[str, str]]] = None
 
     class Config:
-        extra = "allow"
+        extra = "forbid"
 
 
 class WRROCProvenance(WRROCWorkflow):
@@ -269,4 +276,4 @@ class WRROCProvenance(WRROCWorkflow):
     agents: Optional[list[dict[str, str]]] = None
 
     class Config:
-        extra = "allow"
+        extra = "forbid"

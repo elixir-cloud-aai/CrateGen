@@ -1,10 +1,9 @@
 from pydantic import ValidationError
-from typing import Dict, Union
-
-# Import the WRROC models
+from typing import Union
 from .models import WRROCProcess, WRROCWorkflow, WRROCProvenance
+from urllib.parse import urlparse
 
-def validate_wrroc(data: Dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCProcess]:
+def validate_wrroc(data: dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCProcess]:
     """
     Validate that the input data is a valid WRROC entity and determine which profile it adheres to.
     
@@ -13,7 +12,7 @@ def validate_wrroc(data: Dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCPro
     If that also fails, it finally attempts validation against the WRROCProcess model.
     
     Args:
-        data (Dict): The input data to validate.
+        data (dict): The input data to validate.
     
     Returns:
         Union[WRROCProvenance, WRROCWorkflow, WRROCProcess]: The validated WRROC data, indicating the highest profile the data adheres to.
@@ -25,18 +24,25 @@ def validate_wrroc(data: Dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCPro
     if '@id' in data:
         data['id'] = data.pop('@id')
 
+    errors = []
+
     try:
         return WRROCProvenance(**data)
-    except ValidationError:
-        try:
-            return WRROCWorkflow(**data)
-        except ValidationError:
-            try:
-                return WRROCProcess(**data)
-            except ValidationError as e:
-                raise ValueError(f"Invalid WRROC data: {e}")
+    except ValidationError as e:
+        errors.extend(e.errors())
 
-def validate_wrroc_tes(data: Dict) -> WRROCProcess:
+    try:
+        return WRROCWorkflow(**data)
+    except ValidationError as e:
+        errors.extend(e.errors())
+
+    try:
+        return WRROCProcess(**data)
+    except ValidationError as e:
+        errors.extend(e.errors())
+        raise ValueError(f"Invalid WRROC data: {errors}")
+
+def validate_wrroc_tes(data: dict) -> WRROCProcess:
     """
     Validate that the input data contains the fields required for WRROC to TES conversion.
 
@@ -44,7 +50,7 @@ def validate_wrroc_tes(data: Dict) -> WRROCProcess:
     Then it checks that the data contains all necessary fields for TES conversion.
 
     Args:
-        data (Dict): The input data to validate.
+        data (dict): The input data to validate.
 
     Returns:
         WRROCProcess: The validated WRROC data that is suitable for TES conversion.
@@ -55,21 +61,22 @@ def validate_wrroc_tes(data: Dict) -> WRROCProcess:
     validated_data = validate_wrroc(data)
     required_fields = ["id", "name", "object", "result"]
 
-    for field in required_fields:
-        if not getattr(validated_data, field, None):
-            raise ValueError(f"Missing required field for TES conversion: {field}")
+    missing_fields = [field for field in required_fields if getattr(validated_data, field) is None]
+
+    if missing_fields:
+        raise ValueError(f"Missing required field(s) for TES conversion: {', '.join(missing_fields)}")
 
     return validated_data
 
-def validate_wrroc_wes(data: Dict) -> WRROCWorkflow:
+def validate_wrroc_wes(data: dict) -> WRROCWorkflow:
     """
     Validate that the input data contains the fields required for WRROC to WES conversion.
 
-    This function first validates that the data is a valid WRROC entity by calling `validate_wrroc`.
+    This function first validates that the data is a valid WRROCWorkflow entity by calling `validate_wrroc`.
     Then it checks that the data contains all necessary fields for WES conversion.
 
     Args:
-        data (Dict): The input data to validate.
+        data (dict): The input data to validate.
 
     Returns:
         WRROCWorkflow: The validated WRROC data that is suitable for WES conversion.
@@ -78,17 +85,25 @@ def validate_wrroc_wes(data: Dict) -> WRROCWorkflow:
         ValueError: If the data is not valid WRROC data or does not contain the necessary fields for WES conversion.
     """
     validated_data = validate_wrroc(data)
-    
-    # Check for unexpected fields
-    allowed_fields = {"id", "name", "status", "workflowType", "workflowVersion", "result", "startTime", "endTime"}
-    unexpected_fields = set(data.keys()) - allowed_fields
-    if unexpected_fields:
-        raise ValueError(f"Unexpected fields in WRROC data: {unexpected_fields}")
-    
+
+    if not isinstance(validated_data, WRROCWorkflow):
+        raise ValueError("The validated data is not a WRROCWorkflow entity.")
+
     required_fields = ["id", "name", "workflowType", "workflowVersion", "result"]
-    for field in required_fields:
-        if not getattr(validated_data, field, None):
-            raise ValueError(f"Missing required field for WES conversion: {field}")
+
+    missing_fields = [field for field in required_fields if getattr(validated_data, field) is None]
+
+    if missing_fields:
+        raise ValueError(f"Missing required field(s) for WES conversion: {', '.join(missing_fields)}")
+
+    # Validate URLs in the result field, only if result is not None
+    if validated_data.result is not None:
+        for result in validated_data.result:
+            url = result['id']
+            parsed_url = urlparse(url)
+            if not all([parsed_url.scheme, parsed_url.netloc]):
+                raise ValueError(f"Invalid URL in result: {url}")
 
     return validated_data
+
 

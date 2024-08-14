@@ -25,6 +25,18 @@ class TestWRROCModels(unittest.TestCase):
         self.assertEqual(model.id, "process-id")
         self.assertEqual(model.name, "Test Process")
 
+    def test_wrroc_process_empty_object_list(self):
+        """
+        Test that the WRROCProcess model handles empty object lists correctly.
+        """
+        data = {
+            "id": "process-id",
+            "name": "Test Process",
+            "object": []
+        }
+        model = WRROCProcess(**data)
+        self.assertEqual(model.object, [])
+
     def test_wrroc_workflow_model(self):
         """
         Test that the WRROCWorkflow model correctly validates data and includes additional workflow fields.
@@ -40,6 +52,18 @@ class TestWRROCModels(unittest.TestCase):
         self.assertEqual(model.workflowType, "CWL")
         self.assertEqual(model.result[0]['name'], "Output 1")
 
+    def test_wrroc_workflow_missing_optional_fields(self):
+        """
+        Test that the WRROCWorkflow model handles missing optional fields correctly.
+        """
+        data = {
+            "id": "workflow-id",
+            "name": "Test Workflow"
+        }
+        model = WRROCWorkflow(**data)
+        self.assertIsNone(model.workflowType)
+        self.assertIsNone(model.workflowVersion)
+
     def test_wrroc_provenance_model(self):
         """
         Test that the WRROCProvenance model correctly validates data and includes additional provenance fields.
@@ -53,6 +77,18 @@ class TestWRROCModels(unittest.TestCase):
         model = WRROCProvenance(**data)
         self.assertEqual(model.provenanceData, "Provenance information")
         self.assertEqual(model.agents[0]['name'], "Agent 1")
+
+    def test_wrroc_provenance_empty_agents_list(self):
+        """
+        Test that the WRROCProvenance model handles empty agents lists correctly.
+        """
+        data = {
+            "id": "provenance-id",
+            "name": "Test Provenance",
+            "agents": []
+        }
+        model = WRROCProvenance(**data)
+        self.assertEqual(model.agents, [])
 
     def test_wrroc_process_invalid_data(self):
         """
@@ -130,6 +166,19 @@ class TestWRROCValidators(unittest.TestCase):
         self.assertEqual(model.id, "process-id")
         self.assertEqual(model.name, "Test Process")
 
+    def test_validate_wrroc_tes_empty_object_list(self):
+        """
+        Test that validate_wrroc_tes correctly validates a WRROC entity with an empty object list for TES conversion.
+        """
+        data = {
+            "id": "process-id",
+            "name": "Test Process",
+            "object": [],
+            "result": [{"id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "Output 1"}]
+        }
+        model = validate_wrroc_tes(data)
+        self.assertEqual(model.object, [])
+
     def test_validate_wrroc_tes_missing_fields(self):
         """
         Test that validate_wrroc_tes raises a ValueError if required fields for TES conversion are missing.
@@ -155,6 +204,21 @@ class TestWRROCValidators(unittest.TestCase):
         model = validate_wrroc_wes(data)
         self.assertEqual(model.workflowType, "CWL")
         self.assertEqual(model.workflowVersion, "v1.0")
+
+    def test_validate_wrroc_wes_invalid_url(self):
+        """
+        Test that validate_wrroc_wes raises a ValueError if a result URL is invalid.
+        """
+        data = {
+            "id": "workflow-id",
+            "name": "Test Workflow",
+            "workflowType": "CWL",
+            "workflowVersion": "v1.0",
+            "result": [{"id": "invalid_url", "name": "Output 1"}]
+        }
+        with self.assertRaises(ValueError):
+            validate_wrroc_wes(data)
+
 
     def test_validate_wrroc_wes_missing_fields(self):
         """
