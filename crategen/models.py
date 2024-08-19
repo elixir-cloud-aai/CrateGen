@@ -1,83 +1,147 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, AnyUrl, Field, root_validator
 from typing import Optional
 
 
 class Executor(BaseModel):
     """
-    A model representing an executor in the Task Execution Service (TES).
+    Represents an executor in the Task Execution Service (TES).
 
     Attributes:
         image (str): The Docker image to be used.
         command (list[str]): The command to be executed.
+        workdir (Optional[str]): The working directory for the command.
+        stdout (Optional[str]): The path to the stdout log.
+        stderr (Optional[str]): The path to the stderr log.
+        stdin (Optional[str]): The path to the stdin input.
+        env (Optional[dict[str, str]]): Environment variables for the command.
     """
     image: str
     command: list[str]
+    workdir: Optional[str] = None
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+    stdin: Optional[str] = None
+    env: Optional[dict[str, str]] = None
+
+
+class TESResources(BaseModel):
+    """
+    Represents the resources required by a TES task.
+
+    Attributes:
+        cpu_cores (Optional[int]): The number of CPU cores required.
+        preemptible (Optional[bool]): Whether the task can run on preemptible instances.
+        ram_gb (Optional[float]): The amount of RAM in GB required.
+        disk_gb (Optional[float]): The amount of disk space in GB required.
+        zones (Optional[list[str]]): The zones where the task can run.
+    """
+    cpu_cores: Optional[int] = None
+    preemptible: Optional[bool] = None
+    ram_gb: Optional[float] = None
+    disk_gb: Optional[float] = None
+    zones: Optional[list[str]] = None
 
 
 class TESInputs(BaseModel):
     """
-    A model representing input files in TES.
+    Represents input files in TES.
 
     Attributes:
-        url (str): The URL of the input file.
+        name (Optional[str]): The name of the input file.
+        description (Optional[str]): A brief description of the input.
+        url (AnyUrl): The URL of the input file.
         path (str): The path where the input file should be placed.
+        type (Optional[str]): The type of input (e.g., FILE, DIRECTORY).
+        content (Optional[str]): The content of the input file, if provided inline.
     """
-    url: str
+    name: Optional[str] = None
+    description: Optional[str] = None
+    url: AnyUrl
     path: str
+    type: Optional[str] = None
+    content: Optional[str] = None
 
 
 class TESOutputs(BaseModel):
     """
-    A model representing output files in TES.
+    Represents output files in TES.
 
     Attributes:
-        url (str): The URL of the output file.
+        name (Optional[str]): The name of the output file.
+        description (Optional[str]): A brief description of the output.
+        url (AnyUrl): The URL of the output file.
         path (str): The path where the output file is stored.
+        type (Optional[str]): The type of output (e.g., FILE, DIRECTORY).
     """
-    url: str
+    name: Optional[str] = None
+    description: Optional[str] = None
+    url: AnyUrl
     path: str
+    type: Optional[str] = None
 
 
 class TESLogs(BaseModel):
     """
-    A model representing logs in TES.
+    Represents logs in TES.
 
     Attributes:
+        start_time (Optional[str]): The time the task started.
         end_time (Optional[str]): The time the task ended.
+        stdout (Optional[str]): The path to the stdout log.
+        stderr (Optional[str]): The path to the stderr log.
+        exit_code (Optional[int]): The exit code of the task.
+        host_ip (Optional[str]): The IP address of the host running the task.
+        metadata (Optional[dict[str, str]]): Additional metadata associated with the task.
     """
+    start_time: Optional[str] = None
     end_time: Optional[str] = None
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+    exit_code: Optional[int] = None
+    host_ip: Optional[str] = None
+    metadata: Optional[dict[str, str]] = None
 
 
 class TESData(BaseModel):
     """
-    A model representing a TES task.
+    Represents a TES task.
 
     Attributes:
         id (str): The unique identifier for the TES task.
-        name (str): The name of the TES task.
+        name (Optional[str]): The name of the TES task.
         description (Optional[str]): A brief description of the TES task.
-        executors (list[Executor]): The executors associated with the TES task.
+        creation_time (Optional[str]): The time the task was created.
+        state (Optional[str]): The current state of the task.
         inputs (list[TESInputs]): The inputs to the TES task.
         outputs (list[TESOutputs]): The outputs of the TES task.
-        creation_time (str): The time the task was created.
-        logs (list[TESLogs]): Logs associated with the TES task.
+        executors (list[Executor]): The executors associated with the TES task.
+        resources (Optional[TESResources]): The resources required by the TES task.
+        volumes (Optional[list[str]]): The volumes to be mounted in the task.
+        logs (Optional[list[TESLogs]]): Logs associated with the TES task.
+        tags (Optional[dict[str, str]]): Tags associated with the task.
+        error (Optional[dict[str, str]]): Error information if the task failed.
     """
     id: str
-    name: str
-    description: Optional[str] = ""
-    executors: list[Executor]
+    name: Optional[str] = None
+    description: Optional[str] = None
+    creation_time: Optional[str] = None
+    state: Optional[str] = None
     inputs: list[TESInputs]
     outputs: list[TESOutputs]
-    creation_time: str
-    logs: list[TESLogs]
+    executors: list[Executor]
+    resources: Optional[TESResources] = None
+    volumes: Optional[list[str]] = None
+    logs: Optional[list[TESLogs]] = None
+    tags: Optional[dict[str, str]] = None
+    error: Optional[dict[str, str]] = None
 
     class Config:
-        extra = "forbid"
+        extra = "allow"
 
 
 class WESRunLog(BaseModel):
     """
-    A model representing a run log in the Workflow Execution Service (WES).
+    Represents a run log in the Workflow Execution Service (WES).
 
     Attributes:
         name (Optional[str]): The name of the run.
@@ -87,6 +151,7 @@ class WESRunLog(BaseModel):
         stdout (Optional[str]): The path to the stdout log.
         stderr (Optional[str]): The path to the stderr log.
         exit_code (Optional[int]): The exit code of the run.
+        tes_logs_url (Optional[str]): The URL of the TES logs.
     """
     name: Optional[str] = None
     start_time: Optional[str] = None
@@ -95,11 +160,12 @@ class WESRunLog(BaseModel):
     stdout: Optional[str] = None
     stderr: Optional[str] = None
     exit_code: Optional[int] = None
+    tes_logs_url: Optional[str] = None
 
 
 class WESOutputs(BaseModel):
     """
-    A model representing output files in WES.
+    Represents output files in WES.
 
     Attributes:
         location (str): The URL of the output file.
@@ -111,7 +177,7 @@ class WESOutputs(BaseModel):
 
 class WESRequest(BaseModel):
     """
-    A model representing a workflow request in WES.
+    Represents a workflow request in WES.
 
     Attributes:
         workflow_params (dict[str, str]): The parameters for the workflow.
@@ -127,7 +193,7 @@ class WESRequest(BaseModel):
 
 class WESData(BaseModel):
     """
-    A model representing a WES run.
+    Represents a WES run.
 
     Attributes:
         run_id (str): The unique identifier for the WES run.
@@ -141,12 +207,17 @@ class WESData(BaseModel):
     request: WESRequest
     state: str
     run_log: WESRunLog
-    task_logs: Optional[list[WESRunLog]] = None
+    task_logs: Optional[list[WESRunLog]] = Field(None, description="This field is deprecated. Use tes_logs_url instead.")
     outputs: list[WESOutputs]
 
     class Config:
-        extra = "forbid"
-
+        extra = "allow"
+        
+    @root_validator
+    def check_deprecated_fields(cls, values):
+        if values.get('task_logs') is not None:
+            print("DeprecationWarning: The 'task_logs' field is deprecated and will be removed in future versions. Use 'tes_logs_url' instead.")
+        return values
 
 class WRROCInputs(BaseModel):
     """
@@ -185,6 +256,7 @@ class WRROCDataBase(BaseModel):
         result (list[WRROCOutputs]): A list of output results related to the WRROC entity.
         startTime (Optional[str]): The start time of the WRROC entity.
         endTime (Optional[str]): The end time of the WRROC entity.
+        version (Optional[str]): The version of the WRROC entity.
     """
     id: str
     name: str
@@ -194,9 +266,10 @@ class WRROCDataBase(BaseModel):
     result: list[WRROCOutputs]
     startTime: Optional[str] = None
     endTime: Optional[str] = None
+    version: Optional[str] = None
 
     class Config:
-        extra = "forbid"
+        extra = "allow"
 
 
 class WRROCData(WRROCDataBase):
@@ -235,6 +308,7 @@ class WRROCProcess(BaseModel):
         startTime (Optional[str]): The start time of the process.
         endTime (Optional[str]): The end time of the process.
         object (Optional[list[dict[str, str]]]): A list of input objects related to the process.
+        profiles (Optional[list[AnyUrl]]): URLs to the RO-Crate profiles used.
     """
     id: str
     name: str
@@ -242,9 +316,10 @@ class WRROCProcess(BaseModel):
     startTime: Optional[str] = None
     endTime: Optional[str] = None
     object: Optional[list[dict[str, str]]] = None
+    profiles: Optional[list[AnyUrl]] = None
 
     class Config:
-        extra = "forbid"
+        extra = "allow"
 
 
 class WRROCWorkflow(WRROCProcess):
@@ -255,13 +330,15 @@ class WRROCWorkflow(WRROCProcess):
         workflowType (Optional[str]): The type of the workflow.
         workflowVersion (Optional[str]): The version of the workflow.
         result (Optional[list[dict[str, str]]]): A list of output results related to the workflow.
+        hasPart (Optional[list[AnyUrl]]): A list of parts or steps within the workflow.
     """
     workflowType: Optional[str] = None
     workflowVersion: Optional[str] = None
     result: Optional[list[dict[str, str]]] = None
+    hasPart: Optional[list[AnyUrl]] = None
 
     class Config:
-        extra = "forbid"
+        extra = "allow"
 
 
 class WRROCProvenance(WRROCWorkflow):
@@ -271,9 +348,16 @@ class WRROCProvenance(WRROCWorkflow):
     Attributes:
         provenanceData (Optional[str]): Data related to the provenance of the workflow.
         agents (Optional[list[dict[str, str]]]): A list of agents involved in the workflow.
+        activity (Optional[list[dict[str, str]]]): Activities related to the provenance.
+        generatedBy (Optional[list[AnyUrl]]): URLs of the entities that generated the data.
+        used (Optional[list[AnyUrl]]): URLs of the entities that were used in the data generation.
     """
     provenanceData: Optional[str] = None
     agents: Optional[list[dict[str, str]]] = None
+    activity: Optional[list[dict[str, str]]] = None
+    generatedBy: Optional[list[AnyUrl]] = None
+    used: Optional[list[AnyUrl]] = None
 
     class Config:
-        extra = "forbid"
+        extra = "allow"
+

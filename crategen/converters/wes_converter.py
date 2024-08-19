@@ -1,16 +1,24 @@
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
+from ..models import WESData, WRROCDataWES
+from pydantic import ValidationError
 
 class WESConverter(AbstractConverter):
 
     def convert_to_wrroc(self, wes_data):
-        # Validate and extract data with defaults
-        run_id = wes_data.get("run_id", "")
-        name = wes_data.get("run_log", {}).get("name", "")
-        state = wes_data.get("state", "")
-        start_time = wes_data.get("run_log", {}).get("start_time", "")
-        end_time = wes_data.get("run_log", {}).get("end_time", "")
-        outputs = wes_data.get("outputs", {})
+        # Validate WES data
+        try:
+            validated_wes_data = WESData(**wes_data)
+        except ValidationError as e:
+            raise ValueError(f"Invalid WES data: {e}")
+
+        # Extract validated data
+        run_id = validated_wes_data.run_id
+        name = validated_wes_data.run_log.name
+        state = validated_wes_data.state
+        start_time = validated_wes_data.run_log.start_time
+        end_time = validated_wes_data.run_log.end_time
+        outputs = validated_wes_data.outputs
 
         # Convert to WRROC
         wrroc_data = {
@@ -19,19 +27,25 @@ class WESConverter(AbstractConverter):
             "status": state,
             "startTime": convert_to_iso8601(start_time),
             "endTime": convert_to_iso8601(end_time),
-            "result": [{"@id": output.get("location", ""), "name": output.get("name", "")} for output in outputs],
+            "result": [{"@id": output.location, "name": output.name} for output in outputs],
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data):
-        # Validate and extract data with defaults
-        run_id = wrroc_data.get("@id", "")
-        name = wrroc_data.get("name", "")
-        start_time = wrroc_data.get("startTime", "")
-        end_time = wrroc_data.get("endTime", "")
-        state = wrroc_data.get("status", "")
-        result_data = wrroc_data.get("result", [])
-        
+    def convert_from_wrroc(self, data):
+        # Validate WRROC data
+        try:
+            validated_data = WRROCDataWES(**data)
+        except ValidationError as e:
+            raise ValueError(f"Invalid WRROC data for WES conversion: {e}")
+
+        # Extract validated data
+        run_id = validated_data.id
+        name = validated_data.name
+        start_time = validated_data.startTime
+        end_time = validated_data.endTime
+        state = validated_data.status
+        result_data = validated_data.result
+
         # Convert from WRROC to WES
         wes_data = {
             "run_id": run_id,
@@ -41,6 +55,6 @@ class WESConverter(AbstractConverter):
                 "end_time": end_time,
             },
             "state": state,
-            "outputs": [{"location": res.get("@id", ""), "name": res.get("name", "")} for res in result_data],
+            "outputs": [{"location": res.id, "name": res.name} for res in result_data],
         }
         return wes_data
