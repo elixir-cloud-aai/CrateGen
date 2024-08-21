@@ -1,7 +1,8 @@
 from .abstract_converter import AbstractConverter
-from .utils import convert_to_iso8601
-from ..models import TESData, WRROCDataTES
+from ..models.tes_models import TESData
+from ..models.wrroc_models import WRROCDataTES
 from pydantic import ValidationError
+
 
 class TESConverter(AbstractConverter):
 
@@ -13,25 +14,37 @@ class TESConverter(AbstractConverter):
             raise ValueError(f"Invalid TES data: {e}")
 
         # Extract validated data
-        id = validated_tes_data.id
-        name = validated_tes_data.name
-        description = validated_tes_data.description
-        executors = validated_tes_data.executors
-        inputs = validated_tes_data.inputs
-        outputs = validated_tes_data.outputs
-        creation_time = validated_tes_data.creation_time
-        end_time = validated_tes_data.logs[0].end_time if validated_tes_data.logs else ""
+        (
+            id,
+            name,
+            description,
+            creation_time,
+            state,
+            inputs,
+            outputs,
+            executors,
+            resources,
+            volumes,
+            logs,
+            tags,
+        ) = validated_tes_data.dict().values()
+        end_time = validated_tes_data.logs[0].end_time
 
         # Convert to WRROC
         wrroc_data = {
             "@id": id,
             "name": name,
             "description": description,
-            "instrument": executors[0].image if executors else None,
-            "object": [{"@id": input.url, "name": input.path} for input in inputs],
-            "result": [{"@id": output.url, "name": output.path} for output in outputs],
-            "startTime": convert_to_iso8601(creation_time),
-            "endTime": convert_to_iso8601(end_time),
+            "instrument": executors[0]["image"] if executors else None,
+            "object": [
+                {"@id": input["url"], "name": input["path"], "type": input["type"]}
+                for input in inputs
+            ],
+            "result": [
+                {"@id": output["url"], "name": output["path"]} for output in outputs
+            ],
+            "startTime": creation_time,
+            "endTime": end_time,
         }
         return wrroc_data
 
