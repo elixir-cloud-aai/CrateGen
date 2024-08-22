@@ -26,7 +26,7 @@ jobs:
       - name: Lint with Ruff
         run: |
           poetry run ruff check crategen/
-        if: ${{ failure() }}
+        if: ${{ success() }}
 
       - name: Type check with Mypy
         run: |
