@@ -50,8 +50,6 @@ pytest-mock = "^3.14.0"
 [tool.poetry.group.types.dependencies]
 mypy = "^1.10.1"
 
-
-
 [tool.poetry.scripts]
 crategen = "crategen.cli:cli"
 
@@ -91,7 +89,7 @@ select = [
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
-ignore = ["E203", "E501"]
+ignore = ["E203", "E501", "E999"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
