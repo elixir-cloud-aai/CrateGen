@@ -3,4 +3,4 @@ pre-push:
     ruff:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/main HEAD)..HEAD
       run: poetry run ruff check {files}
-      glob: '*'
+      glob: '*.py'
