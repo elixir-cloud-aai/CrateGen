@@ -1,17 +1,17 @@
-from .abstract_converter import AbstractConverter
+from pydantic import ValidationError
+
 from ..models.tes_models import TESData
 from ..models.wrroc_models import WRROCDataTES
-from pydantic import ValidationError
+from .abstract_converter import AbstractConverter
 
 
 class TESConverter(AbstractConverter):
-
     def convert_to_wrroc(self, tes_data):
         # Validate TES data
         try:
             validated_tes_data = TESData(**tes_data)
         except ValidationError as e:
-            raise ValueError(f"Invalid TES data: {e}")
+            raise ValueError(f"Invalid TES data: {e}") from e
 
         # Extract validated data
         (
@@ -53,7 +53,7 @@ class TESConverter(AbstractConverter):
         try:
             validated_data = WRROCDataTES(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid WRROC data for TES conversion: {e}")
+            raise ValueError(f"Invalid WRROC data for TES conversion: {e}") from e
 
         # Extract validated data
         id = validated_data.id

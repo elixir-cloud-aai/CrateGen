@@ -1,24 +1,29 @@
-from pydantic import BaseModel, AnyUrl, root_validator, validator
-from ..utils import convert_to_rfc3339_format
-from datetime import datetime
-from typing import Optional
-from enum import Enum
 import os
+from datetime import datetime
+from enum import Enum
+from typing import Optional
+
+from pydantic import AnyUrl, BaseModel, root_validator, validator
+
+from ..utils import convert_to_rfc3339_format
+
 
 class TESFileType(str, Enum):
     FILE = "FILE"
     DIRECTORY = "DIRECTORY"
 
+
 class TESState(str, Enum):
-    UNKNOWN = 'UNKNOWN'
-    QUEUED = 'QUEUED'
-    INITIALIZING = 'INITIALIZING'
-    RUNNING = 'RUNNING'
-    PAUSED = 'PAUSED'
-    COMPLETE = 'COMPLETE'
-    EXECUTOR_ERROR = 'EXECUTOR_ERROR'
-    SYSTEM_ERROR = 'SYSTEM_ERROR'
-    CANCELLED = 'CANCELLED'
+    UNKNOWN = "UNKNOWN"
+    QUEUED = "QUEUED"
+    INITIALIZING = "INITIALIZING"
+    RUNNING = "RUNNING"
+    PAUSED = "PAUSED"
+    COMPLETE = "COMPLETE"
+    EXECUTOR_ERROR = "EXECUTOR_ERROR"
+    SYSTEM_ERROR = "SYSTEM_ERROR"
+    CANCELLED = "CANCELLED"
+
 
 class TESOutputFileLog(BaseModel):
     """
@@ -34,8 +39,9 @@ class TESOutputFileLog(BaseModel):
     """
 
     url: str
-    path: str 
+    path: str
     size_bytes: str
+
 
 class TESExecutorLog(BaseModel):
     """
@@ -58,10 +64,11 @@ class TESExecutorLog(BaseModel):
     stderr: Optional[str] = None
     exit_code: int
 
-    @validator('start_time', 'end_time')
+    @validator("start_time", "end_time")
     def validate_datetime(value):
-      return convert_to_rfc3339_format(value)
-      
+        return convert_to_rfc3339_format(value)
+
+
 class TESExecutor(BaseModel):
     """
     An array of executors to be run
@@ -72,11 +79,12 @@ class TESExecutor(BaseModel):
     - **workdir** (`Optional[str]`): The working directory that the command will be executed in.
     - **stdout** (`Optional[str]`): Path inside the container to a file where the executor's stdout will be written to. Must be an absolute path
     - **stderr** (`Optional[str]`): Path inside the container to a file where the executor's stderr will be written to. Must be an absolute path.
-    - **stdin** (`Optional[str]`): Path inside the container to a file which will be piped to the executor's stdin. Must be an absolute path. 
+    - **stdin** (`Optional[str]`): Path inside the container to a file which will be piped to the executor's stdin. Must be an absolute path.
     - **env** (`Optional[dict[str, str]]`): Enviromental variables to set within the container
 
     **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
+
     image: str
     command: list[str]
     workdir: Optional[str] = None
@@ -87,9 +95,10 @@ class TESExecutor(BaseModel):
 
     @validator("stdin", "stdout")
     def validate_stdin_stdin(cls, value):
-      if not os.path.isabs(value):
-        raise ValueError(f"The '${value}' attribute must contain an absolute path.")
-      return value
+        if not os.path.isabs(value):
+            raise ValueError(f"The '${value}' attribute must contain an absolute path.")
+        return value
+
 
 class TESResources(BaseModel):
     """
@@ -105,11 +114,13 @@ class TESResources(BaseModel):
 
     **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
+
     cpu_cores: Optional[int] = None
     preemptible: Optional[bool] = None
     ram_gb: Optional[float] = None
     disk_gb: Optional[float] = None
     zones: Optional[list[str]] = None
+
 
 class TESInput(BaseModel):
     """
@@ -126,34 +137,39 @@ class TESInput(BaseModel):
 
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
+
     name: Optional[str] = None
     description: Optional[str] = None
     url: Optional[AnyUrl]
     path: str
     type: TESFileType = TESFileType.FILE
-    content: Optional[str] = None 
+    content: Optional[str] = None
 
     @root_validator()
     def validate_content_and_url(cls, values):
         """
-          - If content is set url should be ignored
-          - If content is not set then url should be present
+        - If content is set url should be ignored
+        - If content is not set then url should be present
         """
+        content_is_set = (
+            values.get("content") and len(values.get("content").strip()) > 0
+        )
+        url_is_set = values.get("url") and len(values.get("url").strip()) > 0
 
-        content_is_set = values.get('content') and len(values.get('content').strip()) > 0
-        url_is_set = values.get('url') and len(values.get('url').strip()) > 0
-        
         if content_is_set:
-          values['url'] = None
+            values["url"] = None
         elif not content_is_set and not url_is_set:
-          raise ValueError("The 'url' attribute is required when the 'content' attribute is empty")
+            raise ValueError(
+                "The 'url' attribute is required when the 'content' attribute is empty"
+            )
         return values
-    
+
     @validator("path")
     def validate_path(cls, value):
         if not os.path.isabs(value):
             raise ValueError("The 'path' attribute must contain an absolute path.")
         return value
+
 
 class TESOutput(BaseModel):
     """
@@ -169,12 +185,12 @@ class TESOutput(BaseModel):
 
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
+
     name: Optional[str] = None
     description: Optional[str] = None
     url: AnyUrl
     path: str
     type: TESFileType = TESFileType.FILE
-
 
     @validator("path")
     def validate_path(cls, value):
@@ -182,33 +198,35 @@ class TESOutput(BaseModel):
             raise ValueError("The 'path' attribute must contain an absolute path.")
         return value
 
+
 class TESTaskLog(BaseModel):
-  """
-  Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
+    """
+    Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
 
-  **Attributes:**
+    **Attributes:**
 
-  - **logs** (`list[TESExecutorLog]`): Logs for each executor.
-  - **metadata** (`Optional[dict[str, str]]`): Arbitrary logging metadata included by the implementation.
-  - **start_time** (`Optional[datetime]`): When the task started, in RFC 3339 format.
-  - **end_time** (`Optional[datetime]`): When the task ended, in RFC 3339 format.
-  - **outputs** (`list[TESOutputFileLog]`): Information about all output files. Directory outputs are flattened into separate items.
-  - **system_logs** (`Optional[list[str]]`): System logs are any logs the system decides are relevant, which are not tied directly to an Executor process. Content is implementation specific: format, size, etc.
-  - **status** (`Optional[str]`): The status of the task.
+    - **logs** (`list[TESExecutorLog]`): Logs for each executor.
+    - **metadata** (`Optional[dict[str, str]]`): Arbitrary logging metadata included by the implementation.
+    - **start_time** (`Optional[datetime]`): When the task started, in RFC 3339 format.
+    - **end_time** (`Optional[datetime]`): When the task ended, in RFC 3339 format.
+    - **outputs** (`list[TESOutputFileLog]`): Information about all output files. Directory outputs are flattened into separate items.
+    - **system_logs** (`Optional[list[str]]`): System logs are any logs the system decides are relevant, which are not tied directly to an Executor process. Content is implementation specific: format, size, etc.
+    - **status** (`Optional[str]`): The status of the task.
 
-  **Reference:** [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
-  """
-             
-  logs: list[TESExecutorLog]
-  metadata: Optional[dict[str, str]]
-  start_time: Optional[datetime]
-  end_time: Optional[datetime]
-  outputs: list[TESOutputFileLog]
-  system_logs: Optional[list[str]]
+    **Reference:** [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
+    """
 
-  @validator('start_time', 'end_time')
-  def validate_datetime(value):
-    return convert_to_rfc3339_format(value)
+    logs: list[TESExecutorLog]
+    metadata: Optional[dict[str, str]]
+    start_time: Optional[datetime]
+    end_time: Optional[datetime]
+    outputs: list[TESOutputFileLog]
+    system_logs: Optional[list[str]]
+
+    @validator("start_time", "end_time")
+    def validate_datetime(value):
+        return convert_to_rfc3339_format(value)
+
 
 class TESData(BaseModel):
     """
@@ -221,7 +239,7 @@ class TESData(BaseModel):
     - **description** (`Optional[str]`): Optional user-provided description of task for documentation purposes.
     - **creation_time** (`Optional[str]`): The time the task was created.
     - **state** (`Optional[str]`): Task state as defined by the server
-    - **inputs** (`list[TESInput]`): Input files that will be used by the task. 
+    - **inputs** (`list[TESInput]`): Input files that will be used by the task.
     - **outputs** (`list[TESOutput]`): Output files that will be uploaded from the executor container to long-term storage.
     - **executors** (`list[Executor]`): An array of executors to be run.
     - **resources** (`Optional[TESResources]`): The resources required by the TES task.
@@ -245,6 +263,6 @@ class TESData(BaseModel):
     logs: Optional[list[TESTaskLog]] = None
     tags: Optional[dict[str, str]] = None
 
-    @validator('creation_time')
+    @validator("creation_time")
     def validate_datetime(value):
-      return convert_to_rfc3339_format(value)
+        return convert_to_rfc3339_format(value)
