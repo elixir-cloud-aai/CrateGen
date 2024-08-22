@@ -1,7 +1,9 @@
+from pydantic import ValidationError
+
+from ..models import WESData, WRROCDataWES
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
-from ..models import WESData, WRROCDataWES
-from pydantic import ValidationError
+
 
 class WESConverter(AbstractConverter):
 

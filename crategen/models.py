@@ -1,5 +1,6 @@
-from pydantic import BaseModel, AnyUrl, Field, root_validator
 from typing import Optional
+
+from pydantic import AnyUrl, BaseModel, Field, root_validator
 
 
 class Executor(BaseModel):
