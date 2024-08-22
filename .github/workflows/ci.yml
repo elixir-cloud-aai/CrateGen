@@ -26,6 +26,7 @@ jobs:
       - name: Lint with Ruff
         run: |
           poetry run ruff check crategen/
+        if: ${{ failure() }}
 
       - name: Type check with Mypy
         run: |
@@ -34,7 +35,6 @@ jobs:
       - name: Run security checks with Bandit
         run: |
           poetry run bandit -r crategen/
-        if: ${{ failure() }}
 
       - name: Install test dependencies
         run: |
