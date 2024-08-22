@@ -1,12 +1,12 @@
 import unittest
 from pydantic import ValidationError
 
-from crategen.models import WRROCProcess, WRROCWorkflow, WRROCProvenance
+from crategen.models import WRROCProcess, WRROCWorkflow, WRROCProvenance, WRROCDataWES
 from crategen.validators import validate_wrroc, validate_wrroc_tes, validate_wrroc_wes
 
-class TestWRROCModels(unittest.TestCase):
+class TestWRROCProcessModel(unittest.TestCase):
     """
-    Unit tests for the WRROC models to ensure they work as expected.
+    Unit tests for the WRROCProcess model.
     """
 
     def test_wrroc_process_model(self):
@@ -37,6 +37,22 @@ class TestWRROCModels(unittest.TestCase):
         model = WRROCProcess(**data)
         self.assertEqual(model.object, [])
 
+    def test_wrroc_process_invalid_data(self):
+        """
+        Test that the WRROCProcess model raises a ValidationError with invalid data.
+        """
+        data = {
+            "id": 123,  # id should be a string
+            "name": None  # name should be a string
+        }
+        with self.assertRaises(ValidationError):
+            WRROCProcess(**data)
+
+class TestWRROCWorkflowModel(unittest.TestCase):
+    """
+    Unit tests for the WRROCWorkflow model.
+    """
+
     def test_wrroc_workflow_model(self):
         """
         Test that the WRROCWorkflow model correctly validates data and includes additional workflow fields.
@@ -46,7 +62,7 @@ class TestWRROCModels(unittest.TestCase):
             "name": "Test Workflow",
             "workflowType": "CWL",
             "workflowVersion": "v1.0",
-            "result": [{"id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "Output 1"}]
+            "result": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE", "name": "Output 1"}]
         }
         model = WRROCWorkflow(**data)
         self.assertEqual(model.workflowType, "CWL")
@@ -63,6 +79,11 @@ class TestWRROCModels(unittest.TestCase):
         model = WRROCWorkflow(**data)
         self.assertIsNone(model.workflowType)
         self.assertIsNone(model.workflowVersion)
+
+class TestWRROCProvenanceModel(unittest.TestCase):
+    """
+    Unit tests for the WRROCProvenance model.
+    """
 
     def test_wrroc_provenance_model(self):
         """
@@ -89,17 +110,6 @@ class TestWRROCModels(unittest.TestCase):
         }
         model = WRROCProvenance(**data)
         self.assertEqual(model.agents, [])
-
-    def test_wrroc_process_invalid_data(self):
-        """
-        Test that the WRROCProcess model raises a ValidationError with invalid data.
-        """
-        data = {
-            "id": 123,  # id should be a string
-            "name": None  # name should be a string
-        }
-        with self.assertRaises(ValidationError):
-            WRROCProcess(**data)
 
 class TestWRROCValidators(unittest.TestCase):
     """
@@ -160,7 +170,7 @@ class TestWRROCValidators(unittest.TestCase):
             "id": "process-id",
             "name": "Test Process",
             "object": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md", "name": "Input 1"}],
-            "result": [{"id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "Output 1"}]
+            "result": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE", "name": "Output 1"}]
         }
         model = validate_wrroc_tes(data)
         self.assertEqual(model.id, "process-id")
@@ -174,7 +184,7 @@ class TestWRROCValidators(unittest.TestCase):
             "id": "process-id",
             "name": "Test Process",
             "object": [],
-            "result": [{"id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "Output 1"}]
+            "result": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE", "name": "Output 1"}]
         }
         model = validate_wrroc_tes(data)
         self.assertEqual(model.object, [])
@@ -191,34 +201,43 @@ class TestWRROCValidators(unittest.TestCase):
             validate_wrroc_tes(data)
 
     def test_validate_wrroc_wes(self):
-        """
-        Test that validate_wrroc_wes correctly validates a WRROC entity for WES conversion.
-        """
-        data = {
-            "id": "workflow-id",
-            "name": "Test Workflow",
-            "workflowType": "CWL",
-            "workflowVersion": "v1.0",
-            "result": [{"id": "https://github.com/elixir-cloud-aai/CrateGen/blob/main/LICENSE", "name": "Output 1"}]
-        }
-        model = validate_wrroc_wes(data)
-        self.assertEqual(model.workflowType, "CWL")
-        self.assertEqual(model.workflowVersion, "v1.0")
+            """
+            Test that validate_wrroc_wes correctly validates a WRROC entity for WES conversion.
+            """
+            data = {
+                "id": "workflow-id",
+                "name": "Test Workflow",
+                "workflowType": "CWL",
+                "workflowVersion": "v1.0",
+                "status": "completed", 
+                "object": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md", "name": "Input 1"}],
+                "result": [{"id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE", "name": "Output 1"}]
+            }
+            model = validate_wrroc_wes(data)
+            self.assertIsInstance(model, WRROCDataWES)
+
 
     def test_validate_wrroc_wes_invalid_url(self):
         """
         Test that validate_wrroc_wes raises a ValueError if a result URL is invalid.
         """
-        data = {
-            "id": "workflow-id",
-            "name": "Test Workflow",
-            "workflowType": "CWL",
-            "workflowVersion": "v1.0",
-            "result": [{"id": "invalid_url", "name": "Output 1"}]
-        }
-        with self.assertRaises(ValueError):
-            validate_wrroc_wes(data)
-
+        invalid_urls = [
+            "invalid_url",
+            "http:/github.com",
+            "ftp://github.com",
+            "//github.com",
+            "http://",
+        ]
+        for url in invalid_urls:
+            data = {
+                "id": "workflow-id",
+                "name": "Test Workflow",
+                "workflowType": "CWL",
+                "workflowVersion": "v1.0",
+                "result": [{"id": url, "name": "Output 1"}]
+            }
+            with self.assertRaises(ValueError):
+                validate_wrroc_wes(data)
 
     def test_validate_wrroc_wes_missing_fields(self):
         """

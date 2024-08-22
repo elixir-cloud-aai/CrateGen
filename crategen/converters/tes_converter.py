@@ -4,63 +4,66 @@ from ..models import TESData, WRROCDataTES
 from pydantic import ValidationError
 
 class TESConverter(AbstractConverter):
+    def convert_to_wrroc(self, data: dict) -> dict:
+        """
+        Convert TES data to WRROC format.
 
-    def convert_to_wrroc(self, tes_data):
+        Args:
+            data (dict): The input TES data.
+
+        Returns:
+            dict: The converted WRROC data.
+
+        Raises:
+            ValidationError: If TES data is invalid.
+        """
         # Validate TES data
         try:
-            validated_tes_data = TESData(**tes_data)
+            data_tes = TESData(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid TES data: {e}")
+            raise ValueError(f"Invalid TES data: {e.errors()}") from e
 
-        # Extract validated data
-        id = validated_tes_data.id
-        name = validated_tes_data.name
-        description = validated_tes_data.description
-        executors = validated_tes_data.executors
-        inputs = validated_tes_data.inputs
-        outputs = validated_tes_data.outputs
-        creation_time = validated_tes_data.creation_time
-        end_time = validated_tes_data.logs[0].end_time if validated_tes_data.logs else ""
-
-        # Convert to WRROC
+        # Convert to WRROC format
         wrroc_data = {
-            "@id": id,
-            "name": name,
-            "description": description,
-            "instrument": executors[0].image if executors else None,
-            "object": [{"@id": input.url, "name": input.path} for input in inputs],
-            "result": [{"@id": output.url, "name": output.path} for output in outputs],
-            "startTime": convert_to_iso8601(creation_time),
-            "endTime": convert_to_iso8601(end_time),
+            "@id": data_tes.id,
+            "name": data_tes.name,
+            "description": data_tes.description,
+            "instrument": data_tes.executors[0].image if data_tes.executors else None,
+            "object": [{"@id": input.url, "name": input.path} for input in data_tes.inputs],
+            "result": [{"@id": output.url, "name": output.path} for output in data_tes.outputs],
+            "startTime": convert_to_iso8601(data_tes.creation_time),
+            "endTime": convert_to_iso8601(data_tes.logs[0].end_time if data_tes.logs else ""),
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, data):
+    def convert_from_wrroc(self, data: dict) -> dict:
+        """
+        Convert WRROC data to TES format.
+
+        Args:
+            data (dict): The input WRROC data.
+
+        Returns:
+            dict: The converted TES data.
+
+        Raises:
+            ValidationError: If WRROC data is invalid.
+        """
         # Validate WRROC data
         try:
-            validated_data = WRROCDataTES(**data)
+            data_wrroc = WRROCDataTES(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid WRROC data for TES conversion: {e}")
+            raise ValueError(f"Invalid WRROC data: {e.errors()}") from e
 
-        # Extract validated data
-        id = validated_data.id
-        name = validated_data.name
-        description = validated_data.description
-        instrument = validated_data.instrument
-        object_data = validated_data.object
-        result_data = validated_data.result
-        start_time = validated_data.startTime
-        end_time = validated_data.endTime
-
-        # Convert from WRROC to TES
+        # Convert from WRROC to TES format
         tes_data = {
-            "id": id,
-            "name": name,
-            "description": description,
-            "executors": [{"image": instrument}],
-            "inputs": [{"url": obj.id, "path": obj.name} for obj in object_data],
-            "outputs": [{"url": res.id, "path": res.name} for res in result_data],
-            "creation_time": start_time,
-            "logs": [{"end_time": end_time}],
+            "id": data_wrroc.id,
+            "name": data_wrroc.name,
+            "description": data_wrroc.description,
+            "executors": [{"image": data_wrroc.instrument}],
+            "inputs": [{"url": obj.id, "path": obj.name} for obj in data_wrroc.object],
+            "outputs": [{"url": res.id, "path": res.name} for res in data_wrroc.result],
+            "creation_time": data_wrroc.startTime,
+            "logs": [{"end_time": data_wrroc.endTime}],
         }
         return tes_data
