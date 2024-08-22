@@ -67,7 +67,8 @@ exclude = [
   "build",
   "_build",
   "dist",
-  ".env"
+  ".env",
+  ".yml"
 ]
 indent-width = 4
 
@@ -89,7 +90,7 @@ select = [
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
-ignore = ["E203", "E501", "E999"]
+ignore = ["E203", "E501"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
