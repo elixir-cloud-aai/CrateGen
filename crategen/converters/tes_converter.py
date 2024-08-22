@@ -1,6 +1,6 @@
 from .abstract_converter import AbstractConverter
 from ..models.tes_models import TESData
-from ..models.wrroc_models import WRROCDataTES
+from ..models import WRROCDataTES
 from pydantic import ValidationError
 
 
