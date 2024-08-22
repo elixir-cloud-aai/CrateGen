@@ -43,7 +43,7 @@ def validate_wrroc(data: dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCPro
         return WRROCProcess(**data)
     except ValidationError as e:
         errors.extend(e.errors())
-        raise ValueError(f"Invalid WRROC data: {errors}")
+        raise ValueError(f"Invalid WRROC data: {errors}") from e
 
 
 def validate_wrroc_tes(data: dict) -> WRROCProcess:
