@@ -1,8 +1,10 @@
 import unittest
+
 from pydantic import ValidationError
 
-from crategen.models import WRROCProcess, WRROCWorkflow, WRROCProvenance
+from crategen.models import WRROCProcess, WRROCProvenance, WRROCWorkflow
 from crategen.validators import validate_wrroc, validate_wrroc_tes, validate_wrroc_wes
+
 
 class TestWRROCModels(unittest.TestCase):
     """
