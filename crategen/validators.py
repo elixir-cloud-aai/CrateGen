@@ -4,11 +4,11 @@ from urllib.parse import urlparse
 from pydantic import ValidationError
 
 from .models.wrroc_models import (
+    WRROCDataTES,
+    WRROCDataWES,
     WRROCProcess,
     WRROCProvenance,
     WRROCWorkflow,
-    WRROCDataTES,
-    WRROCDataWES,
 )
 
 
