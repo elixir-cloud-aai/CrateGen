@@ -1,7 +1,9 @@
-from .abstract_converter import AbstractConverter
-from .utils import convert_to_iso8601
-from ..models import TESData, WRROCDataTES
 from pydantic import ValidationError
+
+from ..models.tes_models import TESData
+from ..models.wrroc_models import WRROCDataTES
+from .abstract_converter import AbstractConverter
+
 
 class TESConverter(AbstractConverter):
     def convert_to_wrroc(self, data: dict) -> dict:
@@ -23,16 +25,38 @@ class TESConverter(AbstractConverter):
         except ValidationError as e:
             raise ValueError(f"Invalid TES data: {e.errors()}") from e
 
+        # Extract validated data
+        (
+            id,
+            name,
+            description,
+            creation_time,
+            state,
+            inputs,
+            outputs,
+            executors,
+            resources,
+            volumes,
+            logs,
+            tags,
+        ) = data_tes.dict().values()
+        end_time = logs[0].end_time
+
         # Convert to WRROC format
         wrroc_data = {
-            "@id": data_tes.id,
-            "name": data_tes.name,
-            "description": data_tes.description,
-            "instrument": data_tes.executors[0].image if data_tes.executors else None,
-            "object": [{"@id": input.url, "name": input.path} for input in data_tes.inputs],
-            "result": [{"@id": output.url, "name": output.path} for output in data_tes.outputs],
-            "startTime": convert_to_iso8601(data_tes.creation_time),
-            "endTime": convert_to_iso8601(data_tes.logs[0].end_time if data_tes.logs else ""),
+            "@id": id,
+            "name": name,
+            "description": description,
+            "instrument": executors[0]["image"] if executors else None,
+            "object": [
+                {"@id": input["url"], "name": input["path"], "type": input["type"]}
+                for input in inputs
+            ],
+            "result": [
+                {"@id": output["url"], "name": output["path"]} for output in outputs
+            ],
+            "startTime": creation_time,
+            "endTime": end_time,
         }
         return wrroc_data
 
