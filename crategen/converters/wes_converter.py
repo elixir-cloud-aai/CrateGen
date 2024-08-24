@@ -6,55 +6,79 @@ from ..utils import convert_to_iso8601
 from .abstract_converter import AbstractConverter
 
 
+from ..models.wes_models import WESData
+from ..models.wrroc_models import WRROCDataWES
+from ..utils import convert_to_iso8601
+from .abstract_converter import AbstractConverter
+
+
 class WESConverter(AbstractConverter):
-    def convert_to_wrroc(self, wes_data):
+    def convert_to_wrroc(self, data: dict) -> dict:
+        """
+        Convert WES data to WRROC format.
+
+        Args:
+            data (dict): The input WES data.
+
+        Returns:
+            dict: The converted WRROC data.
+
+        Raises:
+            ValidationError: If WES data is invalid.
+        """
         # Validate WES data
         try:
-            validated_wes_data = WESData(**wes_data)
+            data_wes = WESData(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid WES data: {e}") from e
+            raise ValueError(f"Invalid WES data: {e.errors()}") from e
 
-        # Extract validated data
-        run_id = validated_wes_data.run_id
-        name = validated_wes_data.run_log.name
-        state = validated_wes_data.state
-        start_time = validated_wes_data.run_log.start_time
-        end_time = validated_wes_data.run_log.end_time
-        outputs = validated_wes_data.outputs
-
-        # Convert to WRROC
+        # Convert to WRROC format
         wrroc_data = {
-            "@id": run_id,
-            "name": name,
-            "status": state,
-            "startTime": convert_to_iso8601(start_time),
-            "endTime": convert_to_iso8601(end_time),
+            "@id": data_wes.run_id,
+            "name": data_wes.run_log.name,
+            "status": data_wes.state,
+            "startTime": convert_to_iso8601(data_wes.run_log.start_time),
+            "endTime": convert_to_iso8601(data_wes.run_log.end_time),
             "result": [
-                {"@id": output.location, "name": output.name} for output in outputs
+                {"@id": output.location, "name": output.name}
+                for output in data_wes.outputs
             ],
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, data):
+    def convert_from_wrroc(self, data: dict) -> dict:
+        """
+        Convert WRROC data to WES format.
+
+        Args:
+            data (dict): The input WRROC data.
+
+        Returns:
+            dict: The converted WES data.
+
+        Raises:
+            ValidationError: If WRROC data is invalid.
+        """
         # Validate WRROC data
         try:
-            validated_data = WRROCDataWES(**data)
+            data_wrroc = WRROCDataWES(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid WRROC data for WES conversion: {e}") from e
+            raise ValueError(
+                f"Invalid WRROC data for WES conversion: {e.errors()}"
+            ) from e
 
-        # Extract validated data
-        run_id = validated_data.id
-        name = validated_data.name
-        start_time = validated_data.startTime
-        end_time = validated_data.endTime
-        state = validated_data.status
-        result_data = validated_data.result
-
-        # Convert from WRROC to WES
+        # Convert from WRROC to WES format
+        # Convert from WRROC to WES format
         wes_data = {
-            "run_id": run_id,
-            "run_log": {"name": name, "start_time": start_time, "end_time": end_time},
-            "state": state,
-            "outputs": [{"location": res.id, "name": res.name} for res in result_data],
+            "run_id": data_wrroc.id,
+            "run_log": {
+                "name": data_wrroc.name,
+                "start_time": data_wrroc.startTime,
+                "end_time": data_wrroc.endTime,
+            },
+            "state": data_wrroc.status,
+            "outputs": [
+                {"location": res.id, "name": res.name} for res in data_wrroc.result
+            ],
         }
         return wes_data
