@@ -6,12 +6,6 @@ from ..utils import convert_to_iso8601
 from .abstract_converter import AbstractConverter
 
 
-from ..models.wes_models import WESData
-from ..models.wrroc_models import WRROCDataWES
-from ..utils import convert_to_iso8601
-from .abstract_converter import AbstractConverter
-
-
 class WESConverter(AbstractConverter):
     def convert_to_wrroc(self, data: dict) -> dict:
         """

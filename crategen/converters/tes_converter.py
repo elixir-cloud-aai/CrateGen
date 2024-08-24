@@ -5,11 +5,6 @@ from ..models.wrroc_models import WRROCDataTES
 from .abstract_converter import AbstractConverter
 
 
-from ..models.tes_models import TESData
-from ..models.wrroc_models import WRROCDataTES
-from .abstract_converter import AbstractConverter
-
-
 class TESConverter(AbstractConverter):
     def convert_to_wrroc(self, data: dict) -> dict:
         """
@@ -68,7 +63,7 @@ class TESConverter(AbstractConverter):
         try:
             data_wrroc = WRROCDataTES(**data)
         except ValidationError as e:
-            raise ValueError(f"Invalid WRROC data for TES conversion: {e}")
+            raise ValueError(f"Invalid WRROC data: {e.errors()}") from e
 
         # Convert from WRROC to TES format
         tes_data = {

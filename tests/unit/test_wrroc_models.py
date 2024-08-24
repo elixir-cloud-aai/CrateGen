@@ -8,7 +8,6 @@ from crategen.models.wrroc_models import (
     WRROCProvenance,
     WRROCWorkflow,
 )
-from crategen.models.wrroc_models import WRROCProcess, WRROCProvenance, WRROCWorkflow
 from crategen.validators import validate_wrroc, validate_wrroc_tes, validate_wrroc_wes
 
 
