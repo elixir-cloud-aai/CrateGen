@@ -158,7 +158,7 @@ class TESInput(BaseModel):
 
         if content_is_set:
             values["url"] = None
-        elif not url_is_set:
+        elif not content_is_set and not url_is_set:
             raise ValueError(
                 "The 'url' attribute is required when the 'content' attribute is empty"
             )

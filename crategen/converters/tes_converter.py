@@ -25,37 +25,23 @@ class TESConverter(AbstractConverter):
         except ValidationError as e:
             raise ValueError(f"Invalid TES data: {e.errors()}") from e
 
-        # Extract validated data
-        (
-            id,
-            name,
-            description,
-            creation_time,
-            state,
-            inputs,
-            outputs,
-            executors,
-            resources,
-            volumes,
-            logs,
-            tags,
-        ) = data_tes.dict().values()
-        end_time = logs[0].end_time
+        executors = data_tes.executors
+        end_time = data_tes.logs[0].end_time if data_tes.logs else None
 
         # Convert to WRROC format
         wrroc_data = {
-            "@id": id,
-            "name": name,
-            "description": description,
-            "instrument": executors[0]["image"] if executors else None,
+            "@id": data_tes.id,
+            "name": data_tes.name,
+            "description": data_tes.description,
+            "instrument": executors[0].image if executors else None,
             "object": [
-                {"@id": input["url"], "name": input["path"], "type": input["type"]}
-                for input in inputs
+                {"@id": input.url, "name": input.path, "type": input.type}
+                for input in data_tes.inputs
             ],
             "result": [
-                {"@id": output["url"], "name": output["path"]} for output in outputs
+                {"@id": output.url, "name": output.path} for output in data_tes.outputs
             ],
-            "startTime": creation_time,
+            "startTime": data_tes.creation_time,
             "endTime": end_time,
         }
         return wrroc_data

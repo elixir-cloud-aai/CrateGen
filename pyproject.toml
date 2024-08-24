@@ -69,7 +69,7 @@ exclude = [
   "build",
   "_build",
   "dist",
-  ".env"
+  ".env",
 ]
 indent-width = 4
 

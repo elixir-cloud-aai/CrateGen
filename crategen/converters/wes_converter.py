@@ -62,6 +62,7 @@ class WESConverter(AbstractConverter):
             ) from e
 
         # Convert from WRROC to WES format
+        # Convert from WRROC to WES format
         wes_data = {
             "run_id": data_wrroc.id,
             "run_log": {

@@ -16,13 +16,16 @@ def validate_wrroc(data: dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCPro
     """
     Validate that the input data is a valid WRROC entity and determine which profile it adheres to.
 
-
     This function attempts to validate the input data against the WRROCProvenance model first.
     If that validation fails, it attempts validation against the WRROCWorkflow model.
     If that also fails, it finally attempts validation against the WRROCProcess model.
 
+    Args:
+        data (dict): The input data to validate.
+
     Returns:
         Union[WRROCProvenance, WRROCWorkflow, WRROCProcess]: The validated WRROC data, indicating the highest profile the data adheres to.
+
 
     Raises:
         ValueError: If the data does not adhere to any of the WRROC profiles.
