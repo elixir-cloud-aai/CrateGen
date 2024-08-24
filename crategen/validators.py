@@ -3,7 +3,13 @@ from urllib.parse import urlparse
 
 from pydantic import ValidationError
 
-from .models import WRROCProcess, WRROCProvenance, WRROCWorkflow
+from .models.wrroc_models import (
+    WRROCProcess,
+    WRROCProvenance,
+    WRROCWorkflow,
+    WRROCDataTES,
+    WRROCDataWES,
+)
 
 
 def validate_wrroc(data: dict) -> Union[WRROCProvenance, WRROCWorkflow, WRROCProcess]:

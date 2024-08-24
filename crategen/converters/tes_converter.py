@@ -1,6 +1,6 @@
 from .abstract_converter import AbstractConverter
 from ..models.tes_models import TESData
-from ..models import WRROCDataTES
+from ..models.wrroc_models import WRROCDataTES
 from pydantic import ValidationError
 
 
@@ -39,7 +39,7 @@ class TESConverter(AbstractConverter):
             logs,
             tags,
         ) = data_tes.dict().values()
-        end_time = data_tes.logs[0].end_time
+        end_time = logs[0].end_time
 
         # Convert to WRROC format
         wrroc_data = {
