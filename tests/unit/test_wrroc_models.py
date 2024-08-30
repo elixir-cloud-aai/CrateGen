@@ -171,17 +171,17 @@ class TestWRROCValidators(unittest.TestCase):
         Test that validate_wrroc_tes correctly validates a WRROC entity for TES conversion.
         """
         data = {
-            "id": "process-id",
+            "@id": "process-id",
             "name": "Test Process",
             "object": [
                 {
-                    "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
                     "name": "Input 1",
                 }
             ],
             "result": [
                 {
-                    "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
                     "name": "Output 1",
                 }
             ],
@@ -195,12 +195,12 @@ class TestWRROCValidators(unittest.TestCase):
         Test that validate_wrroc_tes correctly validates a WRROC entity with an empty object list for TES conversion.
         """
         data = {
-            "id": "process-id",
+            "@id": "process-id",
             "name": "Test Process",
             "object": [],
             "result": [
                 {
-                    "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
                     "name": "Output 1",
                 }
             ],
@@ -221,20 +221,20 @@ class TestWRROCValidators(unittest.TestCase):
         Test that validate_wrroc_wes correctly validates a WRROC entity for WES conversion.
         """
         data = {
-            "id": "workflow-id",
+            "@id": "workflow-id",
             "name": "Test Workflow",
             "workflowType": "CWL",
             "workflowVersion": "v1.0",
             "status": "completed",
             "object": [
                 {
-                    "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/README.md",
                     "name": "Input 1",
                 }
             ],
             "result": [
                 {
-                    "id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
+                    "@id": "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/main/LICENSE",
                     "name": "Output 1",
                 }
             ],

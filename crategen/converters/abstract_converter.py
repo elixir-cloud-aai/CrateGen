@@ -7,5 +7,5 @@ class AbstractConverter(ABC):
         """Convert data to WRROC format"""
 
     @abstractmethod
-    def convert_from_wrroc(self, wrroc_data):
+    def convert_from_wrroc(self, data):
         """Convert WRROC data to the original format"""

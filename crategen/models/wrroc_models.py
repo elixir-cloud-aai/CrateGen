@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import AnyUrl, BaseModel
+from pydantic import AnyUrl, BaseModel, Field
 
 
 class WRROCInputs(BaseModel):
@@ -12,7 +12,7 @@ class WRROCInputs(BaseModel):
         name (str): The name of the input.
     """
 
-    id: str
+    id: str = Field(alias='@id')
     name: str
 
 
@@ -25,7 +25,7 @@ class WRROCOutputs(BaseModel):
         name (str): The name of the output.
     """
 
-    id: str
+    id: str = Field(alias='@id')
     name: str
 
 
@@ -45,18 +45,19 @@ class WRROCDataBase(BaseModel):
         version (Optional[str]): The version of the WRROC entity.
     """
 
-    id: str
+    id: str = Field(alias='@id')
     name: str
     description: Optional[str] = ""
     instrument: Optional[str] = None
-    object: list[WRROCInputs]
-    result: list[WRROCOutputs]
+    object: list[WRROCInputs] = Field(default_factory=list)
+    result: list[WRROCOutputs] = Field(default_factory=list)
     startTime: Optional[str] = None
     endTime: Optional[str] = None
     version: Optional[str] = None
 
     class Config:
         extra = "allow"
+        allow_population_by_field_name = True  # Allows using field name for input data
 
 
 class WRROCData(WRROCDataBase):
@@ -101,7 +102,7 @@ class WRROCProcess(BaseModel):
         profiles (Optional[list[AnyUrl]]): URLs to the RO-Crate profiles used.
     """
 
-    id: str
+    id: str = Field(alias='@id')
     name: str
     description: Optional[str] = ""
     startTime: Optional[str] = None
@@ -111,6 +112,7 @@ class WRROCProcess(BaseModel):
 
     class Config:
         extra = "allow"
+        allow_population_by_field_name = True
 
 
 class WRROCWorkflow(WRROCProcess):
@@ -131,6 +133,7 @@ class WRROCWorkflow(WRROCProcess):
 
     class Config:
         extra = "allow"
+        allow_population_by_field_name = True
 
 
 class WRROCProvenance(WRROCWorkflow):
@@ -153,3 +156,4 @@ class WRROCProvenance(WRROCWorkflow):
 
     class Config:
         extra = "allow"
+        allow_population_by_field_name = True

@@ -30,7 +30,7 @@ pytest-mock = "^3.14.0"
 pre-commit = "^2.13.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = "^0.4.4"
+ruff = "^0.6.3"
 typos = "^1.21.0"
 
 [tool.poetry.group.docs.dependencies]
@@ -51,6 +51,10 @@ pytest-mock = "^3.14.0"
 mypy = "^1.10.1"
 
 
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.6.3"
 
 [tool.poetry.scripts]
 crategen = "crategen.cli:cli"
