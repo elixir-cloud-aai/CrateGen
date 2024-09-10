@@ -1,3 +1,7 @@
+"""
+Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/).
+"""
+
 import os
 from datetime import datetime
 from enum import Enum
@@ -31,9 +35,9 @@ class TESOutputFileLog(BaseModel):
 
     **Attributes:**
 
-    - **url** (str): URL of the file in storage.
-    - **path** (str): Path of the file inside the container. Must be an absolute path.
-    - **size_bytes** (str): Size of the file in bytes. Note, this is currently coded as a string because official JSON doesn't support int64 numbers.
+    - **url** (`str`): URL of the file in storage.
+    - **path** (`str`): Path of the file inside the container. Must be an absolute path.
+    - **size_bytes** (`str`): Size of the file in bytes. Note, this is currently coded as a string because official JSON doesn't support int64 numbers.
 
     **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
@@ -94,7 +98,7 @@ class TESExecutor(BaseModel):
     env: Optional[dict[str, str]] = None
 
     @validator("stdin", "stdout")
-    def validate_stdin_stdin(cls, value):
+    def validate_stdin_stdin(value):
         if not os.path.isabs(value):
             raise ValueError(f"The '${value}' attribute must contain an absolute path.")
         return value
