@@ -2,9 +2,9 @@
 Each model in this module conforms to the corresponding WES model names as specified by the GA4GH schema (https://ga4gh.github.io/workflow-execution-service-schemas/docs/).
 """
 
+from datetime import datetime
 from enum import Enum
 from typing import Optional
-from datetime import datetime
 
 from pydantic import BaseModel, Field, root_validator, validator
 
