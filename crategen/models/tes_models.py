@@ -150,7 +150,7 @@ class TESInput(BaseModel):
     content: Optional[str] = None
 
     @root_validator()
-    def validate_content_and_url(values):
+    def validate_content_and_url(cls, values):
         """
         - If content is set url should be ignored
         - If content is not set then url should be present

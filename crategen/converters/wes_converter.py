@@ -1,6 +1,6 @@
 from pydantic import ValidationError
 
-from ..models.wes_models import WESData, WESOutputs, WESRequest, WESRunLog
+from ..models.wes_models import WESData, WESOutputs, RunRequest, Log
 from ..models.wrroc_models import WRROCDataWES
 from ..utils import convert_to_iso8601
 from ..validators import validate_wrroc_wes
@@ -27,6 +27,7 @@ class WESConverter(AbstractConverter):
         except ValidationError as e:
             raise ValueError(f"Invalid WES data: {e.errors()}") from e
 
+        # create the object using the model
         wrroc_data = {
             "@id": data_wes.run_id,
             "name": data_wes.run_log.name,
@@ -39,8 +40,6 @@ class WESConverter(AbstractConverter):
             ],
         }
 
-        # Validate WRROC data before returning
-        validate_wrroc_wes(wrroc_data)
         return wrroc_data
 
     def convert_from_wrroc(self, data: dict) -> dict:
@@ -64,16 +63,18 @@ class WESConverter(AbstractConverter):
                 f"Invalid WRROC data for WES conversion: {e.errors()}"
             ) from e
 
-        wes_outputs = [WESOutputs(location=res.id, name=res.name) for res in data_wrroc.result]
-        wes_run_log = WESRunLog(
+        wes_outputs = [
+            WESOutputs(location=res.id, name=res.name) for res in data_wrroc.result
+        ]
+        wes_run_log = Log(
             name=data_wrroc.name,
             start_time=data_wrroc.startTime,
-            end_time=data_wrroc.endTime
+            end_time=data_wrroc.endTime,
         )
-        wes_request = WESRequest(
+        wes_request = RunRequest(
             workflow_params={},  # Adjust as necessary
             workflow_type="CWL",  # Example type, adjust as necessary
-            workflow_type_version="v1.0"  # Example version, adjust as necessary
+            workflow_type_version="v1.0",  # Example version, adjust as necessary
         )
 
         wes_data = WESData(
@@ -82,7 +83,7 @@ class WESConverter(AbstractConverter):
             state=data_wrroc.status,
             run_log=wes_run_log,
             task_logs=None,  # Provide appropriate value
-            outputs=wes_outputs
+            outputs=wes_outputs,
         )
 
         # Validate WES data before returning

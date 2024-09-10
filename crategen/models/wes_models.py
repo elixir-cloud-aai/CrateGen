@@ -4,6 +4,7 @@ Each model in this module conforms to the corresponding WES model names as speci
 
 from enum import Enum
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel, Field, root_validator, validator
 
@@ -22,6 +23,11 @@ class State(str, Enum):
     CANCELLED = "CANCELLED"
     CANCELING = "CANCELING"
     PREEMPTED = "PREEMPTED"
+
+
+class WESOutputs(BaseModel):
+    location: str
+    name: str
 
 
 class Log(BaseModel):
@@ -43,8 +49,8 @@ class Log(BaseModel):
     """
 
     name: Optional[str]
-    start_time: Optional[str]
-    end_time: Optional[str]
+    start_time: Optional[datetime]
+    end_time: Optional[datetime]
     cmd: Optional[list[str]]
     stdout: Optional[str]
     stderr: Optional[str]
@@ -111,12 +117,12 @@ class RunRequest(BaseModel):
     workflow_url: str
 
     @root_validator()
-    def validate_workflow_engine(values):
+    def validate_workflow_engine(cls, values):
         """
         - If workflow_engine_version is set the workflow_engine must be set.
         """
         engine_version = values.get("workflow_engine_version")
-        engine = values.get("wokflow_engine")
+        engine = values.get("workflow_engine")
 
         if engine_version is not None and engine is None:
             raise ValueError(
