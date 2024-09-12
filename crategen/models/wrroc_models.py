@@ -1,6 +1,5 @@
-from typing import Optional, Annotated
-
 from datetime import datetime
+from typing import Annotated, Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 

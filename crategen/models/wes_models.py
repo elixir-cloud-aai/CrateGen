@@ -4,7 +4,7 @@ Each model in this module conforms to the corresponding WES model names as speci
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Dict
+from typing import Optional
 
 from pydantic import BaseModel, Field, root_validator, validator
 
