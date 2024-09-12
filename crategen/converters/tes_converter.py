@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from pydantic import AnyUrl, ValidationError
 
@@ -52,7 +51,7 @@ class TESConverter(AbstractConverter):
             "startTime": data_tes.creation_time,
             "endTime": end_time,
         }
-        
+
         validate_wrroc_tes(wrroc_data)
         return wrroc_data
 
@@ -76,23 +75,28 @@ class TESConverter(AbstractConverter):
             raise ValueError(f"Invalid WRROC data: {e.errors()}") from e
 
         # Convert URL strings to AnyUrl
-        tes_inputs = [TESInput(url=AnyUrl(url=obj.id), path=obj.name) for obj in data_wrroc.object]
-        tes_outputs = [TESOutput(url=AnyUrl(url=res.id), path=res.name) for res in data_wrroc.result]
+        tes_inputs = [
+            TESInput(url=AnyUrl(url=obj.id), path=obj.name) for obj in data_wrroc.object
+        ]
+        tes_outputs = [
+            TESOutput(url=AnyUrl(url=data_wrroc.result.id), path=data_wrroc.result.name)
+        ]
 
         # Ensure 'image' and 'command' fields are provided
-        tes_executors = [TESExecutor(image=data_wrroc.instrument or "", command=[])]  # Provide default empty list for command
+        tes_executors = [
+            TESExecutor(image=data_wrroc.instrument or "", command=[])
+        ]  # Provide default empty list for command
 
         # Ensure correct type for end_time (datetime)
-        end_time = datetime.fromisoformat(data_wrroc.endTime) if data_wrroc.endTime else None
 
         tes_logs = [
             TESTaskLog(
                 logs=[],
                 metadata=None,
                 start_time=None,
-                end_time=end_time, 
+                end_time=data_wrroc.endTime,
                 outputs=[],
-                system_logs=None
+                system_logs=None,
             )
         ]
 
@@ -103,9 +107,9 @@ class TESConverter(AbstractConverter):
             executors=tes_executors,
             inputs=tes_inputs,
             outputs=tes_outputs,
-            creation_time=None, 
+            creation_time=None,
             logs=tes_logs,
-            state=TESState.UNKNOWN
+            state=TESState.UNKNOWN,
         )
 
         # Validate TES data before returning
