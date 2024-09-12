@@ -4,7 +4,7 @@ Each model in this module conforms to the corresponding WES model names as speci
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Optional, Dict
 
 from pydantic import BaseModel, Field, root_validator, validator
 
@@ -48,14 +48,14 @@ class Log(BaseModel):
     **Reference:** https://ga4gh.github.io/workflow-execution-service-schemas/docs/#tag/runlog_model
     """
 
-    name: Optional[str]
-    start_time: Optional[datetime]
-    end_time: Optional[datetime]
-    cmd: Optional[list[str]]
-    stdout: Optional[str]
-    stderr: Optional[str]
-    exit_code: Optional[int]
-    system_logs: Optional[list[str]]
+    name: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    cmd: Optional[list[str]] = None
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
+    exit_code: Optional[int] = None
+    system_logs: Optional[list[str]] = None
 
     @validator("start_time", "end_time")
     def validate_datetime(value):
@@ -111,9 +111,9 @@ class RunRequest(BaseModel):
     workflow_type: str
     workflow_type_version: str
     tags: Optional[dict[str, str]] = {}
-    workflow_engine_parameters: Optional[dict[str, str]]
-    workflow_engine: Optional[str]
-    workflow_engine_version: Optional[str]
+    workflow_engine_parameters: Optional[dict[str, str]] = None
+    workflow_engine: Optional[str] = None
+    workflow_engine_version: Optional[str] = None
     workflow_url: str
 
     @root_validator()
@@ -149,12 +149,12 @@ class WESData(BaseModel):
     """
 
     run_id: str
-    request: Optional[RunRequest]
-    state: Optional[State]
-    run_log: Optional[Log]
-    task_logs_url: Optional[str]
-    task_logs: Optional[list[Log | TaskLog] | None]
-    outputs: dict[str, str]
+    request: Optional[RunRequest] = None
+    state: Optional[State] = None
+    run_log: Optional[Log] = None
+    task_logs_url: Optional[str] = None
+    task_logs: Optional[list[Log | TaskLog] | None] = None
+    outputs: dict[str, str] = None
 
     @root_validator
     def check_deprecated_fields(cls, values):

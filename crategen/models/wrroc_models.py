@@ -1,6 +1,10 @@
-from typing import Optional
+from typing import Optional, Annotated
+
+from datetime import datetime
 
 from pydantic import AnyUrl, BaseModel, Field
+
+WRROC_ID = Annotated[str, Field(alias="@id")]
 
 
 class WRROCInputs(BaseModel):
@@ -12,7 +16,7 @@ class WRROCInputs(BaseModel):
         name (str): The name of the input.
     """
 
-    id: str = Field(alias='@id')
+    id: WRROC_ID
     name: str
 
 
@@ -25,7 +29,7 @@ class WRROCOutputs(BaseModel):
         name (str): The name of the output.
     """
 
-    id: str = Field(alias='@id')
+    id: WRROC_ID
     name: str
 
 
@@ -39,20 +43,20 @@ class WRROCDataBase(BaseModel):
         description (Optional[str]): A brief description of the WRROC entity.
         instrument (Optional[str]): The instrument used in the WRROC entity.
         object (list[WRROCInputs]): A list of input objects related to the WRROC entity.
-        result (list[WRROCOutputs]): A list of output results related to the WRROC entity.
-        startTime (Optional[str]): The start time of the WRROC entity.
-        endTime (Optional[str]): The end time of the WRROC entity.
+        result (WRROCOutputs): A list of output results related to the WRROC entity.
+        startTime (Optional[datetime]): The start time of the WRROC entity.
+        endTime (Optional[datetime]): The end time of the WRROC entity.
         version (Optional[str]): The version of the WRROC entity.
     """
 
-    id: str = Field(alias='@id')
+    id: WRROC_ID
     name: str
     description: Optional[str] = ""
     instrument: Optional[str] = None
     object: list[WRROCInputs] = Field(default_factory=list)
-    result: list[WRROCOutputs] = Field(default_factory=list)
-    startTime: Optional[str] = None
-    endTime: Optional[str] = None
+    result: Optional[WRROCOutputs] = None
+    startTime: Optional[datetime] = None
+    endTime: Optional[datetime] = None
     version: Optional[str] = None
 
     class Config:
@@ -102,7 +106,7 @@ class WRROCProcess(BaseModel):
         profiles (Optional[list[AnyUrl]]): URLs to the RO-Crate profiles used.
     """
 
-    id: str = Field(alias='@id')
+    id: WRROC_ID
     name: str
     description: Optional[str] = ""
     startTime: Optional[str] = None

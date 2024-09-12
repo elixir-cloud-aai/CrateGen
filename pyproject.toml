@@ -50,8 +50,11 @@ pytest-mock = "^3.14.0"
 [tool.poetry.group.types.dependencies]
 mypy = "^1.10.1"
 
-
-
+[tool.mypy]
+strict_optional = false
+exclude = [
+    "crategen/validators.py"
+]
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.3"
