@@ -46,6 +46,18 @@ class Log(BaseModel):
     - **system_logs** (`optional[list[str]]`):  Any logs the system decides are relevant, which are not tied directly to a workflow.
 
     **Reference:** https://ga4gh.github.io/workflow-execution-service-schemas/docs/#tag/runlog_model
+    **Attributes:**
+
+    - **name** (`Optional[str]`): The task or workflow name.
+    - **cmd** (`Optional[list[str]]`): The command line that was executed.
+    - **start_time** (`Optional[str]`): When the command started executing, in ISO 8601 format.
+    - **end_time** (`Optional[str]`): When the command stopped executing, in ISO 8601 format.
+    - **stdout** (`Optional[str]`): A URL to retrieve standard output logs of the workflow run or task..
+    - **stderr** (`Optional[str]`): A URL to retrieve standard error logs of the workflow run or task.
+    - **exit_code** (`Optional[int]`): The exit code of the program.
+    - **system_logs** (`optional[list[str]]`):  Any logs the system decides are relevant, which are not tied directly to a workflow.
+
+    **Reference:** https://ga4gh.github.io/workflow-execution-service-schemas/docs/#tag/runlog_model
     """
 
     name: Optional[str] = None
@@ -84,9 +96,7 @@ class TaskLog(Log):
 
     id: str
     tes_uri: Optional[str]
-    name: str = Field(
-        ...
-    )  # test if adding Field makes a diff, gemini says no on specific questioning.
+    name: str = Field(...)
 
 
 class RunRequest(BaseModel):
