@@ -2,9 +2,9 @@ pre-push:
   commands:
     ruff:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/main HEAD)..HEAD
-      run: poetry run ruff check {files}
+      run: poetry run ruff check {files} --config pyproject.toml
       glob: '*.py'
     mypy:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/main HEAD)..HEAD
-      run: poetry run mypy {files}
+      run: poetry run mypy {files} --config-file pyproject.toml
       glob: '*.py'
