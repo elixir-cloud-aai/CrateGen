@@ -25,6 +25,12 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   "ro-crate-metadata.json"
   ```
 
+* **@type**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type of the content stored in the Ro-Crate. Should match the `license.@type` field if it exists.
+
+
   * **conformsTo**(static):
   - **WES field**: N/A
   - **type**: `{"@id": string}` | `[{"@id": string}]`
@@ -120,12 +126,33 @@ A contextual entity that contains relevant license information about the Ro-Crat
 
 reference: [[https://www.researchobject.org/ro-crate/specification/1.1/metadata.html]](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
 
-* **@id**(static):
+* **@id**(required):
   - **WES field**: N/A
   - **type**: `string`
-  - **description**: 
-  - **default**:
-  ```json
-    "./"
-  ```
+  - **description**: A reference to a relevant and comprehensive description of the license. May be a URI to the official webpage describing the license.
+
+* **@type**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type of the content stored in the Ro-Crate. Should match the `metadata.@type` field.
+ 
+* **name**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The official name of the license.
+ 
+* **description**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: Some additional context. May just be some standard license text. For example:
+    ```
+    "This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Australia License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/au/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA."
+    ```
+
+* **identifier**(recommended):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: A reference to a relevant and comprehensive description of the license. May be a URI to the official webpage describing the license. Should match the `license.@id` field. Should be added as some algorithms may look for this instead.
+
+
 
