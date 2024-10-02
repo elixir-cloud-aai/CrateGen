@@ -1,9 +1,9 @@
+from typing import Any, Dict
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
 
 class TESConverter(AbstractConverter):
-
-    def convert_to_wrroc(self, tes_data):
+    def convert_to_wrroc(self, tes_data: Dict[str, Any]) -> Dict[str, Any]:
         # Validate and extract data with defaults
         id = tes_data.get("id", "")
         name = tes_data.get("name", "")
@@ -27,7 +27,7 @@ class TESConverter(AbstractConverter):
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data):
+    def convert_from_wrroc(self, wrroc_data: Dict[str, Any]) -> Dict[str, Any]:
         # Validate and extract data with defaults
         id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

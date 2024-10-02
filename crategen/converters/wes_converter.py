@@ -1,9 +1,9 @@
+from typing import Any, Dict
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
 
 class WESConverter(AbstractConverter):
-
-    def convert_to_wrroc(self, wes_data):
+    def convert_to_wrroc(self, wes_data: Dict[str, Any]) -> Dict[str, Any]:
         # Validate and extract data with defaults
         run_id = wes_data.get("run_id", "")
         name = wes_data.get("run_log", {}).get("name", "")
@@ -23,7 +23,7 @@ class WESConverter(AbstractConverter):
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data):
+    def convert_from_wrroc(self, wrroc_data: Dict[str, Any]) -> Dict[str, Any]:
         # Validate and extract data with defaults
         run_id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

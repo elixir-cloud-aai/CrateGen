@@ -2,43 +2,44 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: '*'
   pull_request:
-    branches: [ main ]
+    branches: '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        poetry install
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
 
-    - name: Lint with Ruff
-      run: |
-        poetry run ruff check crategen/
+      - name: Lint with Ruff
+        run: |
+          poetry run ruff check crategen/
+        if: ${{ success() }}
 
-    - name: Type check with Mypy
-      run: |
-        poetry run mypy crategen/
+      - name: Type check with Mypy
+        run: |
+          poetry run mypy crategen/
 
-    - name: Run security checks with Bandit
-      run: |
-        poetry run bandit -r crategen/
+      - name: Run security checks with Bandit
+        run: |
+          poetry run bandit -r crategen/
 
-    - name: Install test dependencies
-      run: |
-        poetry add pytest pytest-cov pytest-mock
+      - name: Install test dependencies
+        run: |
+          poetry add pytest pytest-cov pytest-mock
 
-    # - name: Run tests
-    #   run: |
-    #     poetry run pytest --cov=crategen
+      - name: Run tests
+        run: |
+          poetry run pytest --cov=crategen

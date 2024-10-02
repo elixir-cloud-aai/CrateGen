@@ -84,9 +84,15 @@ select = [
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
+ignore = ["E501"]
+fixable = ["ALL"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.typos.default.extend-words]
 mke = 'mke'
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
