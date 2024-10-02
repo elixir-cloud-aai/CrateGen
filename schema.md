@@ -94,10 +94,18 @@ reference:
 * **description**(static):
   - **WES field**: N/A
   - **type**: `string`
-  - **description**: Should further elaborate on the name to provide a summary of the context in which the dataset is important.. 
+  - **description**: Should further elaborate on the name to provide a summary of the context in which the dataset is important.
   - **default**:
     ```json
       "A Wes Execution Service Ro-crate that conforms to the GA4GH WES specification"
     ```
-  
+
+* **mainEntity**(required):
+  - **WES field**: N/A
+  - **type**: `{"@id": "string"}`
+  - **description**: Contains an `@id` field that points to a data entity, which contains the core data of the workflow log. 
+  - **default**:
+    ```json
+      "A Wes Execution Service Ro-crate that conforms to the GA4GH WES specification"
+    ```
   
