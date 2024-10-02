@@ -108,4 +108,24 @@ reference:
     ```json
       "A Wes Execution Service Ro-crate that conforms to the GA4GH WES specification"
     ```
-  
+
+* **license**(recommended):
+  - **WES field**: N/A
+  - **type**: `{"@id": "string"}`
+  - **description**: Contains an `@id` field that points to a contextual entity, which contains relevant information on the license for the Ro-crate data.
+    SHOULD link to a Contextual Entity in the RO-Crate Metadata File with a name and description. MAY have a URI (eg for Creative Commons or Open Source licenses). MAY, if necessary be a textual description of how the RO-Crate may be used.
+ 
+### license object
+A contextual entity that contains relevant license information about the Ro-Crate.
+
+reference: [[https://www.researchobject.org/ro-crate/specification/1.1/metadata.html]](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
+
+* **@id**(static):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: 
+  - **default**:
+  ```json
+    "./"
+  ```
+
