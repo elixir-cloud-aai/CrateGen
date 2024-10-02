@@ -1,5 +1,7 @@
 ## schema
 
+### WORKFLOW RUN CRATE RO-CRATE FIELDS
+
 ### base object
 * **@context(static)**:
   - **WES field**: N/A
@@ -170,11 +172,35 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     ```json
       ["File", "SoftwareSourceCode", "ComputationalWorkflow"]
     ```
- 
+    
 * **name**(required):
   - **WES field**: N/A
   - **type**: `string`
   - **description**:  A human-readable name for the workflow.
+
+* **author**(recommended):
+  - **WES field**: N/A
+  - **type**: `{"@id": string}`
+  - **description**: contains an `@id` field that points to the workflow author. Should point to a contextual entity with the author's information.
+ 
+* **creator**(recommended):
+  - **WES field**: N/A
+  - **type**: `{"@id": string}`
+  - **description**: contains an `@id` field that points to the workflow creator. Should point to a contextual entity with the creator's information.
+ 
+* **programmingLanguage**(recommended):
+  - **WES field**: N/A
+  - **type**: `{"@id": string}`
+  - **description**: contains an `@id` field that points to the prrogramming language the workflow was written in. Should point to a contextual entity with the workflow's programming language.
+
+### GA4GH WES FIELDS
+
+* **indentifier**(required):
+  - **WES field**: run_id
+  - **type**: `string`
+  - **description**: The Workflow run_id.
+ 
+
  
 
 
