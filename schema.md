@@ -154,5 +154,28 @@ reference: [[https://www.researchobject.org/ro-crate/specification/1.1/metadata.
   - **type**: `string`
   - **description**: A reference to a relevant and comprehensive description of the license. May be a URI to the official webpage describing the license. Should match the `license.@id` field. Should be added as some algorithms may look for this instead.
 
+### mainEntity object
+This object will contain or point to all relevant data for the GA4GH WES Run Log.
+
+* **id**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: a File URI linking to the workflow entry-point.
+
+* **type**(static):
+  - **WES field**: N/A
+  - **type**: `string` | `[string]`
+  - **description**:  The standard workflow type according to the Ro-Crate Version.
+  - **default**:
+    ```json
+      ["File", "SoftwareSourceCode", "ComputationalWorkflow"]
+    ```
+ 
+* **name**(required):
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**:  A human-readable name for the workflow.
+ 
+
 
 
