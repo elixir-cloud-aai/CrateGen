@@ -1,6 +1,11 @@
+"""CLI module for converting TES and WES data to WRROC."""
+
 import json
+
 import click
+
 from crategen.converter_manager import ConverterManager
+
 
 @click.command()
 @click.option("--input", prompt="Input file", help="Path to the input JSON file.")
