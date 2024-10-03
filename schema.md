@@ -31,6 +31,10 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   - **WES field**: N/A
   - **type**: `string`
   - **description**: The type of the content stored in the Ro-Crate. Should match the `license.@type` field if it exists.
+  - **default**:
+  ```json
+    "computationalWorkflow"
+  ```
 
 
   * **conformsTo**(static):
@@ -183,7 +187,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `{"@id": string}`
   - **description**: contains an `@id` field that points to the workflow author. Should point to a contextual entity with the author's information.
  
-* **creator**(recommended):
+* **creator**(required):
   - **WES field**: N/A
   - **type**: `{"@id": string}`
   - **description**: contains an `@id` field that points to the workflow creator. Should point to a contextual entity with the creator's information.
