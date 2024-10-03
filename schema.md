@@ -200,6 +200,11 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `string`
   - **description**: The Workflow run_id.
  
+* **indentifier**(required):
+  - **WES field**: run_id
+  - **type**: `string`
+  - **description**: The Workflow run_id.
+ 
 
  
 
