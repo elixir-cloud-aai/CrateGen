@@ -184,12 +184,12 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
 
 * **author**(recommended):
   - **WES field**: N/A
-  - **type**: `{"@id": string}`
+  - **type**: `{"@id": string}` | `[{"@id": string}]`
   - **description**: contains an `@id` field that points to the workflow author. Should point to a contextual entity with the author's information.
  
 * **creator**(required):
   - **WES field**: N/A
-  - **type**: `{"@id": string}`
+  - **type**: `{"@id": string}` | `[{"@id": string}]`
   - **description**: contains an `@id` field that points to the workflow creator. Should point to a contextual entity with the creator's information.
  
 * **programmingLanguage**(recommended):
