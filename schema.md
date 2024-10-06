@@ -224,8 +224,6 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `{"@id": string}` | `[{"@id": string}]`
   - **description**: contains an `@id` field that points to the workflow creator. Should point to a contextual entity with the creator's information.
 
-### GA4GH WES FIELDS
-
 - **identifier**(required):
 
   - **WES field**: `run_id` (one - one)
@@ -264,17 +262,60 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
 
 - **url**(required):
 
-  - **WES field**: `workflow_params.workflow_url` (one - one)
+  - **WES field**: `request.workflow_url` (one - one)
   - **type**: `URL`
   - **description**: The workflow url.
 
 - **keywords**(recommended):
 
-  - **WES field**: `workflow_params.tags` (one - many)
+  - **WES field**: `request.tags` (one - many)
   - **type**: `string`
   - **description**: The workflow keywords or tags. If there are multiple tags they should be delimited by commas.
 
 - **runtimePlatform**(recommended):
-  - **WES field**: `workflow_params.workflow_engine` (one - one)
-  - **type**: `{"@id": string}`
-  - **description**: The workflow engine. Contains an `@id`, an IRI that points to the official documentation of the workflow engine. Should match the `@id` field of a contextual entity the contains relevant information on the workflow engine.
+
+  - **WES field**: `request.workflow_engine` (one - one)
+  - **type**: `string`
+  - **description**: The workflow engine.
+
+### run_log entity
+
+- **@id**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES run_log object.
+  - **default**:
+    ```json
+    "#run_log"
+    ```
+
+- **@type**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the run_log entitiy.
+  - **default**:
+    ```json
+    "CreativeWork"
+    ```
+
+- **name**(static):
+
+  - **WES field**: run_log.name
+  - **type**: `string`
+  - **description**: The task or workflow name.
+
+- **dateCreated**(static):
+
+  - **WES field**: run_log.start_time
+  - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
+  - **description**: When the command started executing.
+
+- **dateModified**(static):
+
+  - **WES field**: run_log.end_time
+  - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
+  - **description**: When the command stopped executing.
+
+url for stdin and stdout?
