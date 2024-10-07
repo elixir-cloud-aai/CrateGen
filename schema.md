@@ -240,7 +240,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
 
   - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` (many - many)
   - **type**: `{"@id": string}` | `[{"@id": string}]`
-  - **description**: The Workflow outputs.
+  - **description**: The Workflow outputs. Should contain an `@id` field that points to a data entity containing the relevant information for that output.
 
 - **dateCreated**(required):
 
@@ -278,7 +278,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `string`
   - **description**: The workflow engine.
 
-### run_log entity
+### run_log entity - one of the output objects
 
 - **@id**(static):
 
@@ -297,25 +297,177 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **description**: The type the run_log entitiy.
   - **default**:
     ```json
-    "CreativeWork"
+    "FormalParameter"
     ```
 
-- **name**(static):
+- **name**(optional):
 
   - **WES field**: run_log.name
   - **type**: `string`
   - **description**: The task or workflow name.
 
-- **dateCreated**(static):
+- **dateCreated**(optional):
 
   - **WES field**: run_log.start_time
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: When the command started executing.
 
-- **dateModified**(static):
+- **dateModified**(optional):
 
   - **WES field**: run_log.end_time
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: When the command stopped executing.
 
-url for stdin and stdout?
+### run_log.stdout entity - one of the output objects of the main entity
+
+- **@id**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES run_log.stdout string.
+  - **default**:
+    ```json
+    "#run_log_stdout"
+    ```
+
+- **@type**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "FormalParameter"
+    ```
+
+- **name**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+  - - **default**:
+    ```json
+    "Runlog stdout"
+    ```
+
+- **url**(required):
+
+  - **WES field**: `run_log.stdout` (one - one)
+  - **type**: `URL`
+  - **description**: A URL to retrieve standard output logs of the workflow run or task.
+
+### run_log.stderr entity - one of the output objects of the main entity
+
+- **@id**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES run_log.stderr string.
+  - **default**:
+    ```json
+    "#run_log_stderr"
+    ```
+
+- **@type**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "FormalParameter"
+    ```
+
+- **name**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+  - - **default**:
+    ```json
+    "Runlog stderr"
+    ```
+
+- **url**(required):
+
+  - **WES field**: `run_log.stderr` (one - one)
+  - **type**: `URL`
+  - **description**: A URL to retrieve standard error logs of the workflow run or task.
+
+- ### request.workflow_params.outputFile | request.workflow_params.outputDir | request.workflow_params.output entity - one of the output objects of the main entity
+
+- **@id**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES request.output string.
+  - **default**:
+    ```json
+    "#request_workflow_params_output"
+    ```
+
+- **@type**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "FormalParameter"
+    ```
+
+- **name**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+  - - **default**:
+    ```json
+    "Request workflow_params output"
+    ```
+
+- **url**(required):
+
+  - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` (one - one)
+  - **type**: `URL`
+  - **description**: A URL to retrieve output data of the workflow run or task.
+
+- ### request.workflow_params.inputFile | request.workflow_params.inputDir | request.workflow_params.input entity - one of the input objects of the main entity
+
+- **@id**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES request.input string.
+  - **default**:
+    ```json
+    "#request_workflow_params_input"
+    ```
+
+- **@type**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "FormalParameter"
+    ```
+
+- **name**(static):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+  - - **default**:
+    ```json
+    "Request workflow_params input"
+    ```
+
+- **url**(required):
+
+  - **WES field**: `request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input` (one - one)
+  - **type**: `URL`
+  - **description**: A URL to retrieve input data of the workflow run or task.
+
+run_log.exit_code will be part of the output object.
