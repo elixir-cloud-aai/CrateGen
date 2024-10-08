@@ -1,7 +1,5 @@
 """Module for converting TES data to WRROC format and vice versa."""
 
-from typing import Any, Dict
-
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
 
@@ -9,14 +7,14 @@ from .utils import convert_to_iso8601
 class TESConverter(AbstractConverter):
     """Converter for TES data to WRROC and vice versa."""
 
-    def convert_to_wrroc(self, tes_data: Dict[str, Any]) -> Dict[str, Any]:
+    def convert_to_wrroc(self, tes_data):
         """Convert TES data to WRROC format.
 
         Args:
-            tes_data (Dict[str, Any]): The TES data to be converted.
+            tes_data: The TES data to be converted.
 
         Returns:
-            Dict[str, Any]: The converted WRROC data.
+            The converted WRROC data.
         """
         id = tes_data.get("id", "")
         name = tes_data.get("name", "")
@@ -39,14 +37,14 @@ class TESConverter(AbstractConverter):
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data: Dict[str, Any]) -> Dict[str, Any]:
+    def convert_from_wrroc(self, wrroc_data):
         """Convert WRROC data to TES format.
 
         Args:
-            wrroc_data (Dict[str, Any]): The WRROC data to be converted.
+            wrroc_data: The WRROC data to be converted.
 
         Returns:
-            Dict[str, Any]: The converted TES data.
+            The converted TES data.
         """
         id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

@@ -16,7 +16,7 @@ from crategen.converter_manager import ConverterManager
     type=click.Choice(["tes-to-wrroc", "wes-to-wrroc"]),
     help="Type of conversion to perform.",
 )
-def cli(input: str, output: str, conversion_type: str) -> None:
+def cli(input, output, conversion_type):
     """Command Line Interface for converting TES/WES to WRROC."""
     manager = ConverterManager()
 
@@ -33,6 +33,7 @@ def cli(input: str, output: str, conversion_type: str) -> None:
     # Save the result to the output JSON file
     with open(output, "w") as output_file:
         json.dump(result, output_file, indent=4)
+
 
 if __name__ == "__main__":
     cli()

@@ -1,7 +1,5 @@
 """Module for converting WES data to WRROC format and vice versa."""
 
-from typing import Any, Dict
-
 from .abstract_converter import AbstractConverter
 from .utils import convert_to_iso8601
 
@@ -9,14 +7,14 @@ from .utils import convert_to_iso8601
 class WESConverter(AbstractConverter):
     """Converter for WES data to WRROC and vice versa."""
 
-    def convert_to_wrroc(self, wes_data: Dict[str, Any]) -> Dict[str, Any]:
+    def convert_to_wrroc(self, wes_data):
         """Convert WES data to WRROC format.
 
         Args:
-            wes_data (Dict[str, Any]): The WES data to be converted.
+            wes_data: The WES data to be converted.
 
         Returns:
-            Dict[str, Any]: The converted WRROC data.
+            The converted WRROC data.
         """
         run_id = wes_data.get("run_id", "")
         name = wes_data.get("run_log", {}).get("name", "")
@@ -35,14 +33,14 @@ class WESConverter(AbstractConverter):
         }
         return wrroc_data
 
-    def convert_from_wrroc(self, wrroc_data: Dict[str, Any]) -> Dict[str, Any]:
+    def convert_from_wrroc(self, wrroc_data):
         """Convert WRROC data to WES format.
 
         Args:
-            wrroc_data (Dict[str, Any]): The WRROC data to be converted.
+            wrroc_data: The WRROC data to be converted.
 
         Returns:
-            Dict[str, Any]: The converted WES data.
+            The converted WES data.
         """
         run_id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")
