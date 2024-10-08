@@ -1,10 +1,23 @@
-## schema
+# WES - WRC RO-Crate
 
-### WORKFLOW RUN CRATE RO-CRATE FIELDS
+This document aims to detail a conversion between the [GA4GH WES profile](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) to the [Workflow Run Crate](https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/) (WRC) extension of [Ro-Crates](https://www.researchobject.org/ro-crate/)
 
-### base object
+## WORKFLOW RUN CRATE RO-CRATE FIELDS
 
-- **@context(static)**:
+For a Json object to conform with the Ro-Crate specification there are certain minimal requirements. Further still the WRC estension has it's own requirements. Considering that, the following definitions aim to differentiate the diffrent types of fields and how they should be considered in each implementation.
+
+### Terminology
+
+1. constant: These fields are required and for our purposes the value of this field should always be the default value. In other words their values are constant.
+2. required: These fields are required but their values are not constant.
+3. recommended: These fields are not required but they are recommended to give a comprehensive definition for your RO-crate object.
+4. optional: These fields are optional.
+
+### `base object`
+
+This is the base Ro-Crate object.
+
+- **@context**(constant):
   - **WES field**: N/A
   - **type**: `string` | `[string]`
   - **description**: URI pointing to the official context page of the version of Ro-Crate and any extensions being implemented.
@@ -16,11 +29,13 @@
   ]
   ```
 
-### metadata object
+### `metadata entity`
+
+This entity is the metadata file descriptor. A Contextual Entity of type [CreativeWork](http://schema.org/CreativeWork), which describes the RO-Crate Metadata File and links it to the Root Data Entity.
 
 reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.html](https://www.researchobject.org/ro-crate/specification/1.1/metadata.html)
 
-- **@id**(static):
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -35,14 +50,14 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
 
   - **WES field**: N/A
   - **type**: `string`
-  - **description**: The type of the content stored in the Ro-Crate. Should match the `license.@type` field if it exists.
+  - **description**: The type of the content stored in the Ro-Crate.
   - **default**:
 
   ```json
-  "computationalWorkflow"
+  "CreativeWork"
   ```
 
-  - **conformsTo**(static):
+  - **conformsTo**(constant):
 
   * **WES field**: N/A
   * **type**: `{"@id": string}` | `[{"@id": string}]`
@@ -56,7 +71,7 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   ]
   ```
 
-- **about**(static):
+- **about**(constant):
 
   - **WES field**: N/A
   - **type**: `{"@id": string}`
@@ -64,28 +79,19 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   - **default**:
 
   ```json
-   {"@id": "./"},
+  { "@id": "./" }
   ```
 
-  - **about**(static):
+### `Root data entity`
 
-  * **WES field**: N/A
-  * **type**: `{"@id": string}`
-  * **description**: contains an `@id` field pointing to the dataset entity of the RO-Crate. Must match the dataset.@id field.
-  * **default**:
-
-  ```json
-   {"@id": "./"},
-  ```
-
-### dataset object
+A Data Entity of type [Dataset](http://schema.org/Dataset), representing the Ro-Crate as a whole.
 
 reference:
 
 1. [https://www.researchobject.org/ro-crate/specification/1.1/metadata.html](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
 2. https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/
 
-- **@id**(static):
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -96,7 +102,7 @@ reference:
   "./"
   ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -113,7 +119,7 @@ reference:
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: The date the Ro-Crate was published. Must be a string in ISO 8601 date format and Should be specified to at least the precision of a day, May be a timestamp down to the millisecond.
 
-- **name**(static):
+- **name**(required):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -124,7 +130,7 @@ reference:
   "A Ga4GH WES Ro-Crate"
   ```
 
-- **description**(static):
+- **description**(required):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -144,17 +150,17 @@ reference:
     "A Wes Execution Service Ro-crate that conforms to the GA4GH WES specification"
     ```
 
-- **license**(recommended):
+- **license**(required):
   - **WES field**: N/A
   - **type**: `{"@id": "string"}`
   - **description**: Contains an `@id` field that points to a contextual entity, which contains relevant information on the license for the Ro-crate data.
     SHOULD link to a Contextual Entity in the RO-Crate Metadata File with a name and description. MAY have a URI (eg for Creative Commons or Open Source licenses). MAY, if necessary be a textual description of how the RO-Crate may be used.
 
-### license object
+### `license object`
 
 A contextual entity that contains relevant license information about the Ro-Crate.
 
-reference: [[https://www.researchobject.org/ro-crate/specification/1.1/metadata.html]](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
+reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.html](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
 
 - **@id**(required):
 
@@ -188,9 +194,11 @@ reference: [[https://www.researchobject.org/ro-crate/specification/1.1/metadata.
   - **type**: `string`
   - **description**: A reference to a relevant and comprehensive description of the license. May be a URI to the official webpage describing the license. Should match the `license.@id` field. Should be added as some algorithms may look for this instead.
 
-### mainEntity object
+### `mainEntity data Entity`
 
-This object will contain or point to all relevant data for the GA4GH WES Run Log.
+This object will contain or point to all relevant data for the GA4GH WES Run Log. This required by the WRC extension.
+
+reference: https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/
 
 - **id**(required):
 
@@ -198,7 +206,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `string`
   - **description**: a File URI linking to the workflow entry-point.
 
-- **type**(static):
+- **type**(constant):
   - **WES field**: N/A
   - **type**: `string` | `[string]`
   - **description**: The standard workflow type according to the Ro-Crate Version.
@@ -244,7 +252,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
 
 - **dateCreated**(required):
 
-  - **WES field**: `run_log.start_time` (many - many)
+  - **WES field**: `run_log.start_time` (one - one)
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: The date the workflow started executing.
 
@@ -278,9 +286,17 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `string`
   - **description**: The workflow engine.
 
-### run_log entity - one of the output objects
+- **softwareRequirements**(recommended):
 
-- **@id**(static):
+  - **WES field**: `request.workflow_engine_parameters` (many - many)
+  - **type**: `{"@id": string}` | `[{"@id": string}]`
+  - **description**: The workflow engine parameters.
+
+### `run_log entity` (optional)
+
+This is one of the output objects that the mainEntity will point to. It is a data entity of type FormalParameter.
+
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -290,7 +306,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "#run_log"
     ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -318,9 +334,11 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: When the command stopped executing.
 
-### run_log.stdout entity - one of the output objects of the main entity
+### `run_log.stdout entity` (optional)
 
-- **@id**(static):
+one of the output objects of the main entity
+
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -330,7 +348,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "#run_log_stdout"
     ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -340,7 +358,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "FormalParameter"
     ```
 
-- **name**(static):
+- **name**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -356,9 +374,11 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `URL`
   - **description**: A URL to retrieve standard output logs of the workflow run or task.
 
-### run_log.stderr entity - one of the output objects of the main entity
+### `run_log.stderr entity` (optional)
 
-- **@id**(static):
+one of the output objects of the main entity
+
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -368,7 +388,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "#run_log_stderr"
     ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -378,7 +398,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "FormalParameter"
     ```
 
-- **name**(static):
+- **name**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -394,9 +414,11 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `URL`
   - **description**: A URL to retrieve standard error logs of the workflow run or task.
 
-- ### request.workflow_params.outputFile | request.workflow_params.outputDir | request.workflow_params.output entity - one of the output objects of the main entity
+- ### `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output entity` (optional)
 
-- **@id**(static):
+one of the output objects of the main entity
+
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -406,7 +428,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "#request_workflow_params_output"
     ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -416,7 +438,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "FormalParameter"
     ```
 
-- **name**(static):
+- **name**(required):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -428,23 +450,28 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
 
 - **url**(required):
 
-  - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` (one - one)
-  - **type**: `URL`
-  - **description**: A URL to retrieve output data of the workflow run or task.
+  - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` - (one - one)
 
-- ### request.workflow_params.inputFile | request.workflow_params.inputDir | request.workflow_params.input entity - one of the input objects of the main entity
+one of the output objects of the main entity
 
-- **@id**(static):
+- **type**: `URL`
+- **description**: A URL to retrieve output data of the workflow run or task.
+
+- ### `request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input` (optional)
+
+one of the input objects of the main entity.
+
+- **@id**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
-  - **description**: The name of the WES request.input string.
+  - **description**: The id of the WES request.input string.
   - **default**:
     ```json
     "#request_workflow_params_input"
     ```
 
-- **@type**(static):
+- **@type**(constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -454,7 +481,7 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
     "FormalParameter"
     ```
 
-- **name**(static):
+- **name**(required):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -470,4 +497,43 @@ This object will contain or point to all relevant data for the GA4GH WES Run Log
   - **type**: `URL`
   - **description**: A URL to retrieve input data of the workflow run or task.
 
-run_log.exit_code will be part of the output object.
+### `request.workflow_engine_parameters`(optional)
+
+A data entity representing the `request.workflow_engine_paramneters` field from the WES profile
+
+- **@id**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The name of the WES request.workflow_engine_parameter.
+  - **default**:
+    ```json
+    "#request_workflow_engine_parameters"
+    ```
+
+- **@type**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "SoftwareApplication"
+    ```
+
+- **name**(required):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the parameter.
+
+- **url**(required):
+
+  - **WES field**: `request.workflow_engine_parameters`
+  - **type**: `URL`
+  - **description**: A URL to the parameter.
+
+run_log.cmd, run_log.exit_code will be part of the output object.
+add programmingLanguage entity (computer language entity)
+
+request.workflow_type_version
