@@ -8,13 +8,17 @@ class TESConverter(AbstractConverter):
     """Converter for TES data to WRROC and vice versa."""
 
     def convert_to_wrroc(self, tes_data):
-        """Convert TES data to WRROC format.
+        """
+        Convert TES data to WRROC format.
 
         Args:
-            tes_data: The TES data to be converted.
+            data: The input TES data.
 
         Returns:
             The converted WRROC data.
+
+        Raises:
+            ValidationError: If TES data is invalid.
         """
         id = tes_data.get("id", "")
         name = tes_data.get("name", "")
@@ -38,13 +42,17 @@ class TESConverter(AbstractConverter):
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
-        """Convert WRROC data to TES format.
+        """
+        Convert WRROC data to TES format.
 
         Args:
-            wrroc_data: The WRROC data to be converted.
+            data: The input WRROC data.
 
         Returns:
             The converted TES data.
+
+        Raises:
+            ValidationError: If WRROC data is invalid.
         """
         id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

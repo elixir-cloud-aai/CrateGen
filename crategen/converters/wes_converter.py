@@ -8,13 +8,17 @@ class WESConverter(AbstractConverter):
     """Converter for WES data to WRROC and vice versa."""
 
     def convert_to_wrroc(self, wes_data):
-        """Convert WES data to WRROC format.
+        """
+        Convert WES data to WRROC format.
 
         Args:
-            wes_data: The WES data to be converted.
+            data: The input WES data.
 
         Returns:
             The converted WRROC data.
+
+        Raises:
+            ValidationError: If WES data is invalid.
         """
         run_id = wes_data.get("run_id", "")
         name = wes_data.get("run_log", {}).get("name", "")
@@ -34,13 +38,17 @@ class WESConverter(AbstractConverter):
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
-        """Convert WRROC data to WES format.
+        """
+        Convert WRROC data to WES format.
 
         Args:
-            wrroc_data: The WRROC data to be converted.
+            data: The input WRROC data.
 
         Returns:
             The converted WES data.
+
+        Raises:
+            ValidationError: If WRROC data is invalid.
         """
         run_id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

@@ -5,7 +5,13 @@ from .converters.wes_converter import WESConverter
 
 
 class ConverterManager:
-    """Manages conversion between TES/WES and WRROC formats."""
+    """
+    Manages conversion between TES/WES and WRROC formats.
+    
+        Attributes:
+        tes_converter: An instance of TESConverter for TES data conversions.
+        wes_converter: An instance of WESConverter for WES data conversions.
+    """
 
     def __init__(self):
         """Initializes the converters for TES and WES."""
@@ -13,9 +19,31 @@ class ConverterManager:
         self.wes_converter = WESConverter()
 
     def convert_tes_to_wrroc(self, tes_data):
-        """Converts TES data to WRROC format."""
+        """
+        Converts TES data to WRROC format.
+
+        Args:
+            tes_data: The TES data to be converted.
+
+        Returns:
+            The converted data in WRROC format.
+
+        Raises:
+            ValueError: If the conversion fails due to invalid data.
+        """
         return self.tes_converter.convert_to_wrroc(tes_data)
 
     def convert_wes_to_wrroc(self, wes_data):
-        """Converts WES data to WRROC format."""
+        """
+        Converts WES data to WRROC format.
+
+        Args:
+            wes_data: The WES data to be converted.
+
+        Returns:
+            The converted data in WRROC format.
+
+        Raises:
+            ValueError: If the conversion fails due to invalid data.
+        """
         return self.wes_converter.convert_to_wrroc(wes_data)
