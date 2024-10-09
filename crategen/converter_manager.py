@@ -25,9 +25,6 @@ class ConverterManager:
 
         Returns:
             The converted data in WRROC format.
-
-        Raises:
-            ValueError: If the conversion fails due to invalid data.
         """
         return self.tes_converter.convert_to_wrroc(tes_data)
 
@@ -39,8 +36,5 @@ class ConverterManager:
 
         Returns:
             The converted data in WRROC format.
-
-        Raises:
-            ValueError: If the conversion fails due to invalid data.
         """
         return self.wes_converter.convert_to_wrroc(wes_data)

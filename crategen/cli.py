@@ -24,10 +24,6 @@ def cli(input, output, conversion_type):
         output: Path to the output JSON file.
         conversion_type: Type of conversion to perform. Choices are "tes-to-wrroc" and "wes-to-wrroc".
 
-    Raises:
-        FileNotFoundError: If the input file does not exist.
-        json.JSONDecodeError: If the input file is not valid JSON.
-
     Example:
         $ crategen --input data.json --output result.json --conversion-type tes-to-wrroc
     """

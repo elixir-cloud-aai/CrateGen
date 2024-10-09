@@ -15,9 +15,6 @@ class WESConverter(AbstractConverter):
 
         Returns:
             dict: The converted WRROC data.
-
-        Raises:
-            ValidationError: If WES data is invalid.
         """
         run_id = wes_data.get("run_id", "")
         name = wes_data.get("run_log", {}).get("name", "")
@@ -44,9 +41,6 @@ class WESConverter(AbstractConverter):
 
         Returns:
             dict: The converted WES data.
-
-        Raises:
-            ValidationError: If WRROC data is invalid.
         """
         run_id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

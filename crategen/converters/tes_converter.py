@@ -15,9 +15,6 @@ class TESConverter(AbstractConverter):
 
         Returns:
             dict: The converted WRROC data.
-
-        Raises:
-            ValidationError: If TES data is invalid.
         """
         id = tes_data.get("id", "")
         name = tes_data.get("name", "")
@@ -48,9 +45,6 @@ class TESConverter(AbstractConverter):
 
         Returns:
             dict: The converted TES data.
-
-        Raises:
-            ValidationError: If WRROC data is invalid.
         """
         id = wrroc_data.get("@id", "")
         name = wrroc_data.get("name", "")

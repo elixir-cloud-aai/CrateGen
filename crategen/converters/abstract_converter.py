@@ -15,9 +15,6 @@ class AbstractConverter(ABC):
 
         Returns:
             The data converted to WRROC format.
-
-        Raises:
-            NotImplementedError: If the method is not implemented by the subclass.
         """
 
     @abstractmethod
@@ -29,7 +26,4 @@ class AbstractConverter(ABC):
 
         Returns:
             The data converted back to the original format.
-
-        Raises:
-            NotImplementedError: If the method is not implemented by the subclass.
         """
