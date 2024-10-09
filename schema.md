@@ -238,18 +238,6 @@ reference: https://www.researchobject.org/workflow-run-crate/profiles/workflow_r
   - **type**: `string`
   - **description**: The Workflow run_id.
 
-- **input**(required):
-
-  - **WES field**: `request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input` (many - many)
-  - **type**: `{"@id": string}` | `[{"@id": string}]`
-  - **description**: The Workflow inputs. Should contain an `@id` field that points to a data entity containing the relevant information for that input.
-
-- **output**(required):
-
-  - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` (many - many)
-  - **type**: `{"@id": string}` | `[{"@id": string}]`
-  - **description**: The Workflow outputs. Should contain an `@id` field that points to a data entity containing the relevant information for that output.
-
 - **dateCreated**(required):
 
   - **WES field**: `run_log.start_time` (one - one)
@@ -414,49 +402,6 @@ one of the output objects of the main entity
   - **type**: `URL`
   - **description**: A URL to retrieve standard error logs of the workflow run or task.
 
-- ### `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output entity` (optional)
-
-one of the output objects of the main entity
-
-- **@id**(constant):
-
-  - **WES field**: N/A
-  - **type**: `string`
-  - **description**: The name of the WES request.output string.
-  - **default**:
-    ```json
-    "#request_workflow_params_output"
-    ```
-
-- **@type**(constant):
-
-  - **WES field**: N/A
-  - **type**: `string`
-  - **description**: The type the entitiy.
-  - **default**:
-    ```json
-    "FormalParameter"
-    ```
-
-- **name**(required):
-
-  - **WES field**: N/A
-  - **type**: `string`
-  - **description**: name of the entity.
-  - - **default**:
-    ```json
-    "Request workflow_params output"
-    ```
-
-- **url**(required):
-
-  - **WES field**: `request.workflow_params.outputFile` | `request.workflow_params.outputDir` | `request.workflow_params.output` - (one - one)
-
-one of the output objects of the main entity
-
-- **type**: `URL`
-- **description**: A URL to retrieve output data of the workflow run or task.
-
 - ### `request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input` (optional)
 
 one of the input objects of the main entity.
@@ -499,7 +444,7 @@ one of the input objects of the main entity.
 
 ### `request.workflow_engine_parameters`(optional)
 
-A data entity representing the `request.workflow_engine_paramneters` field from the WES profile
+A data entity representing the `request.workflow_engine_parameters` field from the WES profile
 
 - **@id**(constant):
 
@@ -523,17 +468,110 @@ A data entity representing the `request.workflow_engine_paramneters` field from 
 
 - **name**(required):
 
-  - **WES field**: N/A
+  - **WES field**: `request.workflow_engine_parameters[i]`
   - **type**: `string`
   - **description**: name of the parameter.
 
 - **url**(required):
 
-  - **WES field**: `request.workflow_engine_parameters`
+  - **WES field**: N/A
   - **type**: `URL`
   - **description**: A URL to the parameter.
 
-run_log.cmd, run_log.exit_code will be part of the output object.
-add programmingLanguage entity (computer language entity)
+### `request.workflow_type`(optional)
 
-request.workflow_type_version
+This entity is pointed to by the programmingLanguage property in the mainEntity data entity. It is a data entity of type `[ComputerLanguage](https://schema.org/ComputerLanguage)`.
+
+- **@id**(required):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The id of the progamming language field that points to this entity. Can be the URL of the official documentation of said programming language.
+
+- **@type**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "ComputerLanguage"
+    ```
+
+- **@type**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "ComputerLanguage"
+    ```
+
+- **name**(required):
+
+  - **WES field**: `request.workflow_type`
+  - **type**: `string`
+  - **description**: name of the workflow type.
+
+- **alternateName**(required):
+
+  - **WES field**: `request.workflow_type`-`request.workflow_type_version`
+  - **type**: `string`
+  - **description**: name of the workflow type and the workflow type version, seperated by a hypen.
+
+- **url**(required):
+
+  - **WES field**: `request.workflow_engine_parameters`
+  - **type**: `URL`
+  - **description**: A URL to the workflow type. Usually the URL of the official documentation for the workflow type.
+
+### `task_logs_url`
+
+- **@id**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The id of the WES task_logs_url.
+  - **default**:
+    ```json
+    "#task_logs_url"
+    ```
+
+- **@type**(constant):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The type the entitiy.
+  - **default**:
+    ```json
+    "FormalParameter"
+    ```
+
+- **name**(required):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+  - - **default**:
+    ```json
+    "The workflow Task Logs URL"
+    ```
+
+- **url**(required):
+
+  - **WES field**: `task_logs_url` (one - one)
+  - **type**: `URL`
+  - **description**: A reference to the complete url which may be used to obtain a paginated list of task logs for this workflow.
+
+one of the input objects of the main entity. A data entity representing the WES `task_logs_url`
+
+### WES fields that have not been added:
+
+1. outputs
+2. run_log.cmd
+3. run_log.exit_code
+4. run_log.system_logs
+5. request.workflow_params (partial support)
+6. workflow_engine_version
+7. task_logs (deprecated, may not be added)
