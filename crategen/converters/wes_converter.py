@@ -11,7 +11,7 @@ class WESConverter(AbstractConverter):
         """Convert WES data to WRROC format.
 
         Args:
-            data: The input WES data.
+            wes_data: The input WES data.
 
         Returns:
             dict: The converted WRROC data.
@@ -40,7 +40,7 @@ class WESConverter(AbstractConverter):
         """Convert WRROC data to WES format.
 
         Args:
-            data: The input WRROC data.
+            wrroc_data: The input WRROC data.
 
         Returns:
             dict: The converted WES data.

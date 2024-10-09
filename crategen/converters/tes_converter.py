@@ -11,7 +11,7 @@ class TESConverter(AbstractConverter):
         """Convert TES data to WRROC format.
 
         Args:
-            data: The input TES data.
+            tes_data: The input TES data.
 
         Returns:
             dict: The converted WRROC data.
@@ -44,7 +44,7 @@ class TESConverter(AbstractConverter):
         """Convert WRROC data to TES format.
 
         Args:
-            data: The input WRROC data.
+            wrroc_data: The input WRROC data.
 
         Returns:
             dict: The converted TES data.
