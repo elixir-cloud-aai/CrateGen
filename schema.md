@@ -526,7 +526,9 @@ This entity is pointed to by the programmingLanguage property in the mainEntity 
   - **type**: `URL`
   - **description**: A URL to the workflow type. Usually the URL of the official documentation for the workflow type.
 
-### `task_logs_url`
+### `task_logs_url` (optional)
+
+one of the input objects of the main entity. A data entity representing the WES `task_logs_url`
 
 - **@id**(constant):
 
@@ -563,8 +565,6 @@ This entity is pointed to by the programmingLanguage property in the mainEntity 
   - **WES field**: `task_logs_url` (one - one)
   - **type**: `URL`
   - **description**: A reference to the complete url which may be used to obtain a paginated list of task logs for this workflow.
-
-one of the input objects of the main entity. A data entity representing the WES `task_logs_url`
 
 ### WES fields that have not been added:
 
