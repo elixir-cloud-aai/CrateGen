@@ -4,8 +4,7 @@ import datetime
 
 
 def convert_to_iso8601(timestamp):
-    """
-    Convert a given timestamp to ISO 8601 format.
+    """Convert a given timestamp to ISO 8601 format.
 
     Handles multiple formats including RFC 3339, ISO 8601 with and without fractional seconds.
     

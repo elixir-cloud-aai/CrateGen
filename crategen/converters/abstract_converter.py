@@ -8,8 +8,7 @@ class AbstractConverter(ABC):
 
     @abstractmethod
     def convert_to_wrroc(self, data):
-        """
-        Convert data to WRROC format.
+        """Convert data to WRROC format.
 
         Args:
             data: The data to be converted.
@@ -23,8 +22,7 @@ class AbstractConverter(ABC):
 
     @abstractmethod
     def convert_from_wrroc(self, wrroc_data):
-        """
-        Convert WRROC data to the original format.
+        """Convert WRROC data to the original format.
 
         Args:
             wrroc_data: The WRROC data to be converted.

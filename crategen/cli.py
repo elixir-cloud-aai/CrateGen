@@ -17,8 +17,7 @@ from crategen.converter_manager import ConverterManager
     help="Type of conversion to perform.",
 )
 def cli(input, output, conversion_type):
-    """
-    Command Line Interface for converting TES/WES to WRROC.
+    """Command Line Interface for converting TES/WES to WRROC.
     
     Args:
         input: Path to the input JSON file.

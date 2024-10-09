@@ -8,8 +8,7 @@ class WESConverter(AbstractConverter):
     """Converter for WES data to WRROC and vice versa."""
 
     def convert_to_wrroc(self, wes_data):
-        """
-        Convert WES data to WRROC format.
+        """Convert WES data to WRROC format.
 
         Args:
             data: The input WES data.
@@ -38,8 +37,7 @@ class WESConverter(AbstractConverter):
         return wrroc_data
 
     def convert_from_wrroc(self, wrroc_data):
-        """
-        Convert WRROC data to WES format.
+        """Convert WRROC data to WES format.
 
         Args:
             data: The input WRROC data.
