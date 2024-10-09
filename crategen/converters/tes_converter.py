@@ -14,7 +14,7 @@ class TESConverter(AbstractConverter):
             data: The input TES data.
 
         Returns:
-            The converted WRROC data.
+            dict: The converted WRROC data.
 
         Raises:
             ValidationError: If TES data is invalid.
@@ -47,7 +47,7 @@ class TESConverter(AbstractConverter):
             data: The input WRROC data.
 
         Returns:
-            The converted TES data.
+            dict: The converted TES data.
 
         Raises:
             ValidationError: If WRROC data is invalid.

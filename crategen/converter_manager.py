@@ -6,8 +6,8 @@ from .converters.wes_converter import WESConverter
 
 class ConverterManager:
     """Manages conversion between TES/WES and WRROC formats.
-    
-        Attributes:
+
+    Attributes:
         tes_converter: An instance of TESConverter for TES data conversions.
         wes_converter: An instance of WESConverter for WES data conversions.
     """
@@ -32,8 +32,7 @@ class ConverterManager:
         return self.tes_converter.convert_to_wrroc(tes_data)
 
     def convert_wes_to_wrroc(self, wes_data):
-        """
-        Converts WES data to WRROC format.
+        """Converts WES data to WRROC format.
 
         Args:
             wes_data: The WES data to be converted.

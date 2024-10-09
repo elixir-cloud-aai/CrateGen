@@ -14,7 +14,7 @@ class WESConverter(AbstractConverter):
             data: The input WES data.
 
         Returns:
-            The converted WRROC data.
+            dict: The converted WRROC data.
 
         Raises:
             ValidationError: If WES data is invalid.
@@ -43,7 +43,7 @@ class WESConverter(AbstractConverter):
             data: The input WRROC data.
 
         Returns:
-            The converted WES data.
+            dict: The converted WES data.
 
         Raises:
             ValidationError: If WRROC data is invalid.
