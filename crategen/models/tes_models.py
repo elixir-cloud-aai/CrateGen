@@ -11,11 +11,31 @@ from ..converters.utils import convert_to_iso8601
 
 
 class TESFileType(str, Enum):
+    """Enumeration of TES file types.
+
+    **Attributes:**
+
+    - **FILE** (`str`): Represents a file.
+    - **DIRECTORY** (`str`): Represents a directory.
+    """
     FILE = "FILE"
     DIRECTORY = "DIRECTORY"
 
 
 class TESState(str, Enum):
+    """Enumeration of TES task states.
+
+    **Attributes:**
+    - **UNKNOWN** (`str`): The task state is unknown.
+    - **QUEUED** (`str`): The task is queued.
+    - **INITIALIZING** (`str`): The task is initializing.
+    - **RUNNING** (`str`): The task is running.
+    - **PAUSED** (`str`): The task is paused.
+    - **COMPLETE** (`str`): The task is complete.
+    - **EXECUTOR_ERROR** (`str`): The task encountered an executor error.
+    - **SYSTEM_ERROR** (`str`): The task encountered a system error.
+    - **CANCELLED** (`str`): The task was cancelled.
+    """
     UNKNOWN = "UNKNOWN"
     QUEUED = "QUEUED"
     INITIALIZING = "INITIALIZING"
@@ -66,11 +86,12 @@ class TESExecutorLog(BaseModel):
 
     @validator("start_time", "end_time", pre=True, always=True)
     def validate_datetime(cls, value):
+        """Convert start and end times to RFC 3339 format."""
         return convert_to_iso8601(value)
 
 
 class TESExecutor(BaseModel):
-    """An array of executors to be run
+    """An array of executors to be run.
 
     **Attributes:**
     - **image** (`str`): Name of the container image.
@@ -164,6 +185,7 @@ class TESInput(BaseModel):
 
     @validator("path")
     def validate_path(cls, value):
+        """Validate that the path is an absolute path."""
         if not os.path.isabs(value):
             raise ValueError("The 'path' attribute must contain an absolute path.")
         return value
@@ -191,6 +213,7 @@ class TESOutput(BaseModel):
 
     @validator("path")
     def validate_path(cls, value):
+        """Validate that the path is an absolute path."""
         if not os.path.isabs(value):
             raise ValueError("The 'path' attribute must contain an absolute path.")
         return value
@@ -221,6 +244,7 @@ class TESTaskLog(BaseModel):
 
     @validator("start_time", "end_time", pre=True, always=True)
     def validate_datetime(cls, value):
+        """Convert start and end times to RFC 3339 format."""
         return convert_to_iso8601(value)
 
 

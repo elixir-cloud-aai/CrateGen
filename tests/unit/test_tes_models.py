@@ -6,15 +6,19 @@ import pytest
 from pydantic import ValidationError
 
 from crategen.models.tes_models import (
+    TESData,
+    TESExecutor,
+    TESFileType,
     TESInput,
     TESOutput,
-    TESExecutor,
-    TESData,
-    TESFileType,
+    TESResources,
     TESState,
-    TESResources
 )
 
+EXPECTED_CPU_CORES = 2
+EXPECTED_RAM_GB = 4.0
+EXPECTED_DISK_GB = 10.0
+EXPECTED_PREEMPTIBLE = False
 
 def test_tes_input_with_url():
     """Test TESInput model with a valid URL and absolute path."""
@@ -174,10 +178,10 @@ def test_tes_data_valid():
             )
         ],
         resources=TESResources(
-            cpu_cores=2,
-            ram_gb=4.0,
-            disk_gb=10.0,
-            preemptible=False,
+            cpu_cores=EXPECTED_CPU_CORES,
+            ram_gb=EXPECTED_RAM_GB,
+            disk_gb=EXPECTED_DISK_GB,
+            preemptible=EXPECTED_PREEMPTIBLE,
         ),
         volumes=["/data"],
         tags={"project": "CrateGen"},
@@ -186,7 +190,7 @@ def test_tes_data_valid():
     assert tes_data.inputs[0].url == "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/refs/heads/main/README.md"
     assert tes_data.outputs[0].path == "/data/output/LICENSE"
     assert tes_data.executors[0].image == "python:3.8-slim"
-    assert tes_data.resources.cpu_cores == 2
+    assert tes_data.resources.cpu_cores == EXPECTED_CPU_CORES
     assert tes_data.volumes == ["/data"]
     assert tes_data.tags == {"project": "CrateGen"}
 
