@@ -1,8 +1,9 @@
 """Unit tests for the TES models."""
 
+from datetime import datetime, timezone
+
 import pytest
 from pydantic import ValidationError
-from datetime import datetime, timezone
 
 from crategen.models.tes_models import (
     TESInput,

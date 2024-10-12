@@ -1,6 +1,4 @@
-"""
-Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/).
-"""
+"""Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/)."""
 
 import os
 from datetime import datetime
@@ -30,8 +28,7 @@ class TESState(str, Enum):
 
 
 class TESOutputFileLog(BaseModel):
-    """
-    Information about all output files. Directory outputs are flattened into separate items.
+    """Information about all output files. Directory outputs are flattened into separate items.
 
     **Attributes:**
 
@@ -48,8 +45,7 @@ class TESOutputFileLog(BaseModel):
 
 
 class TESExecutorLog(BaseModel):
-    """
-    Logs for each executor
+    """Logs for each executor.
 
     **Attributes:**
 
@@ -74,8 +70,7 @@ class TESExecutorLog(BaseModel):
 
 
 class TESExecutor(BaseModel):
-    """
-    An array of executors to be run
+    """An array of executors to be run
 
     **Attributes:**
     - **image** (`str`): Name of the container image.
@@ -106,8 +101,7 @@ class TESExecutor(BaseModel):
 
 
 class TESResources(BaseModel):
-    """
-    Represents the resources required by a TES task.
+    """Represents the resources required by a TES task.
 
     **Attributes:**
 
@@ -128,8 +122,7 @@ class TESResources(BaseModel):
 
 
 class TESInput(BaseModel):
-    """
-    Input files that will be used by the task. Inputs will be downloaded and mounted into the executor container as defined by the task request document.
+    """Input files that will be used by the task. Inputs will be downloaded and mounted into the executor container as defined by the task request document.
 
     **Attributes:**
 
@@ -152,9 +145,9 @@ class TESInput(BaseModel):
 
     @root_validator()
     def validate_content_and_url(cls, values):
-        """
-        - If content is set url should be ignored
-        - If content is not set then url should be present
+        """- If content is set url should be ignored.
+
+        - If content is not set then url should be present.
         """
         content_is_set = (
             values.get("content") and len(values.get("content").strip()) > 0
@@ -177,8 +170,7 @@ class TESInput(BaseModel):
 
 
 class TESOutput(BaseModel):
-    """
-    Output files. Outputs will be uploaded from the executor container to long-term storage.
+    """Output files. Outputs will be uploaded from the executor container to long-term storage.
 
     **Attributes:**
 
@@ -205,8 +197,7 @@ class TESOutput(BaseModel):
 
 
 class TESTaskLog(BaseModel):
-    """
-    Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
+    """Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
 
     **Attributes:**
 
@@ -234,8 +225,7 @@ class TESTaskLog(BaseModel):
 
 
 class TESData(BaseModel):
-    """
-    Represents a TES task.
+    """Represents a TES task.
 
     **Attributes:**
 
