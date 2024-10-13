@@ -17,6 +17,7 @@
     - [`request.workflow_engine_parameters`(optional)](#requestworkflow_engine_parametersoptional)
     - [`request.workflow_type`(optional)](#requestworkflow_typeoptional)
     - [`task_logs_url` (optional)](#task_logs_url-optional)
+    - [`author/creator entity`](#authorcreator-entity)
     - [WES fields that have not been added:](#wes-fields-that-have-not-been-added)
   - [Summary Table](#summary-table)
     - [`base object`](#base-object-1)
@@ -31,6 +32,7 @@
     - [`request.workflow_engine_parameters`(optional)](#requestworkflow_engine_parametersoptional-1)
     - [`request.workflow_type`(optional)](#requestworkflow_typeoptional-1)
     - [`task_logs_url` (optional)](#task_logs_url-optional-1)
+    - [`author/creator entity`](#authorcreator-entity-1)
 
 This document aims to detail a conversion between the [GA4GH WES profile](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) to the [Workflow Run Crate](https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/) (WRC) extension of [Ro-Crates](https://www.researchobject.org/ro-crate/)
 
@@ -590,6 +592,38 @@ one of the input objects of the main entity. A data entity representing the WES 
   - **type**: `URL`
   - **description**: A reference to the complete url which may be used to obtain a paginated list of task logs for this workflow.
 
+### `author/creator entity`
+
+- **@id**(required):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The id of the creator/author. Usually a url to their profile on a commonly used platform
+
+- **@type**(required):
+
+  - **WES field**: N/A
+  - **type**: [`Person`](https://schema.org/Person) | [`Organization`](https://schema.org/Organization)
+  - **description**: The type the entitiy.
+
+- **name**(required):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: name of the entity.
+
+- **affiliation**(optional):
+
+  - **WES field**: N/A
+  - **type**: `string` | `{"@id": string}`
+  - **description**: The affiliation of the entity, if the type is person. Usually their organization.
+
+- **email**(optional):
+
+  - **WES field**: N/A
+  - **type**: `string`
+  - **description**: The email of the person or organization.
+
 ### WES fields that have not been added:
 
 1. outputs
@@ -714,7 +748,7 @@ one of the input objects of the main entity. A data entity representing the WES 
 | `alternamteName` (required)  | `request.workflow_type`-`request.workflow_type_version` (one - one) | `string` |                      |
 | `url` (recommended)          | N/A                                                                 | `URL`    |                      |
 
-### `task_logs_url` (optional)
+### [`task_logs_url`](#task_logs_url-optional) (optional)
 
 | RO-Crate Field               | WES Field                   | Type     | defaultValue                   |
 | ---------------------------- | --------------------------- | -------- | ------------------------------ |
@@ -723,4 +757,14 @@ one of the input objects of the main entity. A data entity representing the WES 
 | `name` (required)            | N/A                         | `string` | `"The workflow Task Logs URL"` |
 | `url` (required)             | `task_logs_url` (one - one) | `string` |                                |
 
-add author/creator entity
+### [`author/creator entity`](#authorcreator-entity)
+
+| RO-Crate Field               | WES Field | Type                                                                                       | defaultValue |
+| ---------------------------- | --------- | ------------------------------------------------------------------------------------------ | ------------ |
+| `@id` (required)             | N/A       | `string`                                                                                   |              |
+| `@type` (required, constant) | N/A       | [`Person`](https://schema.org/Person) \| [`Organization`](https://schema.org/Organization) |              |
+| `name` (required)            | N/A       | `string`                                                                                   |              |
+| `affiliation` (optional)     | N/A       | `string` \| `{"@id": string}`                                                              |              |
+| `email` (optional)           | N/A       | `string`                                                                                   |              |
+
+add type and reference for each entity
