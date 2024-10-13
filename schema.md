@@ -626,12 +626,12 @@ one of the input objects of the main entity. A data entity representing the WES 
 
 ### WES fields that have not been added:
 
-1. outputs
-2. run_log.cmd
-3. run_log.exit_code
-4. run_log.system_logs
-5. request.workflow_params (partial support)
-6. workflow_engine_version
+1. outputs - The fields for the output objects are not standardized.
+2. run_log.cmd - No suitable RO-Crate field found yet.
+3. run_log.exit_code - No suitable RO-Crate field found yet.
+4. run_log.system_logs - No suitable RO-Crate field found yet.
+5. request.workflow_params (partial support) - The fields for the request.workflow_params object found yet.
+6. request.workflow_engine_version - No suitable RO-Cratte field found yet
 7. task_logs (deprecated, may not be added)
 
 ## Summary Table
@@ -766,5 +766,3 @@ one of the input objects of the main entity. A data entity representing the WES 
 | `name` (required)            | N/A       | `string`                                                                                   |              |
 | `affiliation` (optional)     | N/A       | `string` \| `{"@id": string}`                                                              |              |
 | `email` (optional)           | N/A       | `string`                                                                                   |              |
-
-add type and reference for each entity
