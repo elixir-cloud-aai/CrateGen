@@ -1,14 +1,46 @@
 # WES - WRC RO-Crate
 
+## Table of Contents
+
+- [WES - WRC RO-Crate](#wes---wrc-ro-crate)
+  - [Table of Contents](#table-of-contents)
+  - [Description of WORKFLOW RUN CRATE RO-CRATE FIELDS](#description-of-workflow-run-crate-ro-crate-fields)
+    - [Terminology](#terminology)
+    - [`base object`](#base-object)
+    - [`metadata entity`](#metadata-entity)
+    - [`Root data entity`](#root-data-entity)
+    - [`license object`](#license-object)
+    - [`mainEntity data Entity`](#mainentity-data-entity)
+    - [`run_log entity` (optional)](#run_log-entity-optional)
+    - [`run_log.stdout entity` (optional)](#run_logstdout-entity-optional)
+    - [`run_log.stderr entity` (optional)](#run_logstderr-entity-optional)
+    - [`request.workflow_engine_parameters`(optional)](#requestworkflow_engine_parametersoptional)
+    - [`request.workflow_type`(optional)](#requestworkflow_typeoptional)
+    - [`task_logs_url` (optional)](#task_logs_url-optional)
+    - [WES fields that have not been added:](#wes-fields-that-have-not-been-added)
+  - [Summary Table](#summary-table)
+    - [`base object`](#base-object-1)
+    - [`metadata entity`](#metadata-entity-1)
+    - [`Root data entity`](#root-data-entity-1)
+    - [`license object`](#license-object-1)
+    - [`mainEntity data entity`](#mainentity-data-entity-1)
+    - [`run_log entity` (optional)](#run_log-entity-optional-1)
+    - [`run_log.stdout entity` (optional)](#run_logstdout-entity-optional-1)
+    - [`run_log.stderr entity` (optional)](#run_logstderr-entity-optional-1)
+    - [`request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input` (optional)](#requestworkflow_paramsinputfile--requestworkflow_paramsinputdir--requestworkflow_paramsinput-optional)
+    - [`request.workflow_engine_parameters`(optional)](#requestworkflow_engine_parametersoptional-1)
+    - [`request.workflow_type`(optional)](#requestworkflow_typeoptional-1)
+    - [`task_logs_url` (optional)](#task_logs_url-optional-1)
+
 This document aims to detail a conversion between the [GA4GH WES profile](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) to the [Workflow Run Crate](https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/) (WRC) extension of [Ro-Crates](https://www.researchobject.org/ro-crate/)
 
-## WORKFLOW RUN CRATE RO-CRATE FIELDS
+## Description of WORKFLOW RUN CRATE RO-CRATE FIELDS
 
 For a Json object to conform with the Ro-Crate specification there are certain minimal requirements. Further still the WRC estension has it's own requirements. Considering that, the following definitions aim to differentiate the diffrent types of fields and how they should be considered in each implementation.
 
 ### Terminology
 
-1. constant: These fields are required and for our purposes the value of this field should always be the default value. In other words their values are constant.
+1. constant: For our purposes the value of this field should always be the default value. In other words their values are constant
 2. required: These fields are required but their values are not constant.
 3. recommended: These fields are not required but they are recommended to give a comprehensive definition for your RO-crate object.
 4. optional: These fields are optional.
@@ -17,7 +49,7 @@ For a Json object to conform with the Ro-Crate specification there are certain m
 
 This is the base Ro-Crate object.
 
-- **@context**(constant):
+- **@context**(required, constant):
   - **WES field**: N/A
   - **type**: `string` | `[string]`
   - **description**: URI pointing to the official context page of the version of Ro-Crate and any extensions being implemented.
@@ -35,7 +67,7 @@ This entity is the metadata file descriptor. A Contextual Entity of type [Creati
 
 reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.html](https://www.researchobject.org/ro-crate/specification/1.1/metadata.html)
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -46,7 +78,7 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   "ro-crate-metadata.json"
   ```
 
-- **@type**(required):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -57,12 +89,12 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   "CreativeWork"
   ```
 
-  - **conformsTo**(constant):
+- **conformsTo**(required, constant):
 
-  * **WES field**: N/A
-  * **type**: `{"@id": string}` | `[{"@id": string}]`
-  * **description**: contains an `@id` field which is a URI pointing to the official specification page of the version of RoCrate and extensions implemented.
-  * **default**:
+  - **WES field**: N/A
+  - **type**: `{"@id": string}` | `[{"@id": string}]`
+  - **description**: contains an `@id` field which is a URI pointing to the official specification page of the version of RoCrate and extensions implemented. The value of this field is specific to this version of RO-Crate and WRC.
+  - **default**:
 
   ```json
   [
@@ -71,16 +103,22 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   ]
   ```
 
-- **about**(constant):
+- **about**(required, constant):
 
   - **WES field**: N/A
   - **type**: `{"@id": string}`
-  - **description**: contains an `@id` field pointing to the dataset entity of the RO-Crate. Must match the dataset.@id field.
+  - **description**: contains an `@id` field pointing to the dataset entity of the RO-Crate. Must match the `@id` field of the root data entity.
   - **default**:
 
   ```json
   { "@id": "./" }
   ```
+
+- **license**(optional):
+  - **WES field**: N/A
+  - **type**: `{"@id": "string"}`
+  - **description**: Contains an `@id` field that points to a contextual entity, which contains relevant information on the license for the Ro-crate data.
+    SHOULD link to a Contextual Entity in the RO-Crate Metadata File with a name and description. MAY have a URI (eg for Creative Commons or Open Source licenses). MAY, if necessary be a textual description of how the RO-Crate may be used.
 
 ### `Root data entity`
 
@@ -91,7 +129,7 @@ reference:
 1. [https://www.researchobject.org/ro-crate/specification/1.1/metadata.html](https://www.researchobject.org/ro-crate/specification/1.1/root-data-entity.html)
 2. https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -102,7 +140,7 @@ reference:
   "./"
   ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -124,21 +162,12 @@ reference:
   - **WES field**: N/A
   - **type**: `string`
   - **description**: Should identify the dataset to humans well enough to disambiguate it from other RO-Crates.
-  - **default**:
-
-  ```json
-  "A Ga4GH WES Ro-Crate"
-  ```
 
 - **description**(required):
 
   - **WES field**: N/A
   - **type**: `string`
   - **description**: Should further elaborate on the name to provide a summary of the context in which the dataset is important.
-  - **default**:
-    ```json
-    "A Wes Execution Service Ro-crate that conforms to the GA4GH WES specification"
-    ```
 
 - **mainEntity**(required):
 
@@ -168,11 +197,16 @@ reference: [https://www.researchobject.org/ro-crate/specification/1.1/metadata.h
   - **type**: `string`
   - **description**: A reference to a relevant and comprehensive description of the license. May be a URI to the official webpage describing the license.
 
-- **@type**(required):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
   - **description**: The type of the content stored in the Ro-Crate. Should match the `metadata.@type` field.
+  - **default**:
+
+  ```json
+  "CreativeWork"
+  ```
 
 - **name**(required):
 
@@ -206,7 +240,7 @@ reference: https://www.researchobject.org/workflow-run-crate/profiles/workflow_r
   - **type**: `string`
   - **description**: a File URI linking to the workflow entry-point.
 
-- **type**(constant):
+- **type**(required, constant):
   - **WES field**: N/A
   - **type**: `string` | `[string]`
   - **description**: The standard workflow type according to the Ro-Crate Version.
@@ -284,7 +318,7 @@ reference: https://www.researchobject.org/workflow-run-crate/profiles/workflow_r
 
 This is one of the output objects that the mainEntity will point to. It is a data entity of type FormalParameter.
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -294,7 +328,7 @@ This is one of the output objects that the mainEntity will point to. It is a dat
     "#run_log"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -306,19 +340,19 @@ This is one of the output objects that the mainEntity will point to. It is a dat
 
 - **name**(optional):
 
-  - **WES field**: run_log.name
+  - **WES field**: `run_log.name` (one - one)
   - **type**: `string`
   - **description**: The task or workflow name.
 
 - **dateCreated**(optional):
 
-  - **WES field**: run_log.start_time
+  - **WES field**: `run_log.start_time` (one - one)
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: When the command started executing.
 
 - **dateModified**(optional):
 
-  - **WES field**: run_log.end_time
+  - **WES field**: `run_log.end_time` (one - one)
   - **type**: [`Date`](https://schema.org/Date) | [`DateTime`](https://schema.org/DateTime)
   - **description**: When the command stopped executing.
 
@@ -326,7 +360,7 @@ This is one of the output objects that the mainEntity will point to. It is a dat
 
 one of the output objects of the main entity
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -336,7 +370,7 @@ one of the output objects of the main entity
     "#run_log_stdout"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -346,7 +380,7 @@ one of the output objects of the main entity
     "FormalParameter"
     ```
 
-- **name**(constant):
+- **name**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -366,7 +400,7 @@ one of the output objects of the main entity
 
 one of the output objects of the main entity
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -376,7 +410,7 @@ one of the output objects of the main entity
     "#run_log_stderr"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -386,7 +420,7 @@ one of the output objects of the main entity
     "FormalParameter"
     ```
 
-- **name**(constant):
+- **name**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -406,7 +440,7 @@ one of the output objects of the main entity
 
 one of the input objects of the main entity.
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -416,7 +450,7 @@ one of the input objects of the main entity.
     "#request_workflow_params_input"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -446,7 +480,7 @@ one of the input objects of the main entity.
 
 A data entity representing the `request.workflow_engine_parameters` field from the WES profile
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -456,7 +490,7 @@ A data entity representing the `request.workflow_engine_parameters` field from t
     "#request_workflow_engine_parameters"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -468,15 +502,15 @@ A data entity representing the `request.workflow_engine_parameters` field from t
 
 - **name**(required):
 
-  - **WES field**: `request.workflow_engine_parameters[i]`
+  - **WES field**: `request.workflow_engine_parameters[i]` (one - one)
   - **type**: `string`
   - **description**: name of the parameter.
 
-- **url**(required):
+- **url**(recommended):
 
   - **WES field**: N/A
   - **type**: `URL`
-  - **description**: A URL to the parameter.
+  - **description**: A URL for the parameter.
 
 ### `request.workflow_type`(optional)
 
@@ -488,17 +522,7 @@ This entity is pointed to by the programmingLanguage property in the mainEntity 
   - **type**: `string`
   - **description**: The id of the progamming language field that points to this entity. Can be the URL of the official documentation of said programming language.
 
-- **@type**(constant):
-
-  - **WES field**: N/A
-  - **type**: `string`
-  - **description**: The type the entitiy.
-  - **default**:
-    ```json
-    "ComputerLanguage"
-    ```
-
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -510,19 +534,19 @@ This entity is pointed to by the programmingLanguage property in the mainEntity 
 
 - **name**(required):
 
-  - **WES field**: `request.workflow_type`
+  - **WES field**: `request.workflow_type` (one-one)
   - **type**: `string`
   - **description**: name of the workflow type.
 
 - **alternateName**(required):
 
-  - **WES field**: `request.workflow_type`-`request.workflow_type_version`
+  - **WES field**: `request.workflow_type`-`request.workflow_type_version` (one-one)
   - **type**: `string`
   - **description**: name of the workflow type and the workflow type version, seperated by a hypen.
 
-- **url**(required):
+- **url**(recommended):
 
-  - **WES field**: `request.workflow_engine_parameters`
+  - **WES field**: N/A
   - **type**: `URL`
   - **description**: A URL to the workflow type. Usually the URL of the official documentation for the workflow type.
 
@@ -530,7 +554,7 @@ This entity is pointed to by the programmingLanguage property in the mainEntity 
 
 one of the input objects of the main entity. A data entity representing the WES `task_logs_url`
 
-- **@id**(constant):
+- **@id**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -540,7 +564,7 @@ one of the input objects of the main entity. A data entity representing the WES 
     "#task_logs_url"
     ```
 
-- **@type**(constant):
+- **@type**(required, constant):
 
   - **WES field**: N/A
   - **type**: `string`
@@ -575,3 +599,128 @@ one of the input objects of the main entity. A data entity representing the WES 
 5. request.workflow_params (partial support)
 6. workflow_engine_version
 7. task_logs (deprecated, may not be added)
+
+## Summary Table
+
+### [`base object`](#base-object)
+
+| RO-Crate Field                  | WES Field | Type                   | defaultValue                                                                                 |
+| ------------------------------- | --------- | ---------------------- | -------------------------------------------------------------------------------------------- |
+| `@context` (required, constant) | N/A       | `string` \| `[string]` | `["https://w3id.org/ro/crate/1.1/context","https://w3id.org/ro/terms/workflow-run/context"]` |
+|                                 |
+
+### [`metadata entity`](#metadata-entity)
+
+| RO-Crate Field                    | WES Field | Type                                     | defaultValue                                                                                                   |
+| --------------------------------- | --------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `@id` (required, constant)        | N/A       | `string`                                 | `"ro-crate-metadata.json"`                                                                                     |
+| `@type` (required, constant)      | N/A       | `string`                                 | `"CreativeWork"`                                                                                               |
+| `conformsTo` (required, constant) | N/A       | `{"@id": string}` \| `[{"@id": string}]` | `[{ "@id": "https://w3id.org/ro/crate/1.1" },{ "@id": "https://w3id.org/workflowhub/workflow-ro-crate/1.0" }]` |
+| `about` (required, constant)      | N/A       | `{"@id": string}`                        | `{ "@id": "./" }`                                                                                              |
+
+### [`Root data entity`](#root-data-entity)
+
+| RO-Crate Field               | WES Field | Type                                                                            | defaultValue |
+| ---------------------------- | --------- | ------------------------------------------------------------------------------- | ------------ |
+| `@id` (required, constant)   | N/A       | `string`                                                                        | `"./"`       |
+| `@type` (required, constant) | N/A       | `string`                                                                        | `"Dataset"`  |
+| `datePublished` (required)   | N/A       | [`Date`](https://schema.org/Date) \| [`DateTime`](https://schema.org/DateTime)` |              |
+| `name` (required)            | N/A       | `string`                                                                        |              |
+| `description` (required)     | N/A       | `string`                                                                        |              |
+| `mainEntity` (required)      | N/A       | `{"@id": "string"}`                                                             |              |
+| `license` (required)         | N/A       | `{"@id": "string"}`                                                             |              |
+
+### [`license object`](#license-object)
+
+| RO-Crate Field               | WES Field | Type     | defaultValue |
+| ---------------------------- | --------- | -------- | ------------ |
+| `@id` (required)             | N/A       | `string` |              |
+| `@type` (required, constant) | N/A       | `string` |              |
+| `name` (required)            | N/A       | `string` |              |
+| `description` (required)     | N/A       | `string` |              |
+| `identifier` (recommended)   | N/A       | `string` |              |
+
+### [`mainEntity data entity`](#mainentity-data-entity)
+
+| RO-Crate Field                       | WES Field                                          | Type                                                                                                                                                             | defaultValue                                              |
+| ------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `@id` (required)                     | N/A                                                | `string`                                                                                                                                                         |                                                           |
+| `@type` (required, constant)         | N/A                                                | `string`                                                                                                                                                         | `["File", "SoftwareSourceCode", "ComputationalWorkflow"]` |
+| `name` (required)                    | N/A                                                | `string`                                                                                                                                                         |                                                           |
+| `author` (recommended)               | N/A                                                | `{"@id": string}` \| `[{"@id": string}]`                                                                                                                         |                                                           |
+| `creator` (required)                 | N/A                                                | `{"@id": string}` \| `[{"@id": string}]`                                                                                                                         |                                                           |
+| `identifier` (required)              | `run_id` (one - one)                               | `string`                                                                                                                                                         |                                                           |
+| `dateCreated` (required)             | `run_log.start_time` (one - one)                   | [`Date`](https://schema.org/Date) \| [`DateTime`](https://schema.org/DateTime)                                                                                   |                                                           |
+| `programmingLanguage` (required)     | `request.workflow_type` (one - one)                | `{"@id": string}`                                                                                                                                                |                                                           |
+| `creativeWorkStatus` (required)      | `state` (one - one)                                | `UNKNOWN` \| `QUEUED` \| `INITIALIZING` \| `RUNNING` \| `PAUSED` \| `COMPLETE` \| `EXECUTOR_ERROR` \| `SYSTEM_ERROR` \| `CANCELED` \| `CANCELING` \| `PREEMPTED` |                                                           |
+| `url` (required)                     | `request.workflow_url` (one - one)                 | `URL`                                                                                                                                                            |                                                           |
+| `keywords` (required)                | `request.tags` (one - many)                        | `string`                                                                                                                                                         |                                                           |
+| `runtimePlatform` (recommended)      | `request.workflow_engine` (one - one)              | `string`                                                                                                                                                         |                                                           |
+| `softwareRequirements` (recommended) | `request.workflow_engine_parameters` (many - many) | `{"@id": string}` \| `[{"@id": string}]`                                                                                                                         |                                                           |
+
+### [`run_log entity`](#run_log-entity-optional) (optional)
+
+| RO-Crate Field               | WES Field                        | Type                                                                           | defaultValue        |
+| ---------------------------- | -------------------------------- | ------------------------------------------------------------------------------ | ------------------- |
+| `@id` (required, constant)   | N/A                              | `string`                                                                       | `"#run_log"`        |
+| `@type` (required, constant) | N/A                              | `string`                                                                       | `"FormalParameter"` |
+| `name` (required, constant)  | `run_log.name` (one - one)       | `string`                                                                       |                     |
+| `dateCreated` (optional)     | `run_log.start_time` (one - one) | [`Date`](https://schema.org/Date) \| [`DateTime`](https://schema.org/DateTime) |
+| `dateModified` (optional)    | `run_log.end_time` (one - one)   | [`Date`](https://schema.org/Date) \| [`DateTime`](https://schema.org/DateTime) |
+
+### [`run_log.stdout entity`](#run_logstdout-entity-optional) (optional)
+
+| RO-Crate Field               | WES Field                    | Type     | defaultValue        |
+| ---------------------------- | ---------------------------- | -------- | ------------------- |
+| `@id` (required, constant)   | N/A                          | `string` | `"#run_log_stdout"` |
+| `@type` (required, constant) | N/A                          | `string` | `"FormalParameter"` |
+| `name` (required, constant)  | `run_log.name` (one - one)   | `string` | `"Runlog stdout"`   |
+| `url` (required)             | `run_log.stdout` (one - one) | `string` |                     |
+
+### [`run_log.stderr entity`](#run_logstderr-entity-optional) (optional)
+
+| RO-Crate Field               | WES Field                    | Type     | defaultValue        |
+| ---------------------------- | ---------------------------- | -------- | ------------------- |
+| `@id` (required, constant)   | N/A                          | `string` | `"#run_log_stderr"` |
+| `@type` (required, constant) | N/A                          | `string` | `"FormalParameter"` |
+| `name` (required, constant)  | `run_log.name` (one - one)   | `string` | `"Runlog stderr"`   |
+| `url` (required)             | `run_log.stderr` (one - one) | `URL`    |                     |
+
+### [`request.workflow_params.inputFile` | `request.workflow_params.inputDir` | `request.workflow_params.input`](#requestworkflow_paramsinputfile--requestworkflow_paramsinputdir--requestworkflow_paramsinput-optional) (optional)
+
+| RO-Crate Field               | WES Field                  | Type     | defaultValue        |
+| ---------------------------- | -------------------------- | -------- | ------------------- |
+| `@id` (required, constant)   | N/A                        | `string` | `"#run_log_stderr"` |
+| `@type` (required, constant) | N/A                        | `string` | `"FormalParameter"` |
+| `name` (required, constant)  | `run_log.name` (one - one) | `string` | `"Runlog stderr"`   |
+| `url` (required)             |                            | `URL`    |                     |
+
+### [`request.workflow_engine_parameters`](#requestworkflow_engine_parametersoptional)(optional)
+
+| RO-Crate Field               | WES Field                                           | Type     | defaultValue                            |
+| ---------------------------- | --------------------------------------------------- | -------- | --------------------------------------- |
+| `@id` (required, constant)   | N/A                                                 | `string` | `"#request_workflow_engine_parameters"` |
+| `@type` (required, constant) | N/A                                                 | `string` | `"SoftwareApplication"`                 |
+| `name` (required)            | `request.workflow_engine_parameters[i]` (one - one) | `string` |                                         |
+| `url` (recommended)          | N/A                                                 | `URL`    |                                         |
+
+### [`request.workflow_type`](#requestworkflow_typeoptional)(optional)
+
+| RO-Crate Field               | WES Field                                                           | Type     | defaultValue         |
+| ---------------------------- | ------------------------------------------------------------------- | -------- | -------------------- |
+| `@id` (required)             | N/A                                                                 | `string` |                      |
+| `@type` (required, constant) | N/A                                                                 | `string` | `"ComputerLanguage"` |
+| `name` (required)            | `request.workflow_type` (one - one)                                 | `string` |                      |
+| `alternamteName` (required)  | `request.workflow_type`-`request.workflow_type_version` (one - one) | `string` |                      |
+| `url` (recommended)          | N/A                                                                 | `URL`    |                      |
+
+### `task_logs_url` (optional)
+
+| RO-Crate Field               | WES Field                   | Type     | defaultValue                   |
+| ---------------------------- | --------------------------- | -------- | ------------------------------ |
+| `@id` (required, constant)   | N/A                         | `string` | `"#task_logs_url"`             |
+| `@type` (required, constant) | N/A                         | `string` | `"FormalParameter"`            |
+| `name` (required)            | N/A                         | `string` | `"The workflow Task Logs URL"` |
+| `url` (required)             | `task_logs_url` (one - one) | `string` |                                |
+
+add author/creator entity
