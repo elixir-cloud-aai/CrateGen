@@ -12,6 +12,7 @@ from ..converters.utils import convert_to_iso8601
 
 class TESFileType(str, Enum):
     """Enumeration of TES file types.
+
     Attributes:
         FILE: Represents a file.
         DIRECTORY: Represents a directory.
@@ -53,7 +54,6 @@ class TESOutputFileLog(BaseModel):
     """Information about all output files. Directory outputs are flattened into separate items.
 
     Attributes:
-
         url: URL of the file in storage.
         path: Path of the file inside the container. Must be an absolute path.
         size_bytes: Size of the file in bytes. Note, this is currently coded as a string because official JSON doesn't support int64 numbers.
@@ -70,7 +70,6 @@ class TESExecutorLog(BaseModel):
     """Logs for each executor.
 
     Attributes:
-
         start_time: Time the executor started, in RFC 3339 format.
         end_time: Time the executor ended, in RFC 3339 format.
         stdout: Stdout content.
@@ -129,7 +128,6 @@ class TESResources(BaseModel):
     """Represents the resources required by a TES task.
 
     Attributes:
-
         cpu_cores: Requested number of CPUs.
         preemptible: Define if the task is allowed to run on preemptible compute instances, for example, AWS Spot.
         ram_gb: The amount of RAM in GB required.
@@ -150,7 +148,6 @@ class TESInput(BaseModel):
     """Input files that will be used by the task. Inputs will be downloaded and mounted into the executor container as defined by the task request document.
 
     Attributes:
-
         name: The name of the input file.
         description: A brief description of the input.
         url: The URL of the input file. Must be an absolute path
@@ -170,9 +167,9 @@ class TESInput(BaseModel):
 
     @root_validator()
     def validate_content_and_url(cls, values):
-        """ If content is set url should be ignored.
+        """If content is set url should be ignored.
 
-            If content is not set then url should be present.
+        If content is not set then url should be present.
         """
         content_is_set = values.get("content") and values.get("content").strip()
         url_is_set = values.get("url") and values.get("url").strip()
@@ -197,7 +194,6 @@ class TESOutput(BaseModel):
     """Output files. Outputs will be uploaded from the executor container to long-term storage.
 
     Attributes:
-
         name: User-provided name of output file
         description: Optional users provided description field, can be used for documentation.
         url: URL for the file to be copied by the TES server after the task is complete
@@ -229,7 +225,6 @@ class TESTaskLog(BaseModel):
     """Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
 
     Attributes:
-
         logs: Logs for each executor.
         metadata: Arbitrary logging metadata included by the implementation.
         start_time: When the task started, in RFC 3339 format.
@@ -259,7 +254,6 @@ class TESData(BaseModel):
     """Represents a TES task.
 
     Attributes:
-
         id: Task identifier assigned by the server.
         name: User-provided task name.
         description: Optional user-provided description of task for documentation purposes.
