@@ -12,11 +12,9 @@ from ..converters.utils import convert_to_iso8601
 
 class TESFileType(str, Enum):
     """Enumeration of TES file types.
-
-    **Attributes:**
-
-    - **FILE**: Represents a file.
-    - **DIRECTORY**: Represents a directory.
+    Attributes:
+        FILE: Represents a file.
+        DIRECTORY: Represents a directory.
     """
     FILE = "FILE"
     DIRECTORY = "DIRECTORY"
@@ -25,18 +23,18 @@ class TESFileType(str, Enum):
 class TESState(str, Enum):
     """Enumeration of TES task states.
 
-    **Attributes:**
-    - **UNKNOWN**: The task state is unknown.
-    - **QUEUED**: The task is queued.
-    - **INITIALIZING**: The task is initializing.
-    - **RUNNING**: The task is running.
-    - **PAUSED**: The task is paused.
-    - **COMPLETE**: The task is complete.
-    - **EXECUTOR_ERROR**: The task encountered an executor error.
-    - **SYSTEM_ERROR**: The task encountered a system error.
-    - **CANCELED**: The task was canceled.
-    - **CANCELING**: The task is being canceled.
-    - **PREEMPTED**: The task was preempted.
+    Attributes:
+        UNKNOWN: The task state is unknown.
+        QUEUED: The task is queued.
+        INITIALIZING: The task is initializing.
+        RUNNING: The task is running.
+        PAUSED: The task is paused.
+        COMPLETE: The task is complete.
+        EXECUTOR_ERROR: The task encountered an executor error.
+        SYSTEM_ERROR: The task encountered a system error.
+        CANCELED: The task was canceled.
+        CANCELING: The task is being canceled.
+        PREEMPTED: The task was preempted.
     """
     UNKNOWN = "UNKNOWN"
     QUEUED = "QUEUED"
@@ -54,13 +52,13 @@ class TESState(str, Enum):
 class TESOutputFileLog(BaseModel):
     """Information about all output files. Directory outputs are flattened into separate items.
 
-    **Attributes:**
+    Attributes:
 
-    - **url**: URL of the file in storage.
-    - **path**: Path of the file inside the container. Must be an absolute path.
-    - **size_bytes**: Size of the file in bytes. Note, this is currently coded as a string because official JSON doesn't support int64 numbers.
+        url: URL of the file in storage.
+        path: Path of the file inside the container. Must be an absolute path.
+        size_bytes: Size of the file in bytes. Note, this is currently coded as a string because official JSON doesn't support int64 numbers.
 
-    **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
+    Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
 
     url: str
@@ -71,15 +69,15 @@ class TESOutputFileLog(BaseModel):
 class TESExecutorLog(BaseModel):
     """Logs for each executor.
 
-    **Attributes:**
+    Attributes:
 
-    - **start_time**: Time the executor started, in RFC 3339 format.
-    - **end_time**: Time the executor ended, in RFC 3339 format.
-    - **stdout**: Stdout content.
-    - **stderr**: Stderr content.
-    - **exit_code**: The exit code of the executor.
+        start_time: Time the executor started, in RFC 3339 format.
+        end_time: Time the executor ended, in RFC 3339 format.
+        stdout: Stdout content.
+        stderr: Stderr content.
+        exit_code: The exit code of the executor.
 
-    **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
+    Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
 
     start_time: Optional[datetime] = None
@@ -97,17 +95,17 @@ class TESExecutorLog(BaseModel):
 class TESExecutor(BaseModel):
     """An array of executors to be run.
 
-    **Attributes:**
-    - **image**: Name of the container image.
-    - **command**: A sequence of program arguments to execute, where the first argument is the program to execute.
-    - **workdir**: The working directory that the command will be executed in.
-    - **stdout**: Path inside the container to a file where the executor's stdout will be written to. Must be an absolute path
-    - **stderr**: Path inside the container to a file where the executor's stderr will be written to. Must be an absolute path.
-    - **stdin**: Path inside the container to a file which will be piped to the executor's stdin. Must be an absolute path.
-    - **env**: Enviromental variables to set within the container
-    - **ignore_error**: If true, errors in this executor will be ignored.
+    Attributes:
+        image: Name of the container image.
+        command: A sequence of program arguments to execute, where the first argument is the program to execute.
+        workdir: The working directory that the command will be executed in.
+        stdout: Path inside the container to a file where the executor's stdout will be written to. Must be an absolute path
+        stderr: Path inside the container to a file where the executor's stderr will be written to. Must be an absolute path.
+        stdin: Path inside the container to a file which will be piped to the executor's stdin. Must be an absolute path.
+        env: Enviromental variables to set within the container
+        ignore_error: If true, errors in this executor will be ignored.
 
-    **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
+    Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
 
     image: str
@@ -130,15 +128,15 @@ class TESExecutor(BaseModel):
 class TESResources(BaseModel):
     """Represents the resources required by a TES task.
 
-    **Attributes:**
+    Attributes:
 
-    - **cpu_cores**: Requested number of CPUs.
-    - **preemptible**: Define if the task is allowed to run on preemptible compute instances, for example, AWS Spot.
-    - **ram_gb**: The amount of RAM in GB required.
-    - **disk_gb**: The amount of disk space in GB required.
-    - **zones**: Request that the task be run in these compute zones.
+        cpu_cores: Requested number of CPUs.
+        preemptible: Define if the task is allowed to run on preemptible compute instances, for example, AWS Spot.
+        ram_gb: The amount of RAM in GB required.
+        disk_gb: The amount of disk space in GB required.
+        zones: Request that the task be run in these compute zones.
 
-    **Reference:** https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
+    Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
 
     cpu_cores: Optional[int] = None
@@ -151,14 +149,14 @@ class TESResources(BaseModel):
 class TESInput(BaseModel):
     """Input files that will be used by the task. Inputs will be downloaded and mounted into the executor container as defined by the task request document.
 
-    **Attributes:**
+    Attributes:
 
-    - **name**: The name of the input file.
-    - **description**: A brief description of the input.
-    - **url**: The URL of the input file. Must be an absolute path
-    - **path**: TPath of the file inside the container. Must be an absolute path.
-    - **type**: The type of input ('FILE' or 'DIRECTORY'). Default is 'FILE'
-    - **content**: The content of the input file, if provided inline.
+        name: The name of the input file.
+        description: A brief description of the input.
+        url: The URL of the input file. Must be an absolute path
+        path: TPath of the file inside the container. Must be an absolute path.
+        type: The type of input ('FILE' or 'DIRECTORY'). Default is 'FILE'
+        content: The content of the input file, if provided inline.
 
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
@@ -172,9 +170,9 @@ class TESInput(BaseModel):
 
     @root_validator()
     def validate_content_and_url(cls, values):
-        """- If content is set url should be ignored.
+        """ If content is set url should be ignored.
 
-        - If content is not set then url should be present.
+            If content is not set then url should be present.
         """
         content_is_set = values.get("content") and values.get("content").strip()
         url_is_set = values.get("url") and values.get("url").strip()
@@ -198,14 +196,14 @@ class TESInput(BaseModel):
 class TESOutput(BaseModel):
     """Output files. Outputs will be uploaded from the executor container to long-term storage.
 
-    **Attributes:**
+    Attributes:
 
-    - **name**: User-provided name of output file
-    - **description**: Optional users provided description field, can be used for documentation.
-    - **url**: URL for the file to be copied by the TES server after the task is complete
-    - **path_prefix**: The path prefix used when 'path' contains wildcards.
-    - **path**: Path of the file inside the container. Must be an absolute path.
-    - **type**: The type of output (e.g., FILE, DIRECTORY).
+        name: User-provided name of output file
+        description: Optional users provided description field, can be used for documentation.
+        url: URL for the file to be copied by the TES server after the task is complete
+        path_prefix: The path prefix used when 'path' contains wildcards.
+        path: Path of the file inside the container. Must be an absolute path.
+        type: The type of output (e.g., FILE, DIRECTORY).
 
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
@@ -230,17 +228,17 @@ class TESOutput(BaseModel):
 class TESTaskLog(BaseModel):
     """Task logging information. Normally, this will contain only one entry, but in the case where a task fails and is retried, an entry will be appended to this list.
 
-    **Attributes:**
+    Attributes:
 
-    - **logs**: Logs for each executor.
-    - **metadata**: Arbitrary logging metadata included by the implementation.
-    - **start_time**: When the task started, in RFC 3339 format.
-    - **end_time**: When the task ended, in RFC 3339 format.
-    - **outputs**: Information about all output files. Directory outputs are flattened into separate items.
-    - **system_logs**: System logs are any logs the system decides are relevant, which are not tied directly to an Executor process. Content is implementation specific: format, size, etc.
-    - **ignore_error**: If true, errors in this executor will be ignored.
+        logs: Logs for each executor.
+        metadata: Arbitrary logging metadata included by the implementation.
+        start_time: When the task started, in RFC 3339 format.
+        end_time: When the task ended, in RFC 3339 format.
+        outputs: Information about all output files. Directory outputs are flattened into separate items.
+        system_logs: System logs are any logs the system decides are relevant, which are not tied directly to an Executor process. Content is implementation specific: format, size, etc.
+        ignore_error: If true, errors in this executor will be ignored.
 
-    **Reference:** [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
+    Reference: [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
     """
 
     logs: list[TESExecutorLog]
@@ -260,22 +258,22 @@ class TESTaskLog(BaseModel):
 class TESData(BaseModel):
     """Represents a TES task.
 
-    **Attributes:**
+    Attributes:
 
-    - **id**: Task identifier assigned by the server.
-    - **name**: User-provided task name.
-    - **description**: Optional user-provided description of task for documentation purposes.
-    - **creation_time**: The time the task was created.
-    - **state**: Task state as defined by the server
-    - **inputs**: Input files that will be used by the task.
-    - **outputs**: Output files that will be uploaded from the executor container to long-term storage.
-    - **executors**: An array of executors to be run.
-    - **resources**: The resources required by the TES task.
-    - **volumes**: Volumes are directories which may be used to share data between Executors..
-    - **logs**: Task logging information
-    - **tags**: A key-value map of arbitrary tags.
+        id: Task identifier assigned by the server.
+        name: User-provided task name.
+        description: Optional user-provided description of task for documentation purposes.
+        creation_time: The time the task was created.
+        state: Task state as defined by the server
+        inputs: Input files that will be used by the task.
+        outputs: Output files that will be uploaded from the executor container to long-term storage.
+        executors: An array of executors to be run.
+        resources: The resources required by the TES task.
+        volumes: Volumes are directories which may be used to share data between Executors..
+        logs: Task logging information
+        tags: A key-value map of arbitrary tags.
 
-    **Reference:** [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
+    Reference: [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
     """
 
     id: str
