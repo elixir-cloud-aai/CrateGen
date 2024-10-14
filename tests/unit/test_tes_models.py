@@ -1,6 +1,5 @@
 """Unit tests for the TES models."""
 
-from datetime import datetime, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -12,13 +11,27 @@ from crategen.models.tes_models import (
     TESInput,
     TESOutput,
     TESResources,
-    TESState,
 )
 
 EXPECTED_CPU_CORES = 2
 EXPECTED_RAM_GB = 4.0
 EXPECTED_DISK_GB = 10.0
 EXPECTED_PREEMPTIBLE = False
+
+def test_tes_executor_minimal():
+    """Test TESExecutor model with minimal required fields."""
+    executor = TESExecutor(
+        image="python:3.8-slim",
+        command=["python", "script.py"]
+    )
+    assert executor.image == "python:3.8-slim"
+    assert executor.command == ["python", "script.py"]
+    assert executor.workdir is None
+    assert executor.stdout is None
+    assert executor.stderr is None
+    assert executor.stdin is None
+    assert executor.env is None
+    assert executor.ignore_error is False  # Since default is False
 
 def test_tes_input_with_url():
     """Test TESInput model with a valid URL and absolute path."""
@@ -144,63 +157,101 @@ def test_tes_executor_with_relative_stdin():
         )
     assert "The 'stdin' attribute must contain an absolute path." in str(exc_info.value)
 
-
-def test_tes_data_valid():
-    """Test TESData model with valid data."""
+def test_tes_data_with_inputs():
+    """Test TESData model with inputs only."""
     tes_data = TESData(
         id="task-123",
-        name="Test Task",
-        description="An example TES task.",
-        creation_time=datetime.utcnow().replace(tzinfo=timezone.utc),
-        state=TESState.QUEUED,
+        executors=[
+            TESExecutor(
+                image="python:3.8-slim",
+                command=["python", "script.py"]
+            )
+        ],
         inputs=[
             TESInput(
                 name="Test Input",
-                description="An example input file.",
-                url="https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/refs/heads/main/README.md",
-                path="/data/input/README.md",
-                type=TESFileType.FILE,
+                url="https://example.com/input.txt",
+                path="/data/input/input.txt"
+            )
+        ]
+    )
+    assert tes_data.inputs is not None
+    assert len(tes_data.inputs) == 1
+
+
+def test_tes_data_with_outputs():
+    """Test TESData model with outputs only."""
+    tes_data = TESData(
+        id="task-123",
+        executors=[
+            TESExecutor(
+                image="python:3.8-slim",
+                command=["python", "script.py"]
             )
         ],
         outputs=[
             TESOutput(
                 name="Test Output",
-                description="An example output file.",
-                url="https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/refs/heads/main/LICENSE",
-                path="/data/output/LICENSE",
-                type=TESFileType.FILE,
+                url="https://example.com/output.txt",
+                path="/data/output/output.txt"
             )
-        ],
+        ]
+    )
+    assert tes_data.outputs is not None
+    assert len(tes_data.outputs) == 1
+
+def test_tes_data_with_resources():
+    """Test TESData model with resources."""
+    tes_data = TESData(
+        id="task-123",
         executors=[
             TESExecutor(
                 image="python:3.8-slim",
-                command=["python", "script.py"],
+                command=["python", "script.py"]
             )
         ],
         resources=TESResources(
             cpu_cores=EXPECTED_CPU_CORES,
-            ram_gb=EXPECTED_RAM_GB,
-            disk_gb=EXPECTED_DISK_GB,
-            preemptible=EXPECTED_PREEMPTIBLE,
-        ),
-        volumes=["/data"],
-        tags={"project": "CrateGen"},
+            ram_gb=EXPECTED_RAM_GB
+        )
     )
-    assert tes_data.id == "task-123"
-    assert tes_data.inputs[0].url == "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/refs/heads/main/README.md"
-    assert tes_data.outputs[0].path == "/data/output/LICENSE"
-    assert tes_data.executors[0].image == "python:3.8-slim"
     assert tes_data.resources.cpu_cores == EXPECTED_CPU_CORES
-    assert tes_data.volumes == ["/data"]
-    assert tes_data.tags == {"project": "CrateGen"}
-
+    assert tes_data.resources.ram_gb == EXPECTED_RAM_GB
 
 def test_tes_data_missing_required_fields():
     """Test TESData model missing required fields (should raise ValidationError)."""
     with pytest.raises(ValidationError) as exc_info:
-        TESData(
-            inputs=[],
-            outputs=[],
-            executors=[],
+        TESData()
+    errors = exc_info.value.errors()
+    required_fields = [error['loc'][0] for error in errors if error['type'] == 'value_error.missing']
+    assert 'executors' in required_fields
+
+def test_tes_output_with_wildcards_missing_path_prefix():
+    """Test TESOutput with wildcards in 'path' without 'path_prefix'."""
+    with pytest.raises(ValidationError) as exc_info:
+        TESOutput(
+            name="Wildcard Output",
+            url="https://example.com/output/*",
+            path="/data/output/*",
         )
-    assert "field required" in str(exc_info.value)
+    assert "When 'path' contains wildcards, 'path_prefix' is required." in str(exc_info.value)
+
+def test_tes_output_with_wildcards_and_path_prefix():
+    """Test TESOutput with wildcards in 'path' and provided 'path_prefix'."""
+    output_data = TESOutput(
+        name="Wildcard Output",
+        url="https://example.com/output/*",
+        path="/data/output/*",
+        path_prefix="/data/output",
+    )
+    assert output_data.path_prefix == "/data/output"
+
+def test_tes_executor_with_ignore_error():
+    """Test TESExecutor model with 'ignore_error' field set to True."""
+    executor = TESExecutor(
+        image="python:3.8-slim",
+        command=["python", "script.py"],
+        ignore_error=True
+    )
+    assert executor.ignore_error is True
+
