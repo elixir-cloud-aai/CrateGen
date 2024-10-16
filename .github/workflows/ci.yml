@@ -26,7 +26,6 @@ jobs:
       - name: Lint with Ruff
         run: |
           poetry run ruff check crategen/
-        if: ${{ success() }}
 
       - name: Type check with Mypy
         run: |
@@ -39,3 +38,7 @@ jobs:
       - name: Install test dependencies
         run: |
           poetry add pytest pytest-cov pytest-mock
+
+      - name: Run tests
+        run: |
+          poetry run pytest --cov=crategen
