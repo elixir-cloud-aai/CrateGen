@@ -1,12 +1,11 @@
 """Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/)."""
 
-import os
 from enum import Enum
 from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, root_validator, validator
+from rfc3339_validator import validate_rfc3339  # type: ignore
 
-from rfc3339_validator import validate_rfc3339 # type: ignore
 from ..converters.utils import is_absolute_path
 
 
@@ -87,7 +86,7 @@ class TESExecutorLog(BaseModel):
 
     @validator("start_time", "end_time")
     def validate_datetime(cls, value, field):
-        """check correct datetime format"""
+        """Check correct datetime format"""
         if(validate_rfc3339(value)):
             return value
         else:
@@ -170,8 +169,7 @@ class TESInput(BaseModel):
 
     @root_validator()
     def validate_content_and_url(cls, values):
-        """
-        - If content is set url should be ignored.
+        """- If content is set url should be ignored.
         - If content is not set then url should be present.
         """
         content_is_set = bool(values.get("content") and values.get("content").strip())
@@ -244,7 +242,7 @@ class TESTaskLog(BaseModel):
 
     @validator("start_time", "end_time", pre=True, always=True)
     def validate_datetime(cls, value, field):
-        """check correct datetime format"""
+        """Check correct datetime format"""
         if(validate_rfc3339(value)):
             return value
         else:

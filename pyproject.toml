@@ -62,9 +62,13 @@ skips = [
 
 [tool.ruff]
 exclude = [
-  "tests/*",
-  "tests/unit/*",
-  "crategen/*"
+  ".git",
+  "/.pytest_cache",
+  "__pycache__",
+  "build",
+  "_build",
+  "dist",
+  ".env",
 ]
 indent-width = 4
 
@@ -77,7 +81,6 @@ quote-style = "double"
 [tool.ruff.lint]
 select = [
   "B", # flake8-bugbear
-  "D", # pydocstyle
   "E", # pycodestyle
   "F", # Pyflakes
   "I", # isort
@@ -85,7 +88,7 @@ select = [
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
-ignore = ["E501"]
+ignore = ["E501", "E203"]
 fixable = ["ALL"]
 
 [tool.ruff.lint.pydocstyle]
