@@ -1,13 +1,13 @@
 """Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/)."""
 
 import os
-from datetime import datetime
 from enum import Enum
 from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, root_validator, validator
 
-from ..converters.utils import convert_to_iso8601
+from rfc3339_validator import validate_rfc3339
+from ..converters.utils import is_absolute_path
 
 
 class TESFileType(str, Enum):
@@ -79,16 +79,19 @@ class TESExecutorLog(BaseModel):
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
 
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
     stdout: Optional[str] = None
     stderr: Optional[str] = None
     exit_code: int
 
-    @validator("start_time", "end_time", pre=True, always=True)
-    def validate_datetime(cls, value):
-        """Convert start and end times to RFC 3339 format."""
-        return convert_to_iso8601(value)
+    @validator("start_time", "end_time")
+    def validate_datetime(cls, value, field):
+        """check correct datetime format"""
+        if(validate_rfc3339(value)):
+            return value
+        else:
+          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")
 
 
 class TESExecutor(BaseModel):
@@ -119,8 +122,8 @@ class TESExecutor(BaseModel):
     @validator("stdin", "stdout")
     def validate_stdin_stdin(cls, value, field):
         """Ensure that 'stdin' and 'stdout' are absolute paths."""
-        if value and not os.path.isabs(value):
-            raise ValueError(f"The '{field.name}' attribute must contain an absolute path.")
+        if value and not is_absolute_path(value):
+            raise ValueError(f"The '{field.name}' property must be an absolute path.")
         return value
 
 
@@ -160,33 +163,34 @@ class TESInput(BaseModel):
 
     name: Optional[str] = None
     description: Optional[str] = None
-    url: Optional[AnyUrl]
+    url: Optional[AnyUrl] = None
     path: str
-    type: Optional[TESFileType] = None
+    type: Optional[TESFileType] = TESFileType.FILE
     content: Optional[str] = None
 
     @root_validator()
     def validate_content_and_url(cls, values):
-        """If content is set url should be ignored.
-
-        If content is not set then url should be present.
         """
-        content_is_set = values.get("content") and values.get("content").strip()
-        url_is_set = values.get("url") and values.get("url").strip()
+        - If content is set url should be ignored.
+        - If content is not set then url should be present.
+        """
+        content_is_set = bool(values.get("content") and values.get("content").strip())
+        url_is_set = bool(values.get("url") and values.get("url").strip())
 
         if content_is_set:
             values["url"] = None
-        elif not url_is_set:
+        elif not url_is_set and not content_is_set:
+            print("the url", values.get("path"))
             raise ValueError(
-                "The 'url' attribute is required when the 'content' attribute is empty"
+                "Either the 'url' or 'content' properties must be set"
             )
         return values
 
     @validator("path")
     def validate_path(cls, value):
         """Validate that the path is an absolute path."""
-        if not os.path.isabs(value):
-            raise ValueError("The 'path' attribute must contain an absolute path.")
+        if not is_absolute_path(value):
+            raise ValueError("The 'path' property must be an absolute path.")
         return value
 
 
@@ -197,7 +201,6 @@ class TESOutput(BaseModel):
         name: User-provided name of output file
         description: Optional users provided description field, can be used for documentation.
         url: URL for the file to be copied by the TES server after the task is complete
-        path_prefix: The path prefix used when 'path' contains wildcards.
         path: Path of the file inside the container. Must be an absolute path.
         type: The type of output (e.g., FILE, DIRECTORY).
 
@@ -207,17 +210,14 @@ class TESOutput(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     url: AnyUrl
-    path_prefix: Optional[str] = None
     path: str
-    type: Optional[TESFileType] = None
+    type: Optional[TESFileType] = TESFileType.FILE
 
     @validator("path")
-    def validate_path(cls, value, values):
+    def validate_path(cls, value):
         """Ensure that 'path' is an absolute path and handle wildcards."""
-        if not os.path.isabs(value):
-            raise ValueError("The 'path' attribute must contain an absolute path.")
-        if any(char in value for char in ['*', '?', '[', ']']) and not values.get("path_prefix"):
-            raise ValueError("When 'path' contains wildcards, 'path_prefix' is required.")
+        if not is_absolute_path(value):
+            raise ValueError("The 'path' property must be an absolute path.")
         return value
 
 
@@ -231,23 +231,24 @@ class TESTaskLog(BaseModel):
         end_time: When the task ended, in RFC 3339 format.
         outputs: Information about all output files. Directory outputs are flattened into separate items.
         system_logs: System logs are any logs the system decides are relevant, which are not tied directly to an Executor process. Content is implementation specific: format, size, etc.
-        ignore_error: If true, errors in this executor will be ignored.
 
     Reference: [https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask](https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask)
     """
 
     logs: list[TESExecutorLog]
-    metadata: Optional[dict[str, str]]
-    start_time: Optional[datetime]
-    end_time: Optional[datetime]
+    metadata: Optional[dict[str, str]] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
     outputs: list[TESOutputFileLog]
-    system_logs: Optional[list[str]]
-    ignore_error: Optional[bool] = False
+    system_logs: Optional[list[str]] = None
 
     @validator("start_time", "end_time", pre=True, always=True)
-    def validate_datetime(cls, value):
-        """Convert start and end times to RFC 3339 format."""
-        return convert_to_iso8601(value)
+    def validate_datetime(cls, value, field):
+        """check correct datetime format"""
+        if(validate_rfc3339(value)):
+            return value
+        else:
+          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")
 
 
 class TESData(BaseModel):
@@ -273,7 +274,7 @@ class TESData(BaseModel):
     id: str
     name: Optional[str] = None
     description: Optional[str] = None
-    creation_time: Optional[datetime] = None
+    creation_time: Optional[str] = None
     state: Optional[TESState] = TESState.UNKNOWN
     inputs: Optional[list[TESInput]] = None
     outputs: Optional[list[TESOutput]] = None
@@ -282,3 +283,10 @@ class TESData(BaseModel):
     volumes: Optional[list[str]] = None
     logs: Optional[list[TESTaskLog]] = None
     tags: Optional[dict[str, str]] = None
+
+    @validator("creation_time")
+    def validate_datetime(value, field):
+        if(validate_rfc3339(value)):
+            return value
+        else:
+          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")

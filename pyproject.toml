@@ -25,6 +25,7 @@ requests = "^2.25.1"
 pytest = "^8.3.1"
 pytest-cov = "^5.0.0"
 pytest-mock = "^3.14.0"
+rfc3339-validator = "^0.1.4"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.13.0"
