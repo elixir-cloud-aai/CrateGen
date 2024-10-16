@@ -6,7 +6,7 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, root_validator, validator
 
-from rfc3339_validator import validate_rfc3339
+from rfc3339_validator import validate_rfc3339 # type: ignore
 from ..converters.utils import is_absolute_path
 
 
