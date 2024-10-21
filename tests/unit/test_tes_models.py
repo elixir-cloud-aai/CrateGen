@@ -49,96 +49,107 @@ test_url = "https://raw.githubusercontent.com/elixir-cloud-aai/CrateGen/refs/hea
 class TestTESExecutorLog:
     """Test suite for the TESExecutor model validators."""
 
-    def test_validate_datetime_valid(self):
+    @pytest.mark.parametrize(
+        "valid_datetime",
+        valid_datetime_strings,
+    )
+    def test_validate_datetime_valid(self, valid_datetime):
         """Test that datetime validator accepts correct datetime strings."""
-        for valid_datetime in valid_datetime_strings:
-            # Create a TESExecutorLog object (we're just interested in the validator)
-            log_entry = TESExecutorLog(
-                start_time=valid_datetime, end_time=valid_datetime, exit_code=0
-            )
-            assert bool(log_entry.start_time)
-            assert bool(log_entry.end_time)
+        log_entry = TESExecutorLog(
+            start_time=valid_datetime, end_time=valid_datetime, exit_code=0
+        )
+        assert bool(log_entry.start_time)
+        assert bool(log_entry.end_time)
 
-    def test_validate_datetime_invalid(self):
+    @pytest.mark.parametrize(
+        "invalid_datetime",
+        invalid_datetime_strings,
+    )
+    def test_validate_datetime_invalid(self, invalid_datetime):
         """Test that datetime validator rejects correct datetime strings."""
-        for invalid_datetime in invalid_datetime_strings:
-            with pytest.raises(ValueError) as exc_info:
-                TESExecutorLog(
-                    start_time=invalid_datetime,
-                    end_time="2020-10-02T16:00:00.000Z",
-                    exit_code=0,
-                )
 
-            assert "The 'start_time' property must be in the rfc3339 format" in str(
-                exc_info.value
+        with pytest.raises(ValueError) as exc_info:
+            TESExecutorLog(
+                start_time=invalid_datetime,
+                end_time="2020-10-02T16:00:00.000Z",
+                exit_code=0,
             )
 
-            with pytest.raises(ValueError) as exc_info:
-                TESExecutorLog(
-                    start_time="2020-10-02T16:00:00.000Z",
-                    end_time=invalid_datetime,
-                    exit_code=0,
-                )
+        assert "The 'start_time' property must be in the rfc3339 format" in str(
+            exc_info.value
+        )
 
-            # check the error message
-            assert "The 'end_time' property must be in the rfc3339 format" in str(
-                exc_info.value
+        with pytest.raises(ValueError) as exc_info:
+            TESExecutorLog(
+                start_time="2020-10-02T16:00:00.000Z",
+                end_time=invalid_datetime,
+                exit_code=0,
             )
+
+        # check the error message
+        assert "The 'end_time' property must be in the rfc3339 format" in str(
+            exc_info.value
+        )
 
 
 class TestTESExecutor:
     """Test suite for the TESExecutorLog model validators."""
 
-    def test_validate_stdin_stdout_valid(self):
+    @pytest.mark.parametrize(
+        "path",
+        valid_paths,
+    )
+    def test_validate_stdin_stdout_valid(self, path):
         """Test that validator accepts valid paths"""
-        for path in valid_paths:
-            executor = TESExecutor(
-                image="image", command=["commands"], stdin=path, stdout=path
-            )
+        executor = TESExecutor(
+            image="image", command=["commands"], stdin=path, stdout=path
+        )
 
-            assert bool(executor)
+        assert bool(executor)
 
-    def test_validate_stdin_stdout_invalid(self):
+    @pytest.mark.parametrize(
+        "path",
+        invalid_paths,
+    )
+    def test_validate_stdin_stdout_invalid(self, path):
         """Test that validator rejects invalid paths"""
-        for path in invalid_paths:
-            with pytest.raises(ValueError) as exc_info:
-                TESExecutor(image="image", command=["commands"], stdin=path, stdout="/")
+        with pytest.raises(ValueError) as exc_info:
+            TESExecutor(image="image", command=["commands"], stdin=path, stdout="/")
 
-            assert "The 'stdin' property must be an absolute path" in str(
-                exc_info.value
-            )
+        assert "The 'stdin' property must be an absolute path" in str(exc_info.value)
 
-            with pytest.raises(ValueError) as exc_info:
-                TESExecutor(image="image", command=["commands"], stdin="/", stdout=path)
+        with pytest.raises(ValueError) as exc_info:
+            TESExecutor(image="image", command=["commands"], stdin="/", stdout=path)
 
-            assert "The 'stdout' property must be an absolute path" in str(
-                exc_info.value
-            )
+        assert "The 'stdout' property must be an absolute path" in str(exc_info.value)
 
 
 class TestTESTInput:
     """Test suite for the TESData model validators."""
 
-    def test_validate_path_valid(self):
+    @pytest.mark.parametrize(
+        "valid_path",
+        valid_paths,
+    )
+    def test_validate_path_valid(self, valid_path):
         """Test path accepts absolute paths."""
-        for valid_path in valid_paths:
-            input_data = TESInput(
+        input_data = TESInput(
+            url=test_url,
+            path=valid_path,
+        )
+
+        assert bool(input_data.path)
+
+    @pytest.mark.parametrize("invalid_path", invalid_paths)
+    def test_validate_path_invalid(self, invalid_path):
+        """Test path rejects non-absolute paths."""
+        with pytest.raises(ValueError) as exc_info:
+            TESInput(
                 url=test_url,
-                path=valid_path,
+                path=invalid_path,
             )
 
-            assert bool(input_data.path)
-
-    def test_validate_path_invalid(self):
-        """Test path rejects non-absolute paths."""
-        for invalid_path in invalid_paths:
-            with pytest.raises(ValueError) as exc_info:
-                TESInput(
-                    url=test_url,
-                    path=invalid_path,
-                )
-
-            assert "The 'path' property must be an absolute path" in str(exc_info.value)
+        assert "The 'path' property must be an absolute path" in str(exc_info.value)
 
     def test_validate_no_content_or_url(self):
         """An error should be thrown if both content and url are not set"""
@@ -172,20 +183,20 @@ class TestTESTInput:
 class TestTESOutput:
     """Test suite for TESOutput model validators."""
 
-    def test_path_valid(self):
+    @pytest.mark.parametrize("valid_path", valid_paths)
+    def test_path_valid(self, valid_path):
         """Test that validator accepts valid paths"""
-        for valid_path in valid_paths:
-            tes_output = TESOutput(url=test_url, path=valid_path)
+        tes_output = TESOutput(url=test_url, path=valid_path)
 
-            assert bool(tes_output)
+        assert bool(tes_output)
 
-    def test_path_invalid(self):
+    @pytest.mark.parametrize("invalid_path", invalid_paths)
+    def test_path_invalid(self, invalid_path):
         """Test that validator rejects invalid paths"""
-        for invalid_path in invalid_paths:
-            with pytest.raises(ValueError) as exc_info:
-                TESOutput(url=test_url, path=invalid_path)
+        with pytest.raises(ValueError) as exc_info:
+            TESOutput(url=test_url, path=invalid_path)
 
-            assert "The 'path' property must be an absolute path" in str(exc_info.value)
+        assert "The 'path' property must be an absolute path" in str(exc_info.value)
 
     @pytest.mark.parametrize(
         "path,path_prefix",
@@ -227,44 +238,44 @@ class TestTESTaskLog:
     tes_output_file_log = TESOutputFileLog(url=test_url, path="/", size_bytes="10gb")
     tes_executor_log = TESExecutorLog(exit_code=0)
 
-    def test_validate_datetime_valid(self):
+    @pytest.mark.parametrize("time", valid_datetime_strings)
+    def test_validate_datetime_valid(self, time):
         """Test that the validator accepts valid paths"""
-        for time in valid_datetime_strings:
-            tes_task_log = TESTaskLog(
+        tes_task_log = TESTaskLog(
+            outputs=[self.tes_output_file_log],
+            logs=[self.tes_executor_log],
+            start_time=time,
+            end_time=time,
+        )
+
+        assert bool(tes_task_log.start_time)
+
+    @pytest.mark.parametrize("time", invalid_datetime_strings)
+    def test_validate_datetime_invalid(self, time):
+        """Test that the validator rejects valid paths"""
+        with pytest.raises(ValueError) as exc_info:
+            TESTaskLog(
                 outputs=[self.tes_output_file_log],
                 logs=[self.tes_executor_log],
-                start_time=time,
+                start_time="2020-10-02T16:00:00.000Z",
                 end_time=time,
             )
 
-            assert bool(tes_task_log.start_time)
+        assert "The 'end_time' property must be in the rfc3339 format" in str(
+            exc_info.value
+        )
 
-    def test_validate_datetime_invalid(self):
-        """Test that the validator rejects valid paths"""
-        for time in invalid_datetime_strings:
-            with pytest.raises(ValueError) as exc_info:
-                TESTaskLog(
-                    outputs=[self.tes_output_file_log],
-                    logs=[self.tes_executor_log],
-                    start_time="2020-10-02T16:00:00.000Z",
-                    end_time=time,
-                )
-
-            assert "The 'end_time' property must be in the rfc3339 format" in str(
-                exc_info.value
+        with pytest.raises(ValueError) as exc_info:
+            TESTaskLog(
+                outputs=[self.tes_output_file_log],
+                logs=[self.tes_executor_log],
+                start_time=time,
+                end_time="2020-10-02T16:00:00.000Z",
             )
 
-            with pytest.raises(ValueError) as exc_info:
-                TESTaskLog(
-                    outputs=[self.tes_output_file_log],
-                    logs=[self.tes_executor_log],
-                    start_time=time,
-                    end_time="2020-10-02T16:00:00.000Z",
-                )
-
-            assert "The 'start_time' property must be in the rfc3339 format" in str(
-                exc_info.value
-            )
+        assert "The 'start_time' property must be in the rfc3339 format" in str(
+            exc_info.value
+        )
 
 
 class TestTESData:
@@ -272,22 +283,18 @@ class TestTESData:
 
     executor = TESExecutor(image="image", command=["commands"], stdin="/", stdout="/")
 
-    def test_validate_datetime_valid(self):
+    @pytest.mark.parametrize("valid_datetime", valid_datetime_strings)
+    def test_validate_datetime_valid(self, valid_datetime):
         """Test that datetime validator accepts correct datetime strings."""
-        for valid_datetime in valid_datetime_strings:
-            data = TESData(
-                id="id", creation_time=valid_datetime, executors=[self.executor]
-            )
-            assert bool(data.creation_time)
+        data = TESData(id="id", creation_time=valid_datetime, executors=[self.executor])
+        assert bool(data.creation_time)
 
-    def test_validate_datettime_invalid(self):
+    @pytest.mark.parametrize("invalid_datetime", invalid_datetime_strings)
+    def test_validate_datetime_invalid(self, invalid_datetime):
         """Test that datetime validator rejects incorrect datetime strings."""
-        for invalid_datetime in invalid_datetime_strings:
-            with pytest.raises(ValueError) as exc_info:
-                TESData(
-                    id="id", creation_time=invalid_datetime, executors=[self.executor]
-                )
+        with pytest.raises(ValueError) as exc_info:
+            TESData(id="id", creation_time=invalid_datetime, executors=[self.executor])
 
-            assert "The 'creation_time' property must be in the rfc3339 format" in str(
-                exc_info.value
-            )
+        assert "The 'creation_time' property must be in the rfc3339 format" in str(
+            exc_info.value
+        )
