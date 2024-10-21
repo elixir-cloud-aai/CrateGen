@@ -5,8 +5,8 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, root_validator, validator
 from rfc3339_validator import validate_rfc3339  # type: ignore
-
-from ..converters.utils import is_absolute_path
+import ntpath
+import posixpath
 
 
 class TESFileType(str, Enum):
@@ -16,6 +16,7 @@ class TESFileType(str, Enum):
         FILE: Represents a file.
         DIRECTORY: Represents a directory.
     """
+
     FILE = "FILE"
     DIRECTORY = "DIRECTORY"
 
@@ -36,6 +37,7 @@ class TESState(str, Enum):
         CANCELING: The task is being canceled.
         PREEMPTED: The task was preempted.
     """
+
     UNKNOWN = "UNKNOWN"
     QUEUED = "QUEUED"
     INITIALIZING = "INITIALIZING"
@@ -46,7 +48,7 @@ class TESState(str, Enum):
     SYSTEM_ERROR = "SYSTEM_ERROR"
     CANCELED = "CANCELED"
     CANCELING = "CANCELING"
-    PREEMPTED = "PREEMPTED" 
+    PREEMPTED = "PREEMPTED"
 
 
 class TESOutputFileLog(BaseModel):
@@ -87,10 +89,12 @@ class TESExecutorLog(BaseModel):
     @validator("start_time", "end_time")
     def validate_datetime(cls, value, field):
         """Check correct datetime format"""
-        if(validate_rfc3339(value)):
+        if validate_rfc3339(value):
             return value
         else:
-          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")
+            raise ValueError(
+                f"The '{field.name}' property must be in the rfc3339 format"
+            )
 
 
 class TESExecutor(BaseModel):
@@ -121,7 +125,7 @@ class TESExecutor(BaseModel):
     @validator("stdin", "stdout")
     def validate_stdin_stdin(cls, value, field):
         """Ensure that 'stdin' and 'stdout' are absolute paths."""
-        if value and not is_absolute_path(value):
+        if not ntpath.isabs(value) and not posixpath.isabs(value):
             raise ValueError(f"The '{field.name}' property must be an absolute path.")
         return value
 
@@ -179,15 +183,13 @@ class TESInput(BaseModel):
             values["url"] = None
         elif not url_is_set and not content_is_set:
             print("the url", values.get("path"))
-            raise ValueError(
-                "Either the 'url' or 'content' properties must be set"
-            )
+            raise ValueError("Either the 'url' or 'content' properties must be set")
         return values
 
     @validator("path")
     def validate_path(cls, value):
         """Validate that the path is an absolute path."""
-        if not is_absolute_path(value):
+        if not ntpath.isabs(value) and not posixpath.isabs(value):
             raise ValueError("The 'path' property must be an absolute path.")
         return value
 
@@ -201,6 +203,7 @@ class TESOutput(BaseModel):
         url: URL for the file to be copied by the TES server after the task is complete
         path: Path of the file inside the container. Must be an absolute path.
         type: The type of output (e.g., FILE, DIRECTORY).
+        path_prefix: The output path prefix
 
     Reference: https://ga4gh.github.io/task-execution-schemas/docs/#operation/GetTask
     """
@@ -214,7 +217,7 @@ class TESOutput(BaseModel):
     @validator("path")
     def validate_path(cls, value):
         """Ensure that 'path' is an absolute path and handle wildcards."""
-        if not is_absolute_path(value):
+        if not ntpath.isabs(value) and not posixpath.isabs(value):
             raise ValueError("The 'path' property must be an absolute path.")
         return value
 
@@ -243,10 +246,12 @@ class TESTaskLog(BaseModel):
     @validator("start_time", "end_time", pre=True, always=True)
     def validate_datetime(cls, value, field):
         """Check correct datetime format"""
-        if(validate_rfc3339(value)):
+        if validate_rfc3339(value):
             return value
         else:
-          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")
+            raise ValueError(
+                f"The '{field.name}' property must be in the rfc3339 format"
+            )
 
 
 class TESData(BaseModel):
@@ -284,7 +289,9 @@ class TESData(BaseModel):
 
     @validator("creation_time")
     def validate_datetime(value, field):
-        if(validate_rfc3339(value)):
+        if validate_rfc3339(value):
             return value
         else:
-          raise ValueError(f"The '{field.name}' property must be in the rfc3339 format")
+            raise ValueError(
+                f"The '{field.name}' property must be in the rfc3339 format"
+            )

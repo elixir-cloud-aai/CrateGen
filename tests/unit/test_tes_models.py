@@ -34,7 +34,6 @@ valid_paths = [
     r"C:\Users\user\Document.pdf",
     r"D:\Projects\my_website\index.html",
     r"\\server\share",
-    "s3://my-bucket/data/file.txt",
 ]
 
 invalid_paths = [
