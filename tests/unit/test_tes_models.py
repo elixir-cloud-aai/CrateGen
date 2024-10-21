@@ -187,6 +187,39 @@ class TestTESOutput:
 
             assert "The 'path' property must be an absolute path" in str(exc_info.value)
 
+    @pytest.mark.parametrize(
+        "path,path_prefix",
+        [
+            ("/path/to/file.txt", None),
+            ("/path/to/directory", None),
+            ("/path/to/files*.txt", "/path/to"),
+            ("/path/to/data???.csv", "/path/to"),
+        ],
+    )
+    def test_validate_is_path_prefix_necessary_valid(self, path, path_prefix):
+        """Test that validator accepts valid paths and path prefixes."""
+        tes_output = TESOutput(
+            url="https://example.com", path=path, path_prefix=path_prefix
+        )
+        assert bool(tes_output)
+
+    @pytest.mark.parametrize(
+        "path,path_prefix",
+        [
+            ("/path/to/files*.txt", None),
+            ("/path/to/data???.csv", ""),
+        ],
+    )
+    def test_validate_is_path_prefix_necessary_invalid(self, path, path_prefix):
+        """Test that validator rejects invalid paths and path prefixes."""
+        with pytest.raises(ValueError) as exc_info:
+            TESOutput(url="https://example.com", path=path, path_prefix=path_prefix)
+
+        assert (
+            "The 'path_prefix' property is required when the 'path' property contains a wildcard"
+            in str(exc_info.value)
+        )
+
 
 class TestTESTaskLog:
     """Test suite for TESTaskLog model validators."""

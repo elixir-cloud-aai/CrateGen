@@ -214,6 +214,7 @@ class TESOutput(BaseModel):
     url: AnyUrl
     path: str
     type: Optional[TESFileType] = TESFileType.FILE
+    path_prefix: Optional[str] = None
 
     @root_validator()
     def validate_is_path_prefix_required(cls, values):
@@ -224,8 +225,10 @@ class TESOutput(BaseModel):
 
         if bool(re.search(pattern, path)) and not bool(path_prefix):
             raise ValueError(
-                "The 'path_prefix' property is required when the 'path' property contains wildcards"
+                "The 'path_prefix' property is required when the 'path' property contains a wildcard"
             )
+
+        return values
 
     @validator("path")
     def validate_path(cls, value):
