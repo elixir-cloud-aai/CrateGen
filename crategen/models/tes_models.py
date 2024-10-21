@@ -2,6 +2,7 @@
 
 import ntpath
 import posixpath
+import re
 from enum import Enum
 from typing import Optional
 
@@ -213,6 +214,18 @@ class TESOutput(BaseModel):
     url: AnyUrl
     path: str
     type: Optional[TESFileType] = TESFileType.FILE
+
+    @root_validator()
+    def validate_is_path_prefix_required(cls, values):
+        """If the 'path' property contains wildcards then the 'path_prefix' property is required"""
+        path = values.get("path")
+        path_prefix = values.get("path_prefix")
+        pattern = r"[\*\?]"
+
+        if bool(re.search(pattern, path)) and not bool(path_prefix):
+            raise ValueError(
+                "The 'path_prefix' property is required when the 'path' property contains wildcards"
+            )
 
     @validator("path")
     def validate_path(cls, value):
