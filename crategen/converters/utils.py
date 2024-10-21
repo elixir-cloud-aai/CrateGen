@@ -1,8 +1,6 @@
 """Utility functions for handling data conversion."""
 
 import datetime
-import os
-import re
 
 
 def convert_to_iso8601(timestamp):

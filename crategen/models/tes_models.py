@@ -1,12 +1,12 @@
 """Each model in this module conforms to the corresponding TES model names as specified by the GA4GH schema (https://ga4gh.github.io/task-execution-schemas/docs/)."""
 
+import ntpath
+import posixpath
 from enum import Enum
 from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, root_validator, validator
 from rfc3339_validator import validate_rfc3339  # type: ignore
-import ntpath
-import posixpath
 
 
 class TESFileType(str, Enum):
